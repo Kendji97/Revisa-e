@@ -1153,12 +1153,15 @@ function goTo(page,btn){
 let filterHoje=null, filterTodos=null;
 
 function renderAreaBar(elId,active,cb){
+  // Store callback on window with a unique key so onclick can call it
+  const cbKey = '_areaBarCb_' + elId;
+  window[cbKey] = cb;
   const chips=AKEYS.map(k=>{
     const a=AREAS[k];
-    return `<button class="ac ${a.cls} ${active===k?'on':''}" onclick="(${cb.toString()})('${k}')">${a.lbl}</button>`;
+    return `<button class="ac ${a.cls} ${active===k?'on':''}" onclick="window['${cbKey}']('${k}')">${a.lbl}</button>`;
   }).join('');
   document.getElementById(elId).innerHTML=`<span class="area-lbl">Área:</span>
-    <button class="ac all ${active===null?'on':''}" onclick="(${cb.toString()})(null)">Todas</button>${chips}`;
+    <button class="ac all ${active===null?'on':''}" onclick="window['${cbKey}'](null)">Todas</button>${chips}`;
 }
 
 // ── FREQ BADGE ────────────────────────────────
