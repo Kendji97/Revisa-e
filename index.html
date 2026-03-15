@@ -893,6 +893,7 @@ service cloud.firestore {
 
 // ── FIREBASE HELPERS ─────────────────────────
 let _db = null, _unsub = null, _isSaving = false, _lastSaveTs = 0;
+const _SESSION_ID = Math.random().toString(36).slice(2); // unique per tab/device
 
 function _syncUI(status) {
   const ind = document.getElementById('sync-indicator');
@@ -917,7 +918,8 @@ async function _fbSaveNow() {
     await _db.collection('revisae').doc('dados').set({
       estudos:   JSON.stringify(estudos),
       allTags:   JSON.stringify(allTags),
-      updatedAt: _lastSaveTs
+      updatedAt: _lastSaveTs,
+      savedBy:   _SESSION_ID
     });
     _syncUI('ok');
   } catch(err) {
@@ -931,11 +933,11 @@ function _subscribe() {
   _unsub = _db.collection('revisae').doc('dados').onSnapshot(snap => {
     if(!snap.exists()) return;
     const _sd = snap.data();
-    if(_isSaving || (_sd.updatedAt && _sd.updatedAt <= _lastSaveTs + 500)) return;
+    // Only skip if this update came from THIS session (our own save)
+    if(_sd.savedBy === _SESSION_ID && _isSaving) return;
     try {
-      const d = _sd;
-      const ne = JSON.parse(d.estudos || '[]');
-      const nt = JSON.parse(d.allTags  || '[]');
+      const ne = JSON.parse(_sd.estudos || '[]');
+      const nt = JSON.parse(_sd.allTags  || '[]');
       if(JSON.stringify(ne) === JSON.stringify(estudos)) return;
       estudos = ne; allTags = nt;
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
@@ -957,40 +959,6 @@ function _subscribe() {
   }, err => { _syncUI('error'); console.error('Snapshot err:', err); });
 }
 
-// ── CONFIG ────────────────────────────────────
-const _CFG = 'revisae-firebase-cfg';
-function _getCfg()   { try { return JSON.parse(localStorage.getItem(_CFG)); } catch(e) { return null; } }
-function _saveCfg(c) { localStorage.setItem(_CFG, JSON.stringify(c)); }
-
-// ── SETUP CONNECT ─────────────────────────────
-window._setupConnect = async function() {
-  const fields = ['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId'];
-  const cfg = {};
-  for(const f of fields) {
-    const v = document.getElementById('cfg-'+f)?.value.trim();
-    if(!v) { document.getElementById('setup-err').textContent='Preencha o campo: '+f; return; }
-    cfg[f] = v;
-  }
-  const btn = document.getElementById('setup-btn');
-  btn.disabled = true; btn.textContent = 'Conectando…';
-  document.getElementById('setup-err').textContent = '';
-  try {
-    // Delete any existing Firebase app before reinitializing
-    try { await firebase.app().delete(); } catch(e) {}
-    const app = firebase.initializeApp(cfg);
-    _db = firebase.firestore(app);
-    await _db.collection('revisae').doc('dados').get();
-    _saveCfg(cfg);
-    const _ss=document.getElementById('setup-screen'); _ss.style.display='none'; _ss.style.pointerEvents='none';
-    await _boot(cfg);
-  } catch(err) {
-    btn.disabled = false; btn.textContent = 'Conectar ao Firebase →';
-    document.getElementById('setup-err').textContent = 'Erro: verifique as credenciais e as regras do Firestore.';
-    console.error(err);
-  }
-};
-
-// ── START WITH CONFIG ─────────────────────────
 async function _boot(cfg) {
   // Only initialize if not already done by _setupConnect
   if(!_db) {
