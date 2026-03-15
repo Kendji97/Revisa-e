@@ -263,7 +263,7 @@ body.is-mobile .form-row{grid-template-columns:1fr}
 .del-btn:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-l)}
 
 /* ── MODAL ──────────────────────────────── */
-.modal-ov{position:fixed;inset:0;background:rgba(12,10,7,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.modal-ov{position:fixed;inset:0;background:rgba(12,10,7,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;pointer-events:auto}
 body.is-mobile .modal-ov{align-items:flex-end;padding:0}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;box-shadow:var(--sh-lg);animation:mIn .18s ease}
 body.is-mobile .modal-box{max-width:100%;border-radius:var(--r-lg) var(--r-lg) 0 0;max-height:70dvh;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
@@ -518,7 +518,7 @@ body.is-mobile .ab-row{grid-template-columns:90px 1fr 36px}
 .fc-badge-pend{background:var(--warn-l);color:var(--warn)}
 
 /* ── FIREBASE SETUP SCREEN ──────────────────── */
-#setup-screen{position:fixed;inset:0;z-index:9999;background:#F5F2ED;display:none;align-items:center;justify-content:center;padding:1.5rem}
+#setup-screen{position:fixed;inset:0;z-index:9999;background:#F5F2ED;display:none;align-items:center;justify-content:center;padding:1.5rem;pointer-events:none}
 .setup-card{background:#FAFAF7;border:1px solid rgba(50,40,20,0.13);border-radius:16px;padding:2rem;width:100%;max-width:500px;box-shadow:0 2px 8px rgba(0,0,0,0.08),0 14px 40px rgba(0,0,0,0.08);max-height:95dvh;overflow-y:auto}
 .setup-logo{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#0C0A07;letter-spacing:-0.02em;margin-bottom:.25rem}
 .setup-logo em{font-style:italic;color:#1F5C35}
@@ -918,7 +918,9 @@ window._setupConnect = async function() {
     const testDb = getFirestore(app);
     await getDoc(doc(testDb,'revisae','dados')); // connectivity test
     _saveCfg(cfg);
-    document.getElementById('setup-screen').style.display = 'none';
+    const ss = document.getElementById('setup-screen');
+    ss.style.display = 'none';
+    ss.style.pointerEvents = 'none';
     await _boot(cfg);
   } catch(err) {
     btn.disabled = false; btn.textContent = 'Conectar ao Firebase →';
@@ -1957,7 +1959,9 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 (async function() {
   const cfg = _getCfg();
   if(!cfg) {
-    document.getElementById('setup-screen').style.display = 'flex';
+    const ss = document.getElementById('setup-screen');
+    ss.style.display = 'flex';
+    ss.style.pointerEvents = 'auto';
     return;
   }
   try {
