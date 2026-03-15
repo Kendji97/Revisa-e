@@ -68,8 +68,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 body.is-mobile{height:100dvh;overflow:hidden}
 body.is-mobile .shell{flex-direction:column;height:100%;overflow:hidden}
 body.is-mobile .sidebar{display:none;pointer-events:none;visibility:hidden}
-body.is-mobile .main{margin-left:0;padding:0;padding-bottom:calc(80px + env(safe-area-inset-bottom));height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
-body.is-mobile .page{padding:16px 16px 4px}
+body.is-mobile .main{margin-left:0;padding:0;padding-bottom:calc(110px + env(safe-area-inset-bottom));height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.is-mobile .page{padding:16px 16px 32px}
 
 .mob-topbar{
   display:none;position:sticky;top:0;z-index:200;flex-shrink:0;
@@ -599,6 +599,28 @@ body:not(.is-mobile) .undo-toast{bottom:2rem}
   font-family:'DM Sans',sans-serif;padding:0;
   touch-action:manipulation;
 }
+
+/* ── DASHBOARD MOBILE ───────────────────────── */
+@media(max-width:640px){
+  .dash-bottom-grid{grid-template-columns:1fr !important}
+  .dash-grid{grid-template-columns:1fr 1fr !important}
+}
+
+/* ── HISTÓRICO MOBILE ───────────────────────── */
+body.is-mobile .hist-area-block{margin-bottom:1.5rem}
+body.is-mobile .hist-timeline{padding:0 10px 14px 10px}
+body.is-mobile .tl-wrap{padding:16px 0 4px 30px}
+
+/* ── FLASHCARD MOBILE ───────────────────────── */
+body.is-mobile .fc-item{padding:12px 12px;gap:10px}
+body.is-mobile .fc-info{min-width:0;flex:1}
+body.is-mobile .fc-name{font-size:13px}
+body.is-mobile .fc-badge{font-size:10px;padding:2px 7px;flex-shrink:0}
+body.is-mobile .fc-area-header{padding:9px 12px}
+body.is-mobile .fc-summary-bar{flex-wrap:wrap;gap:8px;padding:.75rem 1rem}
+body.is-mobile .fc-sum-stat{padding:0 10px;border-right:1px solid var(--border)}
+body.is-mobile .fc-sum-stat:nth-child(2n){border-right:none}
+body.is-mobile .fc-sum-val{font-size:1.3rem}
 </style>
 </head>
 <body>
@@ -1732,7 +1754,7 @@ function renderDashboard() {
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem" class="dash-bottom-grid">
     <div class="dash-section" style="margin-bottom:0">
       <div class="dash-section-title">Progresso por área</div>
       <div class="chart-card">
@@ -1878,7 +1900,7 @@ function renderHistorico() {
   // group by area
   const groups = {};
   AKEYS.forEach(k => { groups[k] = []; });
-  grupos_outro = [];
+  const grupos_outro = [];
   estudos.forEach(e => {
     if (groups[e.area]) groups[e.area].push(e);
     else grupos_outro.push(e);
