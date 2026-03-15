@@ -64,12 +64,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 /* ── MOBILE OVERRIDES ──────────────────── */
 body.is-mobile .shell{flex-direction:column}
-body.is-mobile .sidebar{display:none}
+body.is-mobile .sidebar{display:none;pointer-events:none;visibility:hidden}
 body.is-mobile .main{margin-left:0;padding:0;padding-bottom:calc(74px + env(safe-area-inset-bottom))}
 body.is-mobile .page{padding:16px 16px 4px}
 
 .mob-topbar{
-  display:none;position:sticky;top:0;z-index:40;
+  display:none;position:sticky;top:0;z-index:200;
   background:var(--surface);border-bottom:1px solid var(--border);
   padding:13px 18px 11px;align-items:center;justify-content:space-between;
 }
@@ -79,7 +79,7 @@ body.is-mobile .mob-topbar{display:flex}
 .mob-atrasadas-badge{background:var(--danger);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:none}
 
 .mob-bottom-nav{
-  display:none;position:fixed;bottom:0;left:0;right:0;z-index:40;
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;
   background:var(--surface);border-top:1px solid var(--border);
   padding-bottom:env(safe-area-inset-bottom);
 }
