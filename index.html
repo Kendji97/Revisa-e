@@ -960,11 +960,16 @@ function _subscribe() {
 }
 
 async function _boot(cfg) {
-  // Only initialize if not already done by _setupConnect
+  // Initialize Firebase only if not already done
   if(!_db) {
-    try { await firebase.app().delete(); } catch(e) {}
-    const app = firebase.initializeApp(cfg);
-    _db = firebase.firestore(app);
+    try {
+      // Try to reuse existing app
+      _db = firebase.firestore(firebase.app());
+    } catch(e) {
+      // No app yet — initialize fresh
+      firebase.initializeApp(cfg);
+      _db = firebase.firestore();
+    }
   }
   window._fbSave = _fbSaveNow;
   _syncUI('loading');
@@ -2050,6 +2055,45 @@ window.toggleFC = toggleFC;
 window.toggleFCArea = toggleFCArea;
 window.toggleHistArea = toggleHistArea;
 window.toggleHistSubj = toggleHistSubj;
+
+// ── CONFIG & SETUP ────────────────────────────
+const _CFG = 'revisae-firebase-cfg';
+function _getCfg()   { try { return JSON.parse(localStorage.getItem(_CFG)); } catch(e) { return null; } }
+function _saveCfg(cfg) { localStorage.setItem(_CFG, JSON.stringify(cfg)); }
+
+window._setupConnect = async function() {
+  const fields = ['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId'];
+  const cfg = {};
+  for(const f of fields) {
+    const v = document.getElementById('cfg-'+f)?.value.trim();
+    if(!v) { document.getElementById('setup-err').textContent = 'Preencha o campo: ' + f; return; }
+    cfg[f] = v;
+  }
+  const btn = document.getElementById('setup-btn');
+  btn.disabled = true; btn.textContent = 'Conectando…';
+  document.getElementById('setup-err').textContent = '';
+  const tryConnect = async () => {
+    firebase.initializeApp(cfg);
+    _db = firebase.firestore();
+    await _db.collection('revisae').doc('dados').get();
+  };
+  try {
+    try { await tryConnect(); }
+    catch(e1) {
+      // App may already exist — delete and retry once
+      try { await firebase.app().delete(); } catch(e2) {}
+      await tryConnect();
+    }
+    _saveCfg(cfg);
+    const ss = document.getElementById('setup-screen');
+    ss.style.display = 'none'; ss.style.pointerEvents = 'none';
+    await _boot(cfg);
+  } catch(err) {
+    btn.disabled = false; btn.textContent = 'Conectar ao Firebase →';
+    document.getElementById('setup-err').textContent = 'Erro: verifique as credenciais e as regras do Firestore.';
+    console.error('Setup error:', err);
+  }
+};
 
 // ── BOOT ──────────────────────────────────────
 (async function() {
