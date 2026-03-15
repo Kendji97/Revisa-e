@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="application-name" content="Revisa-ê"/>
+<meta name="apple-mobile-web-app-title" content="Revisa-ê"/>
+<meta name="theme-color" content="#1F5C35"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<title>Revisa-ê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACbklEQVR4nO2bTY7CMAyFzWgWSIgVB4ATsIODsIbTDacZLjGcASGxY1auSkninziNafskFqDi+H1xQhpSgEnj1qzPxtbH3ZN77fV86SW3oo1IDFMqBaRIUEvjXVmDMAtW0nRMFjC+LBKpYd6q3SyCtYyHpK0GNQCt+b+fX/KazWmvCa2CoAIgMc8xTEkCRApBDIBr3sJ4V1wQEggiABzzEuNtQ9rvxcSFwP4VKGk+9D63HW6lfnMuooKVKHdK2GYK3Pq4e1KVQFaAR/OS9qn8k3RKm18u5gAAsDpss2NRQyhWCeqVoGXPW8TSxogCSPV+7bKPKZVXzE8QgKclrqVCvsRDwGvvo6T5iQB4N4+S5PkGYKjlj+r6Y1fAp/Q+ipvvC4Ch9z6q7ZNVAdLexwVObXHyNtkSawvNLxdzNyBSMgUQMuwdQgPAYvzf7g+43R9vn3usBvRLVoBm9g9BAKgDgsqftR+gEULwPizEAKTbWCkQq8O2iWl5O5y1EuQ2EnqfUnd+QPOaWJZ5mf8MUorND7XUOwAAXxCy7gZzxq2XWOJJ0NtWWG6sKkPAk0gAObOzB1H5NwD6OpPjReh3GgK1E6gtFoBPnQc4eb8AGMs80PbJHgKfVgXcfN8ADL0Kuv6y7ga9qujdoHcI0vyCAIY6DEK+ohWQguC1ClJ5mR+QsICwOe2bl0UsjZIAqKFQaxtLmkfKB1kBJSFYKMc8AHND5Hq+zFJ/nGASff6DbHVYkj0HcILlHHasdVJ0OiusSWTUp8VRo35eAOXpREnvT4y0VRNE7rLdZEus1r2DRbvTc4OWwboa7ZOjMXl8dnj0+gc0oEEwf3vouwAAAABJRU5ErkJggg=="/>
+<style>
+:root{
+  --bg:#F5F2ED; --surface:#FAFAF7; --surface2:#EDE9E2;
+  --border:rgba(50,40,20,0.13); --border-md:rgba(50,40,20,0.24);
+  --text:#0C0A07; --text-2:#3A3228; --text-3:#6A5E52;
+  --accent:#1F5C35; --accent-l:#E4F2EA; --accent-t:#163D23;
+  --danger:#8B1A1A; --danger-l:#FCECEA;
+  --warn:#7A4800; --warn-l:#FDF4E3;
+  --info:#18357A; --info-l:#EBF0FB;
+  --go:#B52E6A;        --go-l:#FCEEF5;
+  --ped:#C05A00;       --ped-l:#FEF3E8;
+  --cir:#3A3A3A;       --cir-l:#EEEEEE;
+  --cm:#185BA0;        --cm-l:#EAF1FB;
+  --prev:#1A6B3A;      --prev-l:#E5F4EC;
+  --r:10px; --r-lg:16px;
+  --sh:0 1px 3px rgba(0,0,0,0.06),0 4px 14px rgba(0,0,0,0.05);
+  --sh-lg:0 2px 8px rgba(0,0,0,0.08),0 14px 40px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:15px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;min-height:100vh;min-height:100dvh}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:4px}
+
+/* ── DESKTOP SHELL ─────────────────────── */
+.shell{display:flex;min-height:100vh}
+.sidebar{
+  width:228px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:1.5rem 0 2rem;
+  position:fixed;top:0;left:0;bottom:0;z-index:50;
+}
+.logo{padding:0 1.5rem 1.75rem;border-bottom:1px solid var(--border)}
+.logo-mark{font-family:'DM Serif Display',serif;font-size:1.65rem;color:var(--text);letter-spacing:-0.02em;line-height:1.1}
+.logo-mark em{font-style:italic;color:var(--accent)}
+.logo-sub{font-size:10.5px;color:var(--text-3);font-weight:500;letter-spacing:0.09em;text-transform:uppercase;margin-top:3px}
+.sidebar-nav{flex:1;padding:1.25rem 0.75rem 0}
+.nav-btn{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);
+  cursor:pointer;font-size:13.5px;color:var(--text-2);font-weight:500;
+  transition:all 0.14s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:var(--text);color:var(--surface)}
+.nav-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nav-pill{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center}
+.sidebar-foot{padding:1rem 1.5rem 0;border-top:1px solid var(--border)}
+.sidebar-foot p{font-size:11px;color:var(--text-3);line-height:1.5}
+.main{margin-left:228px;flex:1;padding:2rem 2.5rem;min-height:100vh}
+
+/* ── MOBILE OVERRIDES ──────────────────── */
+body.is-mobile .shell{flex-direction:column}
+body.is-mobile .sidebar{display:none}
+body.is-mobile .main{margin-left:0;padding:0;padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+body.is-mobile .page{padding:16px 16px 4px}
+
+.mob-topbar{
+  display:none;position:sticky;top:0;z-index:40;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:13px 18px 11px;align-items:center;justify-content:space-between;
+}
+body.is-mobile .mob-topbar{display:flex}
+.mob-logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--text);letter-spacing:-0.02em}
+.mob-logo em{font-style:italic;color:var(--accent)}
+.mob-atrasadas-badge{background:var(--danger);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:none}
+
+.mob-bottom-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:40;
+  background:var(--surface);border-top:1px solid var(--border);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+body.is-mobile .mob-bottom-nav{display:flex}
+.mob-nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:10px 2px 8px;border:none;background:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;color:var(--text-3);font-size:9px;font-weight:500;
+  position:relative;transition:color 0.13s;
+}
+.mob-nav-btn.active{color:var(--accent)}
+.mob-nav-ico{font-size:19px;line-height:1;transition:transform 0.13s}
+.mob-nav-btn.active .mob-nav-ico{transform:scale(1.12)}
+.mob-dot{position:absolute;top:8px;right:calc(50% - 15px);width:7px;height:7px;border-radius:50%;background:var(--danger);border:1.5px solid var(--surface);display:none}
+
+/* ── PAGES ─────────────────────────────── */
+.page{display:none}
+.page.active{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.page-header{margin-bottom:1.75rem}
+.page-title{font-family:'DM Serif Display',serif;font-size:1.85rem;color:var(--text);letter-spacing:-0.025em;line-height:1.15}
+.page-sub{font-size:13px;color:var(--text-2);margin-top:4px}
+body.is-mobile .page-title{font-size:1.4rem}
+body.is-mobile .page-header{margin-bottom:1.25rem}
+
+/* ── METRICS ───────────────────────────── */
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:1.75rem}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.95rem 1.15rem;box-shadow:var(--sh)}
+.metric-val{font-size:2rem;font-weight:600;line-height:1;letter-spacing:-0.03em}
+.metric-lbl{font-size:10.5px;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;margin-top:5px;font-weight:500}
+.metric.danger .metric-val{color:var(--danger)}
+.metric.info .metric-val{color:var(--info)}
+.metric.ok .metric-val{color:var(--accent)}
+
+/* ── AREA FILTER BAR ───────────────────── */
+.area-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.2rem;align-items:center}
+body.is-mobile .area-bar{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+body.is-mobile .area-bar::-webkit-scrollbar{display:none}
+.area-lbl{font-size:11px;color:var(--text-2);font-weight:600;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;margin-right:2px;flex-shrink:0}
+.ac{padding:5px 13px;border-radius:20px;border:1.5px solid transparent;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all .13s;background:var(--surface2);color:var(--text-2)}
+.ac.all{border-color:var(--border-md)}
+.ac.all.on{background:var(--text);color:var(--surface);border-color:transparent}
+.ac.go{background:var(--go-l);color:var(--go)}   .ac.go.on{background:var(--go);color:#fff}
+.ac.ped{background:var(--ped-l);color:var(--ped)} .ac.ped.on{background:var(--ped);color:#fff}
+.ac.cir{background:var(--cir-l);color:var(--cir)} .ac.cir.on{background:var(--cir);color:#fff}
+.ac.cm{background:var(--cm-l);color:var(--cm)}    .ac.cm.on{background:var(--cm);color:#fff}
+.ac.prev{background:var(--prev-l);color:var(--prev)} .ac.prev.on{background:var(--prev);color:#fff}
+
+/* ── AREA BADGES ───────────────────────── */
+.ab{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600}
+.ab-go{background:var(--go-l);color:var(--go)}
+.ab-ped{background:var(--ped-l);color:var(--ped)}
+.ab-cir{background:var(--cir-l);color:var(--cir)}
+.ab-cm{background:var(--cm-l);color:var(--cm)}
+.ab-prev{background:var(--prev-l);color:var(--prev)}
+.ab-none{background:var(--surface2);color:var(--text-3)}
+
+/* ── FREQ BADGES ───────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.b-alta{background:var(--warn-l);color:var(--warn)}
+.b-media{background:var(--info-l);color:var(--info)}
+.b-baixa{background:var(--accent-l);color:var(--accent-t)}
+.b-late{background:var(--danger-l);color:var(--danger)}
+.b-hoje{background:var(--info-l);color:var(--info)}
+
+/* ── REVIEW CARDS ──────────────────────── */
+.rev-list{display:flex;flex-direction:column;gap:8px}
+.rev-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:1rem 1.2rem;
+  display:flex;align-items:flex-start;gap:12px;
+  box-shadow:var(--sh);transition:box-shadow .14s;
+}
+.rev-card:hover{box-shadow:var(--sh-lg)}
+.rev-card.atrasada{border-left:3px solid var(--danger)}
+.rev-card.hoje-c{border-left:3px solid #3B82F6}
+.rev-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.rn-l{background:var(--danger-l);color:var(--danger)}
+.rn-h{background:var(--info-l);color:var(--info)}
+.rev-body{flex:1;min-width:0}
+.rev-top{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+.rev-title{font-weight:600;font-size:14.5px;color:var(--text)}
+.rev-sub{font-size:12px;color:var(--text-2);margin-top:3px}
+.rev-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.mini-tag{background:var(--surface2);color:var(--text-2);border-radius:20px;padding:2px 8px;font-size:11px;border:1px solid var(--border)}
+.rev-nota{font-size:12px;color:var(--text-2);margin-top:5px;font-style:italic;padding-left:8px;border-left:2px solid var(--border)}
+.rev-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.act-lbl{font-size:11px;color:var(--text-2);font-weight:500}
+.act-sel{padding:5px 9px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-size:12px;color:var(--text-2);font-family:'DM Sans',sans-serif;cursor:pointer}
+.act-sel:focus{outline:none;border-color:var(--accent)}
+.act-inp{width:62px;padding:5px 9px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif}
+.act-inp:focus{outline:none;border-color:var(--accent)}
+.btn-done{padding:6px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .14s;margin-left:auto}
+.btn-done:hover{background:var(--accent-t);transform:translateY(-1px)}
+.btn-done:active{transform:none}
+body.is-mobile .act-sel,body.is-mobile .act-inp{padding:8px 10px;font-size:13px}
+body.is-mobile .btn-done{padding:9px 16px;font-size:13px}
+
+/* ── FORM ───────────────────────────────── */
+.form-wrap{max-width:560px}
+body.is-mobile .form-wrap{max-width:100%}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.6rem;box-shadow:var(--sh)}
+.form-sec{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-2);margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.form-grp{margin-bottom:1rem}
+.form-lbl{display:block;font-size:12.5px;font-weight:500;color:var(--text-2);margin-bottom:6px}
+.form-inp,.form-ta{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;transition:border-color .14s}
+.form-inp:focus,.form-ta:focus{outline:none;border-color:var(--accent)}
+.form-ta{resize:vertical;min-height:78px;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+body.is-mobile .form-row{grid-template-columns:1fr}
+
+.freq-grp{display:flex;gap:7px}
+.freq-btn{flex:1;padding:9px 6px;text-align:center;border:1px solid var(--border);border-radius:var(--r);background:none;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-2);font-weight:400;transition:all .14s}
+.freq-btn:hover{border-color:var(--border-md)}
+.freq-btn.f-a{background:var(--warn-l);color:var(--warn);border-color:#D97706;font-weight:600}
+.freq-btn.f-m{background:var(--info-l);color:var(--info);border-color:#3B82F6;font-weight:600}
+.freq-btn.f-b{background:var(--accent-l);color:var(--accent-t);border-color:var(--accent);font-weight:600}
+
+.area-sel-grp{display:flex;flex-wrap:wrap;gap:6px}
+.asb{padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--text-2);transition:all .13s}
+.asb-go.on{background:var(--go);color:#fff;border-color:var(--go)}
+.asb-ped.on{background:var(--ped);color:#fff;border-color:var(--ped)}
+.asb-cir.on{background:var(--cir);color:#fff;border-color:var(--cir)}
+.asb-cm.on{background:var(--cm);color:#fff;border-color:var(--cm)}
+.asb-prev.on{background:var(--prev);color:#fff;border-color:var(--prev)}
+
+.tags-box{display:flex;flex-wrap:wrap;gap:5px;padding:7px 10px;min-height:42px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);cursor:text;align-items:center;transition:border-color .14s}
+.tags-box:focus-within{border-color:var(--accent)}
+.tag-chip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-l);color:var(--accent-t);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500}
+.tag-chip button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0}
+.tag-inp{background:none;border:none;outline:none;font-size:13px;color:var(--text);min-width:80px;padding:2px 4px;font-family:'DM Sans',sans-serif}
+.tag-sugs{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.tag-sug-btn{padding:3px 11px;border-radius:20px;font-size:11px;border:1px solid var(--border);background:none;cursor:pointer;color:var(--text-2);font-family:'DM Sans',sans-serif;transition:all .1s}
+.tag-sug-btn:hover{background:var(--accent-l);color:var(--accent-t);border-color:var(--accent)}
+
+.btn-submit{width:100%;padding:12px;margin-top:.5rem;background:var(--text);color:var(--surface);border:none;border-radius:var(--r);font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:.01em;transition:all .14s}
+.btn-submit:hover{background:#000;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.18)}
+.btn-submit:active{transform:none;box-shadow:none}
+.form-msg{margin-top:10px;font-size:12.5px;text-align:center;min-height:18px}
+.form-msg.ok{color:var(--accent)} .form-msg.err{color:var(--danger)}
+
+/* ── CALENDAR ───────────────────────────── */
+.cal-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--sh)}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.cal-nav-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 14px;cursor:pointer;font-size:15px;color:var(--text-2);transition:all .12s}
+.cal-nav-btn:hover{background:var(--surface2)}
+.cal-month{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--text)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{text-align:center;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);padding:4px 0 8px}
+.cal-cell{min-height:54px;padding:5px;border-radius:var(--r);border:1px solid transparent;transition:all .12s;cursor:default}
+.cal-cell.has-rev{border-color:var(--border);cursor:pointer;background:var(--bg)}
+.cal-cell.has-rev:hover{border-color:var(--border-md);background:var(--surface2)}
+.cal-cell.is-today{border-color:var(--border-md)!important;background:var(--accent-l)!important}
+.cal-cell.empty{opacity:0}
+.cal-dnum{font-size:11px;font-weight:500;color:var(--text-2);margin-bottom:3px;line-height:1}
+.cal-cell.is-today .cal-dnum{background:var(--text);color:var(--surface);width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-size:10px}
+.cal-dot{width:5px;height:5px;border-radius:50%;margin:1px}
+.dots-wrap{display:flex;flex-wrap:wrap;gap:1px}
+.cal-xtra{font-size:9px;color:var(--text-2)}
+.cd-go{background:var(--go)} .cd-ped{background:var(--ped)} .cd-cir{background:var(--cir)}
+.cd-cm{background:var(--cm)} .cd-prev{background:var(--prev)} .cd-none{background:#999} .cd-late{background:var(--danger)}
+.cal-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── ALL SUBJECTS ───────────────────────── */
+.sub-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.2rem;margin-bottom:8px;box-shadow:var(--sh);transition:box-shadow .14s}
+.sub-card:hover{box-shadow:var(--sh-lg)}
+.sub-top{display:flex;align-items:flex-start;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.sub-name{font-weight:600;font-size:14.5px;color:var(--text)}
+.sub-meta{font-size:12px;color:var(--text-2);margin-top:3px}
+.prog-wrap{margin-top:10px}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-2);margin-bottom:4px}
+.prog-bg{height:5px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:5px;transition:width .4s}
+.pill-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.rpill{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.rp-done{background:var(--accent-l);color:var(--accent-t)} .rp-late{background:var(--danger-l);color:var(--danger)}
+.rp-pend{background:var(--surface2);color:var(--text-2)} .rp-today{background:var(--info-l);color:var(--info)}
+.del-btn{padding:4px 10px;border:1px solid var(--border);border-radius:8px;background:none;cursor:pointer;font-size:11px;color:var(--text-2);font-family:'DM Sans',sans-serif;transition:all .12s}
+.del-btn:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-l)}
+
+/* ── MODAL ──────────────────────────────── */
+.modal-ov{position:fixed;inset:0;background:rgba(12,10,7,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+body.is-mobile .modal-ov{align-items:flex-end;padding:0}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;box-shadow:var(--sh-lg);animation:mIn .18s ease}
+body.is-mobile .modal-box{max-width:100%;border-radius:var(--r-lg) var(--r-lg) 0 0;max-height:70dvh;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
+@keyframes mIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.modal-handle{width:36px;height:4px;background:var(--border-md);border-radius:2px;margin:0 auto 1rem;display:none}
+body.is-mobile .modal-handle{display:block}
+.modal-head{font-family:'DM Serif Display',serif;font-size:1.05rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-2);line-height:1;padding:0 4px}
+.modal-close:hover{color:var(--text)}
+.modal-row{padding:9px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.modal-row:last-child{border-bottom:none}
+.modal-rnum{width:24px;height:24px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text-2);flex-shrink:0}
+.modal-rbody{flex:1}
+.modal-rname{font-weight:500;font-size:13px}
+.modal-rmeta{font-size:11px;color:var(--text-2);margin-top:2px;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+
+/* ── EMPTY & TOAST ──────────────────────── */
+.empty{text-align:center;padding:3rem 1rem;color:var(--text-2)}
+.empty-ico{font-size:2rem;margin-bottom:.75rem;opacity:.35}
+.empty-txt{font-size:14px;font-weight:500} .empty-sub{font-size:12px;margin-top:4px;color:var(--text-3)}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--text);color:var(--surface);padding:10px 18px;border-radius:var(--r);font-size:13px;font-weight:500;box-shadow:var(--sh-lg);opacity:0;transform:translateY(8px);transition:all .22s;pointer-events:none;z-index:500}
+body.is-mobile .toast{bottom:calc(74px + env(safe-area-inset-bottom) + 12px);left:1rem;right:1rem;text-align:center}
+.toast.show{opacity:1;transform:none}
+
+/* ── ALGO BOX ───────────────────────────── */
+.algo-box{margin-top:1.5rem;padding:1rem 1.2rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
+.algo-title{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-2);margin-bottom:9px}
+.algo-txt{font-size:12.5px;color:var(--text-2);line-height:1.8}
+
+/* ── HISTÓRICO ──────────────────────────── */
+.hist-area-block{margin-bottom:2rem}
+.hist-area-header{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--r);
+  margin-bottom:10px;cursor:pointer;user-select:none;
+  transition:filter .13s;
+}
+.hist-area-header:hover{filter:brightness(.96)}
+.hist-area-header.go-h{background:var(--go-l);border-left:4px solid var(--go)}
+.hist-area-header.ped-h{background:var(--ped-l);border-left:4px solid var(--ped)}
+.hist-area-header.cir-h{background:var(--cir-l);border-left:4px solid var(--cir)}
+.hist-area-header.cm-h{background:var(--cm-l);border-left:4px solid var(--cm)}
+.hist-area-header.prev-h{background:var(--prev-l);border-left:4px solid var(--prev)}
+.hist-area-name{font-family:'DM Serif Display',serif;font-size:1.05rem;letter-spacing:-.01em;flex:1}
+.hist-area-name.go-t{color:var(--go)}
+.hist-area-name.ped-t{color:var(--ped)}
+.hist-area-name.cir-t{color:var(--cir)}
+.hist-area-name.cm-t{color:var(--cm)}
+.hist-area-name.prev-t{color:var(--prev)}
+.hist-area-count{font-size:11px;font-weight:600;color:var(--text-3);background:rgba(255,255,255,.6);padding:2px 8px;border-radius:20px}
+.hist-area-chevron{font-size:12px;color:var(--text-3);transition:transform .2s}
+.hist-area-chevron.open{transform:rotate(90deg)}
+
+.hist-subject-list{display:flex;flex-direction:column;gap:6px;padding-left:4px}
+.hist-subj-row{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:var(--sh);transition:box-shadow .14s;
+}
+.hist-subj-row:hover{box-shadow:var(--sh-lg)}
+.hist-subj-trigger{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;cursor:pointer;width:100%;
+  border:none;background:none;font-family:'DM Sans',sans-serif;
+  text-align:left;transition:background .12s;
+}
+.hist-subj-trigger:hover{background:var(--surface2)}
+.hist-subj-name{font-weight:600;font-size:13.5px;color:var(--text);flex:1}
+.hist-subj-stats{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.hist-stat-pill{font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:500}
+.hsp-done{background:var(--accent-l);color:var(--accent-t)}
+.hsp-pend{background:var(--surface2);color:var(--text-2)}
+.hist-chevron{font-size:11px;color:var(--text-3);transition:transform .2s;flex-shrink:0}
+.hist-chevron.open{transform:rotate(180deg)}
+
+/* Timeline */
+.hist-timeline{
+  padding:0 14px 16px 14px;
+  display:none;
+  border-top:1px solid var(--border);
+}
+.hist-timeline.open{display:block}
+.tl-wrap{position:relative;padding:18px 0 4px 36px}
+.tl-line{
+  position:absolute;left:10px;top:0;bottom:0;
+  width:2px;background:var(--border-md);border-radius:2px;
+}
+.tl-event{position:relative;margin-bottom:20px}
+.tl-event:last-child{margin-bottom:0}
+.tl-dot{
+  position:absolute;left:-30px;top:3px;
+  width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--surface);
+  flex-shrink:0;
+}
+.tl-dot.done{background:var(--accent)}
+.tl-dot.future{background:var(--surface);border-color:var(--border-md)}
+.tl-dot.today-dot{background:var(--info);box-shadow:0 0 0 3px var(--info-l)}
+.tl-dot.late-dot{background:var(--danger)}
+.tl-dot.first-dot{background:var(--text)}
+.tl-content{}
+.tl-label{font-size:12.5px;font-weight:600;color:var(--text)}
+.tl-date{font-size:11px;color:var(--text-2);margin-top:1px}
+.tl-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.tl-tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.tl-done-tag{background:var(--accent-l);color:var(--accent-t)}
+.tl-late-tag{background:var(--danger-l);color:var(--danger)}
+.tl-future-tag{background:var(--surface2);color:var(--text-2)}
+.tl-today-tag{background:var(--info-l);color:var(--info)}
+.tl-dif{font-size:10px;padding:2px 6px;border-radius:20px;background:var(--warn-l);color:var(--warn);font-weight:500}
+.tl-acc{font-size:10px;padding:2px 6px;border-radius:20px;background:var(--surface2);color:var(--text-2);font-weight:500}
+
+/* Progress mini bar inside timeline header */
+.hist-prog-bar{height:3px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:6px}
+.hist-prog-fill{height:100%;border-radius:3px;transition:width .4s}
+.hist-prog-fill.go-f{background:var(--go)}
+.hist-prog-fill.ped-f{background:var(--ped)}
+.hist-prog-fill.cir-f{background:var(--cir)}
+.hist-prog-fill.cm-f{background:var(--cm)}
+.hist-prog-fill.prev-f{background:var(--prev)}
+
+/* Empty state for area */
+.hist-empty{padding:1rem 14px;font-size:12.5px;color:var(--text-3);font-style:italic}
+
+/* ── DASHBOARD ──────────────────────────── */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
+.dash-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.25rem;box-shadow:var(--sh)}
+.dash-kpi-val{font-size:2.2rem;font-weight:600;letter-spacing:-0.04em;line-height:1}
+.dash-kpi-lbl{font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;margin-top:5px;font-weight:500}
+.dash-kpi-sub{font-size:11px;color:var(--text-3);margin-top:3px}
+.kpi-green .dash-kpi-val{color:var(--accent)}
+.kpi-red .dash-kpi-val{color:var(--danger)}
+.kpi-blue .dash-kpi-val{color:var(--info)}
+.kpi-warn .dash-kpi-val{color:var(--warn)}
+
+.dash-section{margin-bottom:2rem}
+.dash-section-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--text);margin-bottom:1rem;letter-spacing:-.01em}
+
+/* Retention curve (SVG chart) */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--sh);overflow:hidden}
+.chart-title{font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem}
+
+/* Area breakdown bars */
+.area-breakdown{display:flex;flex-direction:column;gap:10px}
+.ab-row{display:grid;grid-template-columns:120px 1fr 48px;gap:10px;align-items:center}
+body.is-mobile .ab-row{grid-template-columns:90px 1fr 36px}
+.ab-lbl{font-size:12.5px;font-weight:500;color:var(--text-2)}
+.ab-bar-bg{height:10px;background:var(--surface2);border-radius:20px;overflow:hidden}
+.ab-bar-fill{height:100%;border-radius:20px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.ab-pct{font-size:12px;font-weight:600;color:var(--text-2);text-align:right}
+
+/* Difficulty distribution donut — pure CSS */
+.donut-wrap{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.donut-svg{flex-shrink:0}
+.donut-legend{display:flex;flex-direction:column;gap:7px}
+.donut-leg-row{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-2)}
+.donut-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Weekly activity heatmap */
+.heatmap-wrap{display:flex;flex-direction:column;gap:4px}
+.heatmap-row{display:flex;gap:3px;align-items:center}
+.heatmap-lbl{font-size:10px;color:var(--text-3);width:28px;flex-shrink:0;text-align:right}
+.hm-cell{width:14px;height:14px;border-radius:3px;flex-shrink:0;background:var(--surface2)}
+.hm-1{background:#c6e6d0} .hm-2{background:#85cba1} .hm-3{background:#3da06a} .hm-4{background:#1F5C35}
+.heatmap-months{display:flex;gap:3px;margin-left:32px;margin-bottom:2px}
+.hm-month-lbl{font-size:9px;color:var(--text-3)}
+
+/* Top atrasados table */
+.atrasados-list{display:flex;flex-direction:column;gap:6px}
+.atr-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh)}
+.atr-days{font-size:1.1rem;font-weight:700;color:var(--danger);min-width:36px}
+.atr-info{flex:1;min-width:0}
+.atr-name{font-weight:500;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atr-meta{font-size:11px;color:var(--text-3);margin-top:1px}
+
+/* EF ranking */
+.ef-list{display:flex;flex-direction:column;gap:5px}
+.ef-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.ef-rank{font-size:10px;font-weight:700;color:var(--text-3);min-width:18px}
+.ef-name{flex:1;font-size:12.5px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ef-val{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px}
+.ef-hi{background:var(--accent-l);color:var(--accent-t)}
+.ef-lo{background:var(--danger-l);color:var(--danger)}
+.ef-mid{background:var(--warn-l);color:var(--warn)}
+
+/* ── FLASHCARDS ─────────────────────────── */
+.fc-summary-bar{
+  display:flex;align-items:center;gap:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:.9rem 1.25rem;
+  margin-bottom:1.75rem;box-shadow:var(--sh);flex-wrap:wrap;gap:0;
+}
+.fc-sum-stat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 16px;border-right:1px solid var(--border)}
+.fc-sum-stat:last-child{border-right:none}
+.fc-sum-val{font-size:1.6rem;font-weight:600;letter-spacing:-0.03em;line-height:1}
+.fc-sum-lbl{font-size:10px;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;font-weight:500;white-space:nowrap}
+.fc-sum-val.done-val{color:var(--accent)}
+.fc-sum-val.pending-val{color:var(--warn)}
+
+.fc-area-section{margin-bottom:2rem}
+.fc-area-header{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--r);
+  margin-bottom:10px;cursor:pointer;user-select:none;transition:filter .13s;
+}
+.fc-area-header:hover{filter:brightness(.96)}
+.fc-area-header.go-h{background:var(--go-l);border-left:4px solid var(--go)}
+.fc-area-header.ped-h{background:var(--ped-l);border-left:4px solid var(--ped)}
+.fc-area-header.cir-h{background:var(--cir-l);border-left:4px solid var(--cir)}
+.fc-area-header.cm-h{background:var(--cm-l);border-left:4px solid var(--cm)}
+.fc-area-header.prev-h{background:var(--prev-l);border-left:4px solid var(--prev)}
+.fc-area-title{font-family:'DM Serif Display',serif;font-size:1.05rem;letter-spacing:-.01em;flex:1}
+.fc-area-title.go-t{color:var(--go)} .fc-area-title.ped-t{color:var(--ped)}
+.fc-area-title.cir-t{color:var(--cir)} .fc-area-title.cm-t{color:var(--cm)} .fc-area-title.prev-t{color:var(--prev)}
+.fc-area-prog{font-size:11px;font-weight:600;background:rgba(255,255,255,.65);color:var(--text-2);padding:2px 9px;border-radius:20px;flex-shrink:0}
+.fc-chevron{font-size:12px;color:var(--text-3);transition:transform .2s;flex-shrink:0}
+.fc-chevron.open{transform:rotate(90deg)}
+.fc-area-bar-wrap{flex:1;min-width:60px}
+.fc-area-bar-bg{height:3px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden;margin-top:0}
+.fc-area-bar-fill{height:100%;border-radius:3px;transition:width .5s}
+.fc-bar-go{background:var(--go)} .fc-bar-ped{background:var(--ped)}
+.fc-bar-cir{background:var(--cir)} .fc-bar-cm{background:var(--cm)} .fc-bar-prev{background:var(--prev)}
+
+.fc-list{display:flex;flex-direction:column;gap:5px;padding-left:4px}
+.fc-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:11px 14px;
+  box-shadow:var(--sh);transition:all .14s;cursor:pointer;
+}
+.fc-item:hover{background:var(--surface2)}
+.fc-item.fc-done .fc-name{text-decoration:line-through;color:var(--text-3)}
+.fc-item.fc-done{opacity:.65}
+.fc-check{
+  width:20px;height:20px;border-radius:6px;flex-shrink:0;
+  border:2px solid var(--border-md);background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.fc-item:hover .fc-check:not(.checked){border-color:var(--accent)}
+.fc-check.checked{background:var(--accent);border-color:var(--accent)}
+.fc-check.checked::after{
+  content:'';display:block;width:5px;height:9px;
+  border-right:2px solid #fff;border-bottom:2px solid #fff;
+  transform:rotate(45deg) translate(-1px,-1px);
+}
+.fc-info{flex:1;min-width:0}
+.fc-name{font-weight:500;font-size:13.5px;color:var(--text);transition:color .14s}
+.fc-date{font-size:11px;color:var(--text-3);margin-top:2px}
+.fc-badge{font-size:10.5px;padding:2px 9px;border-radius:20px;font-weight:600;flex-shrink:0}
+.fc-badge-done{background:var(--accent-l);color:var(--accent-t)}
+.fc-badge-pend{background:var(--warn-l);color:var(--warn)}
+
+/* ── FIREBASE SETUP SCREEN ──────────────────── */
+#setup-screen{position:fixed;inset:0;z-index:9999;background:#F5F2ED;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.setup-card{background:#FAFAF7;border:1px solid rgba(50,40,20,0.13);border-radius:16px;padding:2rem;width:100%;max-width:500px;box-shadow:0 2px 8px rgba(0,0,0,0.08),0 14px 40px rgba(0,0,0,0.08);max-height:95dvh;overflow-y:auto}
+.setup-logo{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#0C0A07;letter-spacing:-0.02em;margin-bottom:.25rem}
+.setup-logo em{font-style:italic;color:#1F5C35}
+.setup-sub{font-size:11px;color:#6A5E52;text-transform:uppercase;letter-spacing:.08em;font-weight:500;margin-bottom:1.5rem}
+.setup-step{display:flex;gap:12px;margin-bottom:1.1rem;align-items:flex-start}
+.setup-num{width:22px;height:22px;border-radius:50%;background:#1F5C35;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.setup-step-body{flex:1}
+.setup-step-title{font-weight:600;font-size:13px;color:#0C0A07;margin-bottom:2px}
+.setup-step-desc{font-size:11.5px;color:#3A3228;line-height:1.6}
+.setup-step-desc a{color:#1F5C35;font-weight:500;text-decoration:none}
+.setup-step-desc a:hover{text-decoration:underline}
+.setup-code{font-size:10px;background:#EDE9E2;padding:4px 8px;border-radius:6px;display:block;margin-top:4px;line-height:2;font-family:monospace;color:#163D23;white-space:pre}
+.setup-divider{border:none;border-top:1px solid rgba(50,40,20,0.12);margin:1.25rem 0}
+.setup-fields-title{font-size:12.5px;font-weight:600;color:#0C0A07;margin-bottom:8px}
+.setup-inp{width:100%;padding:9px 12px;border:1px solid rgba(50,40,20,0.2);border-radius:10px;background:#F5F2ED;color:#0C0A07;font-size:13px;font-family:'DM Sans',sans-serif;margin-top:5px;transition:border-color .15s;display:block}
+.setup-inp:focus{outline:none;border-color:#1F5C35}
+.setup-btn{width:100%;padding:11px;background:#0C0A07;color:#FAFAF7;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:1rem;transition:all .15s;letter-spacing:.01em}
+.setup-btn:hover:not(:disabled){background:#000;transform:translateY(-1px)}
+.setup-btn:disabled{opacity:.55;cursor:not-allowed}
+.setup-err{font-size:12px;color:#8B1A1A;margin-top:8px;text-align:center;min-height:16px}
+/* ── SYNC INDICATOR ────────────────────────── */
+#sync-indicator{position:fixed;top:12px;right:14px;z-index:1000;display:none;align-items:center;gap:5px;font-size:11px;font-weight:500;color:#6A5E52;background:rgba(250,250,247,0.92);backdrop-filter:blur(4px);padding:4px 10px;border-radius:20px;border:1px solid rgba(50,40,20,0.13);pointer-events:none}
+body.is-mobile #sync-indicator{top:10px;right:10px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#10B981;flex-shrink:0;transition:background .3s}
+.sync-dot.syncing{background:#F59E0B;animation:sdpulse .8s infinite}
+.sync-dot.error{background:#EF4444}
+@keyframes sdpulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+
+<!-- SYNC INDICATOR -->
+<div id="sync-indicator">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span id="sync-label">Sincronizado</span>
+</div>
+
+<!-- FIREBASE SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <div class="setup-logo">Revisa<em>-ê</em></div>
+    <div class="setup-sub">Configuração inicial — Firebase</div>
+    <div class="setup-step">
+      <div class="setup-num">1</div>
+      <div class="setup-step-body">
+        <div class="setup-step-title">Crie um projeto no Firebase</div>
+        <div class="setup-step-desc">Acesse <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Adicionar projeto" → nome: <strong>revisae</strong> → desative o Google Analytics.</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">2</div>
+      <div class="setup-step-body">
+        <div class="setup-step-title">Ative o Firestore Database</div>
+        <div class="setup-step-desc">Menu lateral → <strong>Firestore Database → Criar banco de dados</strong> → Modo produção → região <strong>southamerica-east1</strong> (São Paulo).</div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">3</div>
+      <div class="setup-step-body">
+        <div class="setup-step-title">Configure as regras de acesso</div>
+        <div class="setup-step-desc">Firestore → aba <strong>Regras</strong> → substitua tudo por isso e clique em <strong>Publicar</strong>:<span class="setup-code">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</span></div>
+      </div>
+    </div>
+    <div class="setup-step">
+      <div class="setup-num">4</div>
+      <div class="setup-step-body">
+        <div class="setup-step-title">Copie as credenciais do app</div>
+        <div class="setup-step-desc">No projeto → ⚙️ <strong>Configurações</strong> → "Seus aplicativos" → clique em <strong>&lt;/&gt;</strong> → registre um app Web → copie os valores do objeto <strong>firebaseConfig</strong>.</div>
+      </div>
+    </div>
+    <hr class="setup-divider"/>
+    <div class="setup-fields-title">Cole os valores do firebaseConfig:</div>
+    <input class="setup-inp" id="cfg-apiKey"            placeholder="apiKey"/>
+    <input class="setup-inp" id="cfg-authDomain"        placeholder="authDomain"/>
+    <input class="setup-inp" id="cfg-projectId"         placeholder="projectId"/>
+    <input class="setup-inp" id="cfg-storageBucket"     placeholder="storageBucket"/>
+    <input class="setup-inp" id="cfg-messagingSenderId" placeholder="messagingSenderId"/>
+    <input class="setup-inp" id="cfg-appId"             placeholder="appId"/>
+    <button class="setup-btn" id="setup-btn" onclick="window._setupConnect()">Conectar ao Firebase →</button>
+    <div class="setup-err" id="setup-err"></div>
+  </div>
+</div>
+
+<!-- MOBILE TOP BAR -->
+<div class="mob-topbar">
+  <div class="mob-logo">Revisa<em>-ê</em></div>
+  <span class="mob-atrasadas-badge" id="mob-badge"></span>
+</div>
+
+<div class="shell">
+
+<!-- DESKTOP SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">Revisa<em>-ê</em></div>
+    <div class="logo-sub">Revisão Espaçada</div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-btn active" onclick="goTo('hoje',this)">
+      <span class="nav-ico">◉</span> Hoje
+      <span class="nav-pill" id="desk-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('calendario',this)">
+      <span class="nav-ico">▦</span> Calendário
+    </button>
+    <button class="nav-btn" onclick="goTo('todos',this)">
+      <span class="nav-ico">≡</span> Assuntos
+    </button>
+    <button class="nav-btn" onclick="goTo('dashboard',this)">
+      <span class="nav-ico">◈</span> Dashboard
+    </button>
+    <button class="nav-btn" onclick="goTo('flashcards',this)">
+      <span class="nav-ico">▣</span> Flashcards
+    </button>
+    <button class="nav-btn" onclick="goTo('historico',this)">
+      <span class="nav-ico">◷</span> Histórico
+    </button>
+    <button class="nav-btn" onclick="goTo('novo',this)">
+      <span class="nav-ico">＋</span> Novo estudo
+    </button>
+  </nav>
+  <div class="sidebar-foot"><p>Dados salvos localmente neste navegador.</p></div>
+</aside>
+
+<main class="main">
+
+  <!-- HOJE -->
+  <div class="page active" id="page-hoje">
+    <div class="page-header">
+      <div class="page-title">Revisões de hoje</div>
+      <div class="page-sub" id="date-label"></div>
+    </div>
+    <div class="metrics-row" id="metrics-hoje"></div>
+    <div class="area-bar" id="area-hoje"></div>
+    <div class="rev-list" id="lista-hoje"></div>
+  </div>
+
+  <!-- CALENDÁRIO -->
+  <div class="page" id="page-calendario">
+    <div class="page-header">
+      <div class="page-title">Calendário</div>
+      <div class="page-sub">Revisões programadas mês a mês</div>
+    </div>
+    <div class="cal-wrap">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="moveMonth(-1)">←</button>
+        <span class="cal-month" id="cal-label"></span>
+        <button class="cal-nav-btn" onclick="moveMonth(1)">→</button>
+      </div>
+      <div class="cal-grid" id="cal-dows"></div>
+      <div class="cal-grid" id="cal-cells"></div>
+      <div class="cal-legend" id="cal-legend"></div>
+    </div>
+  </div>
+
+  <!-- TODOS -->
+  <div class="page" id="page-todos">
+    <div class="page-header">
+      <div class="page-title">Todos os assuntos</div>
+      <div class="page-sub" id="todos-sub"></div>
+    </div>
+    <div class="area-bar" id="area-todos"></div>
+    <div id="lista-todos"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page" id="page-dashboard">
+    <div class="page-header">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Visão geral do seu desempenho nos estudos</div>
+    </div>
+    <div id="dash-content"></div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="page" id="page-historico">
+    <div class="page-header">
+      <div class="page-title">Histórico</div>
+      <div class="page-sub">Acompanhe a linha do tempo de cada assunto por área</div>
+    </div>
+    <div id="hist-content"></div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div class="page" id="page-flashcards">
+    <div class="page-header">
+      <div class="page-title">Flashcards</div>
+      <div class="page-sub">Controle quais assuntos já têm cards no Anki</div>
+    </div>
+    <div id="fc-content"></div>
+  </div>
+
+  <!-- NOVO ESTUDO -->
+  <div class="page" id="page-novo">
+    <div class="page-header">
+      <div class="page-title">Novo estudo</div>
+      <div class="page-sub">As revisões são calculadas automaticamente</div>
+    </div>
+    <div class="form-wrap">
+      <div class="form-card">
+        <div class="form-sec">Informações do estudo</div>
+        <div class="form-grp">
+          <label class="form-lbl">Assunto *</label>
+          <input class="form-inp" id="inp-assunto" type="text" placeholder="Ex: SCA, pneumonia, eclâmpsia..." autocomplete="off"/>
+        </div>
+        <div class="form-row">
+          <div class="form-grp">
+            <label class="form-lbl">Data do primeiro estudo *</label>
+            <input class="form-inp" id="inp-data" type="date"/>
+          </div>
+          <div class="form-grp">
+            <label class="form-lbl">Frequência nas provas *</label>
+            <div class="freq-grp">
+              <button class="freq-btn" onclick="selFreq(this,'Alta')">↑ Alta</button>
+              <button class="freq-btn" onclick="selFreq(this,'Média')">→ Méd</button>
+              <button class="freq-btn" onclick="selFreq(this,'Baixa')">↓ Baixa</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-grp">
+          <label class="form-lbl">Grande área *</label>
+          <div class="area-sel-grp">
+            <button class="asb asb-go" onclick="selArea(this,'GO')">GO</button>
+            <button class="asb asb-ped" onclick="selArea(this,'Pediatria')">Pediatria</button>
+            <button class="asb asb-cir" onclick="selArea(this,'Cirurgia')">Cirurgia Geral</button>
+            <button class="asb asb-cm" onclick="selArea(this,'Clínica Médica')">Clínica Médica</button>
+            <button class="asb asb-prev" onclick="selArea(this,'Preventiva')">Preventiva</button>
+          </div>
+        </div>
+        <div class="form-grp">
+          <label class="form-lbl">Tags livres</label>
+          <div class="tags-box" id="tags-box" onclick="document.getElementById('tag-inp').focus()">
+            <input class="tag-inp" id="tag-inp" placeholder="Cardiologia, urgência... (Enter)" onkeydown="handleTagKey(event)" oninput="renderSugs()"/>
+          </div>
+          <div class="tag-sugs" id="tag-sugs"></div>
+        </div>
+        <div class="form-grp">
+          <label class="form-lbl">Anotação rápida</label>
+          <textarea class="form-ta" id="inp-nota" placeholder="Pontos-chave, fonte, dúvidas..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="salvar()">Registrar estudo e calcular revisões</button>
+        <div class="form-msg" id="form-msg"></div>
+      </div>
+      <div class="algo-box">
+        <div class="algo-title">Como o algoritmo funciona</div>
+        <div class="algo-txt">
+          <b>Fixas:</b> dia seguinte, +3 dias, +7 dias.<br>
+          <b>SM-2 adaptativo (rev. 4 em diante):</b> cada revisão concluída atualiza o <em>Easiness Factor</em> do assunto. Dificuldade alta reduz o EF e encurta os intervalos; facilidade alta amplia. O intervalo seguinte = intervalo anterior × EF.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-bottom-nav">
+  <button class="mob-nav-btn active" onclick="goTo('hoje',this)">
+    <span class="mob-nav-ico">◉</span>
+    <span class="mob-dot" id="mob-dot"></span>
+    Hoje
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('calendario',this)">
+    <span class="mob-nav-ico">▦</span>
+    Agenda
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('todos',this)">
+    <span class="mob-nav-ico">≡</span>
+    Assuntos
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('dashboard',this)">
+    <span class="mob-nav-ico">◈</span>
+    Dashboard
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('flashcards',this)">
+    <span class="mob-nav-ico">▣</span>
+    Flashcards
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('historico',this)">
+    <span class="mob-nav-ico">◷</span>
+    Histórico
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('novo',this)">
+    <span class="mob-nav-ico">＋</span>
+    Novo
+  </button>
+</nav>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" style="display:none" onclick="closeModalOv(event)">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span id="modal-ttl"></span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── FIREBASE HELPERS ─────────────────────────
+let _db = null, _unsub = null, _isSaving = false;
+
+function _syncUI(status) {
+  const ind = document.getElementById('sync-indicator');
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  if(!ind) return;
+  ind.style.display = 'flex';
+  dot.className = 'sync-dot';
+  if     (status==='ok')      lbl.textContent = 'Sincronizado';
+  else if(status==='syncing') { dot.classList.add('syncing'); lbl.textContent = 'Salvando…'; }
+  else if(status==='loading') { dot.classList.add('syncing'); lbl.textContent = 'Carregando…'; }
+  else if(status==='error')   { dot.classList.add('error');   lbl.textContent = 'Erro de conexão'; }
+  else if(status==='offline') { dot.classList.add('error');   lbl.textContent = 'Offline'; }
+}
+
+async function _fbSaveNow() {
+  if(!_db) return;
+  _isSaving = true;
+  _syncUI('syncing');
+  try {
+    await setDoc(doc(_db,'revisae','dados'), {
+      estudos:   JSON.stringify(estudos),
+      allTags:   JSON.stringify(allTags),
+      updatedAt: Date.now()
+    });
+    _syncUI('ok');
+  } catch(err) {
+    console.error('Save error:', err);
+    _syncUI('error');
+  } finally { setTimeout(() => { _isSaving = false; }, 500); }
+}
+
+function _subscribe() {
+  if(_unsub) _unsub();
+  _unsub = onSnapshot(doc(_db,'revisae','dados'), snap => {
+    if(!snap.exists() || _isSaving) return;
+    try {
+      const d = snap.data();
+      const ne = JSON.parse(d.estudos || '[]');
+      const nt = JSON.parse(d.allTags  || '[]');
+      if(JSON.stringify(ne) === JSON.stringify(estudos)) return;
+      estudos = ne; allTags = nt;
+      estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
+      localStorage.setItem(KEY, JSON.stringify(estudos));
+      localStorage.setItem(TKEY, JSON.stringify(allTags));
+      _syncUI('ok');
+      const pg = document.querySelector('.page.active');
+      if(pg) {
+        const pid = pg.id.replace('page-','');
+        if(pid==='hoje') renderHoje();
+        else if(pid==='todos') renderTodos();
+        else if(pid==='dashboard') renderDashboard();
+        else if(pid==='flashcards') renderFlashcards();
+        else if(pid==='historico') renderHistorico();
+        else if(pid==='calendario') renderCal();
+        updateBadges();
+      }
+    } catch(e) { console.error('Realtime parse error:', e); }
+  }, err => { _syncUI('error'); console.error('Snapshot err:', err); });
+}
+
+// ── CONFIG ────────────────────────────────────
+const _CFG = 'revisae-firebase-cfg';
+function _getCfg()   { try { return JSON.parse(localStorage.getItem(_CFG)); } catch(e) { return null; } }
+function _saveCfg(c) { localStorage.setItem(_CFG, JSON.stringify(c)); }
+
+// ── SETUP CONNECT ─────────────────────────────
+window._setupConnect = async function() {
+  const fields = ['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId'];
+  const cfg = {};
+  for(const f of fields) {
+    const v = document.getElementById('cfg-'+f)?.value.trim();
+    if(!v) { document.getElementById('setup-err').textContent='Preencha o campo: '+f; return; }
+    cfg[f] = v;
+  }
+  const btn = document.getElementById('setup-btn');
+  btn.disabled = true; btn.textContent = 'Conectando…';
+  document.getElementById('setup-err').textContent = '';
+  try {
+    const app = initializeApp(cfg, 'cfg-test');
+    const testDb = getFirestore(app);
+    await getDoc(doc(testDb,'revisae','dados')); // connectivity test
+    _saveCfg(cfg);
+    document.getElementById('setup-screen').style.display = 'none';
+    await _boot(cfg);
+  } catch(err) {
+    btn.disabled = false; btn.textContent = 'Conectar ao Firebase →';
+    document.getElementById('setup-err').textContent = 'Credenciais inválidas ou regras do Firestore bloqueando acesso.';
+    console.error(err);
+  }
+};
+
+// ── START WITH CONFIG ─────────────────────────
+async function _boot(cfg) {
+  const app = initializeApp(cfg);
+  _db = getFirestore(app);
+  window._fbSave = _fbSaveNow;
+  _syncUI('loading');
+  try {
+    const snap = await getDoc(doc(_db,'revisae','dados'));
+    if(snap.exists()) {
+      const d = snap.data();
+      estudos = JSON.parse(d.estudos || '[]');
+      allTags = JSON.parse(d.allTags  || '[]');
+      estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
+      localStorage.setItem(KEY, JSON.stringify(estudos));
+      localStorage.setItem(TKEY, JSON.stringify(allTags));
+      _syncUI('ok');
+    } else {
+      // First-time: upload Notion data
+      const NOTION_DATA = [{"id":2001,"assunto":"Dist. respiratórios neonatais","dataPrimeiro":"2026-02-09","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-09","1":"2026-03-05"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2002,"assunto":"Alojamento conjunto/triagem neo","dataPrimeiro":"2026-02-27","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-27","1":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2003,"assunto":"Sala de parto","dataPrimeiro":"2026-03-01","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2004,"assunto":"Doenças infecciosas neonatais","dataPrimeiro":"2026-02-09","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-09","1":"2026-03-07"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2005,"assunto":"Doenças hematológicas neonatais","dataPrimeiro":"2026-02-27","nota":"","freq":"Média","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-27","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2006,"assunto":"Sd. coronariana","dataPrimeiro":"2026-03-03","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2007,"assunto":"Arritmias, síncope e PCR","dataPrimeiro":"2026-03-03","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-03","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2008,"assunto":"Sd. metabólica e dislipidemia","dataPrimeiro":"2026-03-02","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-08","2":"2026-03-11"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2009,"assunto":"Valvopatias","dataPrimeiro":"2026-02-18","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-02-18","1":"2026-03-11"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2010,"assunto":"Cardiomiopatias","dataPrimeiro":"2026-02-27","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2011,"assunto":"Trauma abdominal","dataPrimeiro":"2026-02-15","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-02-15","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2012,"assunto":"TCE","dataPrimeiro":"2026-03-02","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2013,"assunto":"Trauma torácico","dataPrimeiro":"2026-02-17","nota":"","freq":"Média","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-02-17","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2014,"assunto":"Pré-natal","dataPrimeiro":"2026-03-05","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-05","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2015,"assunto":"Assistência ao parto","dataPrimeiro":"2026-03-01","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-05","2":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2016,"assunto":"Diabetes","dataPrimeiro":"2026-03-05","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-05","1":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2017,"assunto":"Ciclo menstrual","dataPrimeiro":"2026-03-09","nota":"","freq":"Média","area":"GO","tags":[],"revisoes":{"0":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2018,"assunto":"Estática fetal e mecanismos de parto","dataPrimeiro":"2026-03-02","nota":"","freq":"Média","area":"GO","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2019,"assunto":"Atenção primária à saúde","dataPrimeiro":"2026-02-24","nota":"","freq":"Alta","area":"Preventiva","tags":[],"revisoes":{"0":"2026-02-24","1":"2026-03-05","2":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2020,"assunto":"Níveis de prevenção","dataPrimeiro":"2026-03-01","nota":"","freq":"Média","area":"Preventiva","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-08"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2021,"assunto":"Aspectos históricos e evolução do SUS","dataPrimeiro":"2026-02-02","nota":"","freq":"Baixa","area":"Preventiva","tags":[],"revisoes":{"0":"2026-02-02","1":"2026-03-04","2":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2022,"assunto":"Distúrbios metabólicos neonatais","dataPrimeiro":"2026-03-07","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-07"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2023,"assunto":"Puerpério","dataPrimeiro":"2026-03-08","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-08"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2024,"assunto":"HAS","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2025,"assunto":"IC","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-09"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2026,"assunto":"Crescimento e desenvolvimento","dataPrimeiro":"2026-03-08","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-08","1":"2026-03-09"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2027,"assunto":"Contracepção","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2028,"assunto":"Trauma de face e pescoço","dataPrimeiro":"2026-03-09","nota":"","freq":"Média","area":"Cirurgia","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2029,"assunto":"Paratireóides","dataPrimeiro":"2026-03-14","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2030,"assunto":"Imunizações","dataPrimeiro":"2026-03-11","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-11","1":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2031,"assunto":"Queimaduras","dataPrimeiro":"2026-03-11","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-03-11","1":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2032,"assunto":"Tireoidopatias","dataPrimeiro":"2026-03-13","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-13","1":"2026-03-14"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2033,"assunto":"Suprarrenais e outras Sd. endócrinas","dataPrimeiro":"2026-03-14","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2034,"assunto":"Amenorréias","dataPrimeiro":"2026-03-13","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false}];
+      estudos = NOTION_DATA;
+      estudos.forEach(e => { if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
+      await _fbSaveNow();
+    }
+  } catch(err) {
+    console.error('Initial load error:', err);
+    _syncUI('offline');
+    load();
+  }
+  _subscribe();
+  const t=today(); calYr=t.getFullYear(); calMo=t.getMonth();
+  document.getElementById('inp-data').value=toStr(t);
+  renderHoje(); updateBadges(); renderSugs();
+}
+
+// ── APP CODE ──────────────────────────────────
+
+// ── DEVICE DETECTION ─────────────────────────
+const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 640;
+if(isMobile) document.body.classList.add('is-mobile');
+
+// ── AREAS CONFIG ─────────────────────────────
+const AREAS = {
+  'GO':             { cls:'go',   dot:'cd-go',   ab:'ab-go',   lbl:'GO' },
+  'Pediatria':      { cls:'ped',  dot:'cd-ped',  ab:'ab-ped',  lbl:'Pediatria' },
+  'Cirurgia':       { cls:'cir',  dot:'cd-cir',  ab:'ab-cir',  lbl:'Cirurgia' },
+  'Clínica Médica': { cls:'cm',   dot:'cd-cm',   ab:'ab-cm',   lbl:'Clín. Médica' },
+  'Preventiva':     { cls:'prev', dot:'cd-prev', ab:'ab-prev', lbl:'Preventiva' },
+};
+const AKEYS = Object.keys(AREAS);
+
+function areaBadge(area) {
+  const a = AREAS[area];
+  return a ? `<span class="ab ${a.ab}">${a.lbl}</span>` : `<span class="ab ab-none">—</span>`;
+}
+
+// ── STORAGE (Firebase + localStorage fallback) ──
+const KEY='revisae-v1', TKEY='revisae-tags-v1';
+let estudos=[], allTags=[];
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(estudos));
+  localStorage.setItem(TKEY,JSON.stringify(allTags));
+  if(window._fbSave) window._fbSave();
+}
+function load(){
+  try{estudos=JSON.parse(localStorage.getItem(KEY))||[];}catch(e){estudos=[];}
+  try{allTags=JSON.parse(localStorage.getItem(TKEY))||[];}catch(e){allTags=[];}
+}
+
+// ── DATE UTILS ────────────────────────────────
+const toStr   = d => d.toISOString().split('T')[0];
+const fromStr = s => { const d=new Date(s+'T00:00:00'); d.setHours(0,0,0,0); return d; };
+const addDays = (d,n) => { const r=new Date(d); r.setDate(r.getDate()+n); return r; };
+const diffDays= (a,b) => Math.round((b-a)/86400000);
+const today   = () => { const d=new Date(); d.setHours(0,0,0,0); return d; };
+
+// ── SM-2 ALGORITHM ────────────────────────────
+// Each estudo stores: sm2 = { ef: 2.5, interval: 1, reps: 0 }
+// ef = easiness factor (2.5 default), interval in days, reps = consecutive correct
+// On review: quality 0-5 (mapped from dificuldade+acertos)
+// New interval = prev_interval * ef  (after reps ≥ 2)
+
+function qualityFromInputs(dif, acc) {
+  // Map difficulty + accuracy to SM-2 quality score 0-5
+  // 5 = perfect, 4 = correct with hesitation, 3 = correct with difficulty
+  // 2 = incorrect but easy to recall, 1 = incorrect, 0 = complete blackout
+  let q = 4; // default
+  if (dif === 'Fácil') q = acc == null ? 4 : (acc >= 90 ? 5 : acc >= 70 ? 4 : 3);
+  else if (dif === 'Médio') q = acc == null ? 3 : (acc >= 80 ? 4 : acc >= 60 ? 3 : 2);
+  else if (dif === 'Difícil') q = acc == null ? 2 : (acc >= 70 ? 3 : acc >= 50 ? 2 : 1);
+  return q;
+}
+
+function sm2Step(sm2, quality) {
+  // Returns updated {ef, interval, reps}
+  let { ef, interval, reps } = sm2;
+  if (quality >= 3) {
+    // Correct response
+    if (reps === 0) interval = 1;
+    else if (reps === 1) interval = 6;
+    else interval = Math.round(interval * ef);
+    reps += 1;
+    ef = Math.max(1.3, ef + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+  } else {
+    // Incorrect — reset reps, keep ef, short interval
+    reps = 0;
+    interval = 1;
+    ef = Math.max(1.3, ef - 0.2);
+  }
+  return { ef: Math.round(ef * 100) / 100, interval, reps };
+}
+
+function initSm2(freq) {
+  // Base EF adjusted for prevalence in exams
+  const ef = freq === 'Alta' ? 2.3 : freq === 'Baixa' ? 2.7 : 2.5;
+  return { ef, interval: 1, reps: 0 };
+}
+
+// Build revision schedule using SM-2 state log
+// estudo.sm2Log = [{date, quality, ef, interval, reps}, ...] per revision done
+// First 3 revisions are ALWAYS fixed: +1, +3, +7 days from dataPrimeiro
+// From rev 4 onwards: SM-2 drives the interval
+function buildRevs(e) {
+  const base = fromStr(e.dataPrimeiro);
+  const fixedDays = [1, 3, 7];
+  const revs = [];
+  let sm2 = e.sm2 || initSm2(e.freq);
+  const log = e.sm2Log || [];
+
+  for (let i = 0; i < 8; i++) {
+    let dataAlvo;
+    if (i < 3) {
+      // Fixed revisions
+      dataAlvo = toStr(addDays(base, fixedDays[i]));
+    } else {
+      // SM-2 driven: compute from last done revision date + interval
+      const prevLog = log[i - 1];
+      const prevDate = prevLog ? fromStr(prevLog.date) : (
+        // fallback: use previous rev's target date
+        revs[i-1] ? fromStr(revs[i-1].dataAlvo) : base
+      );
+      // Use interval from log entry for i-1 if available, else current sm2
+      const interval = prevLog ? prevLog.intervalNext : sm2.interval;
+      dataAlvo = toStr(addDays(prevDate, Math.max(1, interval)));
+    }
+    const done = (e.revisoes && e.revisoes[i]) || null;
+    revs.push({ num: i + 1, dataAlvo, done, logEntry: log[i] || null });
+  }
+  return revs;
+}
+
+function nextPending(e) { return buildRevs(e).find(r => !r.done) || null; }
+
+// Called when user marks a revision done
+function computeSm2OnMark(e, revNum) {
+  // revNum is 1-indexed
+  const i = revNum - 1;
+  if (!e.sm2) e.sm2 = initSm2(e.freq);
+  if (!e.sm2Log) e.sm2Log = [];
+
+  const quality = qualityFromInputs(e.dificuldade, e.acertos);
+  const prevSm2 = i === 0 ? initSm2(e.freq) : (e.sm2Log[i-1] ? {
+    ef: e.sm2Log[i-1].efAfter,
+    interval: e.sm2Log[i-1].intervalNext,
+    reps: e.sm2Log[i-1].repsAfter
+  } : e.sm2);
+
+  const updated = sm2Step(prevSm2, quality);
+  e.sm2Log[i] = {
+    date: toStr(today()),
+    quality,
+    efAfter: updated.ef,
+    intervalNext: updated.interval,
+    repsAfter: updated.reps
+  };
+  e.sm2 = updated;
+}
+
+// ── NAV ───────────────────────────────────────
+function goTo(page,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn,.mob-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll(`[onclick*="goTo('${page}"]`).forEach(b=>b.classList.add('active'));
+  if(page==='hoje') renderHoje();
+  if(page==='calendario') renderCal();
+  if(page==='todos') renderTodos();
+  if(page==='dashboard') renderDashboard();
+  if(page==='flashcards') renderFlashcards();
+  if(page==='historico') renderHistorico();
+  window.scrollTo(0,0);
+}
+
+// ── AREA FILTER BAR ───────────────────────────
+let filterHoje=null, filterTodos=null;
+
+function renderAreaBar(elId,active,cb){
+  const chips=AKEYS.map(k=>{
+    const a=AREAS[k];
+    return `<button class="ac ${a.cls} ${active===k?'on':''}" onclick="(${cb.toString()})('${k}')">${a.lbl}</button>`;
+  }).join('');
+  document.getElementById(elId).innerHTML=`<span class="area-lbl">Área:</span>
+    <button class="ac all ${active===null?'on':''}" onclick="(${cb.toString()})(null)">Todas</button>${chips}`;
+}
+
+// ── FREQ BADGE ────────────────────────────────
+function freqBadge(f){
+  if(f==='Alta')  return `<span class="badge b-alta">↑ Alta</span>`;
+  if(f==='Média') return `<span class="badge b-media">→ Média</span>`;
+  return `<span class="badge b-baixa">↓ Baixa</span>`;
+}
+
+// ── UPDATE BADGES ─────────────────────────────
+function updateBadges(){
+  const t=today();
+  const n=estudos.filter(e=>{ const r=nextPending(e); return r&&diffDays(fromStr(r.dataAlvo),t)>0; }).length;
+  const db=document.getElementById('desk-badge');
+  if(db){ if(n>0){db.textContent=n;db.style.display='';}else db.style.display='none'; }
+  const mb=document.getElementById('mob-badge');
+  if(mb){ if(n>0){mb.textContent=`${n} atrasada${n>1?'s':''}`;mb.style.display='';}else mb.style.display='none'; }
+  const md=document.getElementById('mob-dot');
+  if(md) md.style.display=n>0?'block':'none';
+}
+
+// ── RENDER HOJE ───────────────────────────────
+function renderHoje(){
+  const t=today();
+  const opts={weekday:'long',day:'numeric',month:'long',year:'numeric'};
+  document.getElementById('date-label').textContent=t.toLocaleDateString('pt-BR',opts).replace(/^\w/,c=>c.toUpperCase());
+
+  let atrasadas=0,pendHoje=0; const items=[];
+  estudos.forEach(e=>{
+    const rev=nextPending(e); if(!rev) return;
+    const diff=diffDays(fromStr(rev.dataAlvo),t);
+    if(diff>0) atrasadas++; if(diff===0) pendHoje++;
+    if(diff>=0) items.push({e,rev,diff});
+  });
+  const prox7=estudos.filter(e=>{ const r=nextPending(e); if(!r) return false; const d=diffDays(today(),fromStr(r.dataAlvo)); return d>0&&d<=7; }).length;
+
+  document.getElementById('metrics-hoje').innerHTML=`
+    <div class="metric danger"><div class="metric-val">${atrasadas}</div><div class="metric-lbl">Atrasadas</div></div>
+    <div class="metric info"><div class="metric-val">${pendHoje}</div><div class="metric-lbl">Para hoje</div></div>
+    <div class="metric ok"><div class="metric-val">${prox7}</div><div class="metric-lbl">Próx. 7 dias</div></div>
+    <div class="metric"><div class="metric-val">${estudos.length}</div><div class="metric-lbl">Assuntos</div></div>`;
+
+  renderAreaBar('area-hoje',filterHoje,v=>{filterHoje=v;renderHoje();});
+
+  const lista=document.getElementById('lista-hoje');
+  const filtered=filterHoje?items.filter(({e})=>e.area===filterHoje):items;
+  filtered.sort((a,b)=>b.diff-a.diff);
+
+  if(!filtered.length){
+    lista.innerHTML=`<div class="empty"><div class="empty-ico">✓</div><div class="empty-txt">Nenhuma revisão pendente!</div><div class="empty-sub">Aproveite para estudar algo novo.</div></div>`;
+    return;
+  }
+
+  lista.innerHTML=filtered.map(({e,rev,diff})=>{
+    const cls=diff>0?'atrasada':'hoje-c', nCls=diff>0?'rn-l':'rn-h';
+    const sBadge=diff>0?`<span class="badge b-late">${diff}d atrasada</span>`:`<span class="badge b-hoje">Hoje</span>`;
+    const tagsH=e.tags&&e.tags.length?e.tags.map(t=>`<span class="mini-tag">${t}</span>`).join(''):'';
+    const notaH=e.nota?`<div class="rev-nota">${e.nota.substring(0,100)}${e.nota.length>100?'…':''}</div>`:'';
+    return `<div class="rev-card ${cls}">
+      <div class="rev-num ${nCls}">${rev.num}</div>
+      <div class="rev-body">
+        <div class="rev-top">
+          <span class="rev-title">${e.assunto}</span>
+          ${areaBadge(e.area)}${freqBadge(e.freq)}${sBadge}
+        </div>
+        <div class="rev-sub">Revisão ${rev.num} de 8 · Primeiro estudo: ${e.dataPrimeiro}</div>
+        ${tagsH?`<div class="rev-tags">${tagsH}</div>`:''}${notaH}
+        <div class="rev-actions">
+          <span class="act-lbl">Dificuldade:</span>
+          <select class="act-sel" onchange="setDif(${e.id},this.value)">
+            <option value="">—</option>
+            <option value="Fácil" ${e.dificuldade==='Fácil'?'selected':''}>Fácil</option>
+            <option value="Médio" ${e.dificuldade==='Médio'?'selected':''}>Médio</option>
+            <option value="Difícil" ${e.dificuldade==='Difícil'?'selected':''}>Difícil</option>
+          </select>
+          <span class="act-lbl">Acertos %:</span>
+          <input class="act-inp" type="number" min="0" max="100" placeholder="%"
+            value="${e.acertos!=null?e.acertos:''}" onblur="setAcc(${e.id},this.value)"/>
+          <button class="btn-done" onclick="marcar(${e.id},${rev.num})">✓ Concluída</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setDif(id,v){ const e=estudos.find(x=>x.id===id); if(e){e.dificuldade=v||null;save();} }
+function setAcc(id,v){ const e=estudos.find(x=>x.id===id); if(e){e.acertos=v!==''?parseInt(v):null;save();} }
+function marcar(id,num){
+  const e=estudos.find(x=>x.id===id); if(!e) return;
+  if(!e.revisoes) e.revisoes={};
+  computeSm2OnMark(e, num);
+  e.revisoes[num-1]=toStr(today()); save(); toast(`Revisão ${num} concluída!`); renderHoje(); updateBadges();
+}
+
+// ── RENDER CALENDAR ───────────────────────────
+let calYr,calMo;
+function renderCal(){
+  const t=today();
+  if(!calYr){calYr=t.getFullYear();calMo=t.getMonth();}
+  const months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('cal-label').textContent=`${months[calMo]} ${calYr}`;
+  document.getElementById('cal-dows').innerHTML=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+
+  const revMap={};
+  estudos.forEach(e=>{
+    buildRevs(e).forEach(r=>{ if(!r.done){ if(!revMap[r.dataAlvo])revMap[r.dataAlvo]=[];  revMap[r.dataAlvo].push({assunto:e.assunto,freq:e.freq,area:e.area,num:r.num}); }});
+  });
+
+  const firstDay=new Date(calYr,calMo,1).getDay(), daysInMonth=new Date(calYr,calMo+1,0).getDate(), todayStr=toStr(t);
+  let html='';
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-cell empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${calYr}-${String(calMo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=ds===todayStr, isPast=ds<todayStr, revs=revMap[ds]||[];
+    const dotsH=revs.slice(0,4).map(r=>{
+      const dc=isPast?'cd-late':(AREAS[r.area]?AREAS[r.area].dot:'cd-none');
+      return `<div class="cal-dot ${dc}"></div>`;
+    }).join('');
+    const extra=revs.length>4?`<div class="cal-xtra">+${revs.length-4}</div>`:'';
+    const click=revs.length?`onclick="showDayModal('${ds}',${JSON.stringify(revs).replace(/"/g,'&quot;')})"`:''
+    html+=`<div class="cal-cell ${revs.length?'has-rev':''} ${isToday?'is-today':''}" ${click}>
+      <div class="cal-dnum">${d}</div><div class="dots-wrap">${dotsH}</div>${extra}</div>`;
+  }
+  document.getElementById('cal-cells').innerHTML=html;
+  document.getElementById('cal-legend').innerHTML=AKEYS.map(k=>`<div class="leg-item"><div class="leg-dot ${AREAS[k].dot}"></div>${AREAS[k].lbl}</div>`).join('')+
+    `<div class="leg-item"><div class="leg-dot cd-late"></div>Atrasada</div>`;
+}
+function moveMonth(d){ calMo+=d; if(calMo<0){calMo=11;calYr--;} if(calMo>11){calMo=0;calYr++;} renderCal(); }
+
+// ── RENDER TODOS ──────────────────────────────
+function renderTodos(){
+  const t=today(), todayStr=toStr(t);
+  renderAreaBar('area-todos',filterTodos,v=>{filterTodos=v;renderTodos();});
+  document.getElementById('todos-sub').textContent=`${estudos.length} assunto${estudos.length!==1?'s':''} registrado${estudos.length!==1?'s':''}`;
+
+  const filtered=filterTodos?estudos.filter(e=>e.area===filterTodos):estudos;
+  const lista=document.getElementById('lista-todos');
+  if(!filtered.length){
+    lista.innerHTML=`<div class="empty"><div class="empty-ico">📚</div><div class="empty-txt">Nenhum assunto registrado.</div><div class="empty-sub">Clique em "Novo estudo" para começar.</div></div>`;
+    return;
+  }
+  lista.innerHTML=filtered.map(e=>{
+    const revs=buildRevs(e), feitas=revs.filter(r=>r.done).length, total=revs.length, pct=Math.round((feitas/total)*100);
+    const next=nextPending(e);
+    let nextLbl='<span style="color:var(--accent);font-weight:500">Completo!</span>';
+    if(next){ const diff=diffDays(fromStr(next.dataAlvo),t); if(diff>0)nextLbl=`<span style="color:var(--danger);font-weight:500">${diff}d atrasada</span>`;else if(diff===0)nextLbl=`<span style="color:var(--info);font-weight:500">Hoje</span>`;else nextLbl=`<span style="color:var(--accent-t);font-weight:500">em ${Math.abs(diff)} dias</span>`; }
+    const tagsH=e.tags&&e.tags.length?e.tags.map(t=>`<span class="mini-tag">${t}</span>`).join(''):'';
+    const pills=revs.map(r=>{ let cls='rp-pend'; if(r.done)cls='rp-done';else if(r.dataAlvo<todayStr)cls='rp-late';else if(r.dataAlvo===todayStr)cls='rp-today'; return `<span class="rpill ${cls}">${r.num}ª</span>`; }).join('');
+    return `<div class="sub-card">
+      <div class="sub-top">
+        <div>
+          <div class="sub-name">${e.assunto}</div>
+          <div class="sub-meta">Primeiro estudo: ${e.dataPrimeiro} · Próxima: ${nextLbl}</div>
+          <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">${areaBadge(e.area)}${freqBadge(e.freq)}</div>
+          ${tagsH?`<div class="rev-tags" style="margin-top:5px">${tagsH}</div>`:''}
+        </div>
+        <button class="del-btn" onclick="deletar(${e.id})">✕ Remover</button>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-row"><span>${feitas} de ${total} revisões</span><span>${pct}%</span></div>
+        <div class="prog-bg"><div class="prog-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="pill-row">${pills}</div>
+    </div>`;
+  }).join('');
+}
+function deletar(id){ if(!confirm('Remover este assunto e todas as revisões?')) return; estudos=estudos.filter(e=>e.id!==id); save(); renderTodos(); updateBadges(); toast('Assunto removido.'); }
+
+// ── FORM ──────────────────────────────────────
+let freqSel='', areaSel='', currentTags=[];
+function selFreq(btn,v){ document.querySelectorAll('.freq-btn').forEach(b=>b.className='freq-btn'); freqSel=v; const m={Alta:'f-a',Média:'f-m',Baixa:'f-b'}; btn.className=`freq-btn ${m[v]}`; }
+function selArea(btn,v){ document.querySelectorAll('.asb').forEach(b=>b.classList.remove('on')); areaSel=v; btn.classList.add('on'); }
+function handleTagKey(e){
+  if(e.key==='Enter'||e.key===','){ e.preventDefault(); const v=e.target.value.trim().replace(/,/g,''); if(v&&!currentTags.includes(v)) addTagChip(v); e.target.value=''; renderSugs(); }
+  if(e.key==='Backspace'&&!e.target.value&&currentTags.length){ currentTags.pop(); redrawChips(); }
+}
+function addTagChip(t){ currentTags.push(t); if(!allTags.includes(t)) allTags.push(t); redrawChips(); }
+function removeChip(i){ currentTags.splice(i,1); redrawChips(); }
+function redrawChips(){
+  const box=document.getElementById('tags-box'), inp=document.getElementById('tag-inp');
+  box.innerHTML='';
+  currentTags.forEach((t,i)=>{ const c=document.createElement('span'); c.className='tag-chip'; c.innerHTML=`${t}<button onclick="removeChip(${i})">×</button>`; box.appendChild(c); });
+  box.appendChild(inp);
+}
+function renderSugs(){
+  const v=document.getElementById('tag-inp').value.toLowerCase();
+  const s=allTags.filter(t=>!currentTags.includes(t)&&(!v||t.toLowerCase().includes(v)));
+  document.getElementById('tag-sugs').innerHTML=s.slice(0,8).map(t=>`<button class="tag-sug-btn" onclick="addTagChip('${t}');document.getElementById('tag-inp').value='';renderSugs()">${t}</button>`).join('');
+}
+document.getElementById('tag-inp').addEventListener('input',renderSugs);
+
+function salvar(){
+  const assunto=document.getElementById('inp-assunto').value.trim();
+  const data=document.getElementById('inp-data').value;
+  const nota=document.getElementById('inp-nota').value.trim();
+  const msg=document.getElementById('form-msg');
+  if(!assunto){msg.textContent='Preencha o assunto.';msg.className='form-msg err';return;}
+  if(!data){msg.textContent='Informe a data do primeiro estudo.';msg.className='form-msg err';return;}
+  if(!freqSel){msg.textContent='Selecione a frequência nas provas.';msg.className='form-msg err';return;}
+  if(!areaSel){msg.textContent='Selecione a grande área.';msg.className='form-msg err';return;}
+  const e={id:Date.now(),assunto,dataPrimeiro:data,nota,freq:freqSel,area:areaSel,tags:[...currentTags],revisoes:{},dificuldade:null,acertos:null,fc:false,sm2:initSm2(freqSel),sm2Log:[]};
+  estudos.push(e); save();
+  msg.textContent=`"${assunto}" registrado com 8 revisões!`; msg.className='form-msg ok';
+  document.getElementById('inp-assunto').value=''; document.getElementById('inp-nota').value='';
+  freqSel=''; areaSel='';
+  document.querySelectorAll('.freq-btn').forEach(b=>b.className='freq-btn');
+  document.querySelectorAll('.asb').forEach(b=>b.classList.remove('on'));
+  currentTags=[]; redrawChips(); renderSugs(); updateBadges();
+  setTimeout(()=>{msg.textContent='';msg.className='form-msg';},4000);
+}
+
+// ── MODAL ─────────────────────────────────────
+function showDayModal(date,revs){
+  const [y,m,d]=date.split('-');
+  document.getElementById('modal-ttl').textContent=`${d}/${m}/${y} — ${revs.length} revisão${revs.length>1?'ões':''}`;
+  document.getElementById('modal-body').innerHTML=revs.map(r=>`
+    <div class="modal-row">
+      <div class="modal-rnum">${r.num}</div>
+      <div class="modal-rbody">
+        <div class="modal-rname">${r.assunto}</div>
+        <div class="modal-rmeta">${r.num}ª revisão ${areaBadge(r.area)} ${freqBadge(r.freq)}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){ document.getElementById('modal').style.display='none'; }
+function closeModalOv(e){ if(e.target===document.getElementById('modal')) closeModal(); }
+
+// ── TOAST ─────────────────────────────────────
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
+
+// ── FLASHCARDS ────────────────────────────────
+const AREA_STYLE_FC = {
+  'GO':             { hdr:'go-h',  title:'go-t',  bar:'fc-bar-go'  },
+  'Pediatria':      { hdr:'ped-h', title:'ped-t', bar:'fc-bar-ped' },
+  'Cirurgia':       { hdr:'cir-h', title:'cir-t', bar:'fc-bar-cir' },
+  'Clínica Médica': { hdr:'cm-h',  title:'cm-t',  bar:'fc-bar-cm'  },
+  'Preventiva':     { hdr:'prev-h',title:'prev-t',bar:'fc-bar-prev'},
+};
+const fcAreaOpen = {};
+
+function toggleFC(id) {
+  const e = estudos.find(x => x.id === id);
+  if (!e) return;
+  e.fc = !e.fc;
+  save();
+  renderFlashcards();
+}
+
+function toggleFCArea(areaKey) {
+  fcAreaOpen[areaKey] = !fcAreaOpen[areaKey];
+  renderFlashcards();
+}
+
+function renderFlashcards() {
+  const el = document.getElementById('fc-content');
+  if (!estudos.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-ico">▣</div><div class="empty-txt">Nenhum assunto registrado.</div></div>`;
+    return;
+  }
+
+  // Global counts
+  const totalFC = estudos.length;
+  const doneFC  = estudos.filter(e => e.fc).length;
+  const pendFC  = totalFC - doneFC;
+  const pctFC   = totalFC ? Math.round((doneFC / totalFC) * 100) : 0;
+
+  // Group by area, sort each group by dataPrimeiro desc (mais novo primeiro)
+  const groups = {};
+  AKEYS.forEach(k => { groups[k] = []; });
+  estudos.forEach(e => {
+    if (groups[e.area]) groups[e.area].push(e);
+  });
+  AKEYS.forEach(k => {
+    groups[k].sort((a, b) => b.dataPrimeiro.localeCompare(a.dataPrimeiro));
+  });
+
+  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  function fmtDate(s) {
+    if (!s) return '';
+    const [y,m,d] = s.split('-');
+    return `${parseInt(d)} ${months[parseInt(m)-1]}. ${y}`;
+  }
+
+  // Summary bar
+  let html = `<div class="fc-summary-bar">
+    <div class="fc-sum-stat">
+      <div class="fc-sum-val done-val">${doneFC}</div>
+      <div class="fc-sum-lbl">Feitos no Anki</div>
+    </div>
+    <div class="fc-sum-stat">
+      <div class="fc-sum-val pending-val">${pendFC}</div>
+      <div class="fc-sum-lbl">Pendentes</div>
+    </div>
+    <div class="fc-sum-stat">
+      <div class="fc-sum-val">${totalFC}</div>
+      <div class="fc-sum-lbl">Total de assuntos</div>
+    </div>
+    <div class="fc-sum-stat">
+      <div class="fc-sum-val" style="color:var(--info)">${pctFC}%</div>
+      <div class="fc-sum-lbl">Concluídos</div>
+    </div>
+  </div>`;
+
+  // Area sections
+  AKEYS.forEach(areaKey => {
+    const list = groups[areaKey];
+    if (!list.length) return;
+    const s = AREA_STYLE_FC[areaKey];
+    const aInfo = AREAS[areaKey];
+    const areaDone = list.filter(e => e.fc).length;
+    const areaPct  = Math.round((areaDone / list.length) * 100);
+    const isOpen   = fcAreaOpen[areaKey] !== false; // open by default
+
+    html += `<div class="fc-area-section">
+      <div class="fc-area-header ${s.hdr}" onclick="toggleFCArea('${areaKey}')">
+        <div class="fc-area-title ${s.title}">${areaKey}</div>
+        <div class="fc-area-bar-wrap">
+          <div class="fc-area-bar-bg">
+            <div class="fc-area-bar-fill ${s.bar}" style="width:${areaPct}%"></div>
+          </div>
+        </div>
+        <span class="fc-area-prog">${areaDone}/${list.length}</span>
+        <span class="fc-chevron ${isOpen ? 'open' : ''}">▶</span>
+      </div>`;
+
+    if (isOpen) {
+      html += `<div class="fc-list">`;
+      list.forEach(e => {
+        const done = !!e.fc;
+        html += `<div class="fc-item ${done ? 'fc-done' : ''}" onclick="toggleFC(${e.id})">
+          <div class="fc-check ${done ? 'checked' : ''}"></div>
+          <div class="fc-info">
+            <div class="fc-name">${e.assunto}</div>
+            <div class="fc-date">Primeiro estudo: ${fmtDate(e.dataPrimeiro)}</div>
+          </div>
+          <span class="fc-badge ${done ? 'fc-badge-done' : 'fc-badge-pend'}">${done ? 'No Anki' : 'Pendente'}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+// ── RENDER DASHBOARD ─────────────────────────
+function renderDashboard() {
+  const t = today();
+  const todayStr = toStr(t);
+  const el = document.getElementById('dash-content');
+  if (!estudos.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-ico">◈</div><div class="empty-txt">Nenhum dado ainda.</div><div class="empty-sub">Registre assuntos para ver o dashboard.</div></div>`;
+    return;
+  }
+
+  // ── KPIs ──
+  let totalRevsDone = 0, totalRevsAll = 0, atrasadas = 0, completos = 0;
+  estudos.forEach(e => {
+    const revs = buildRevs(e);
+    const done = revs.filter(r => r.done).length;
+    totalRevsDone += done;
+    totalRevsAll += revs.length;
+    const next = nextPending(e);
+    if (!next) completos++;
+    else if (diffDays(fromStr(next.dataAlvo), t) > 0) atrasadas++;
+  });
+  const retencao = totalRevsAll ? Math.round((totalRevsDone / totalRevsAll) * 100) : 0;
+
+  // Average EF across all estudos
+  const avgEF = estudos.length
+    ? (estudos.reduce((s, e) => s + (e.sm2 ? e.sm2.ef : 2.5), 0) / estudos.length).toFixed(2)
+    : '2.50';
+
+  // ── AREA BREAKDOWN ──
+  const areaStats = {};
+  AKEYS.forEach(k => { areaStats[k] = { done: 0, total: 0 }; });
+  estudos.forEach(e => {
+    const revs = buildRevs(e);
+    const key = e.area || '';
+    if (!areaStats[key]) areaStats[key] = { done: 0, total: 0 };
+    areaStats[key].done += revs.filter(r => r.done).length;
+    areaStats[key].total += revs.length;
+  });
+
+  // ── DIFFICULTY DISTRIBUTION ──
+  let nFacil = 0, nMedio = 0, nDificil = 0, nNone = 0;
+  estudos.forEach(e => {
+    if (e.dificuldade === 'Fácil') nFacil++;
+    else if (e.dificuldade === 'Médio') nMedio++;
+    else if (e.dificuldade === 'Difícil') nDificil++;
+    else nNone++;
+  });
+
+  // ── ACTIVITY HEATMAP (last 10 weeks) ──
+  const heatDays = 70;
+  const heatMap = {};
+  estudos.forEach(e => {
+    Object.values(e.revisoes || {}).forEach(d => { heatMap[d] = (heatMap[d] || 0) + 1; });
+  });
+  // Build grid: 7 rows (Mon-Sun) × 10 cols (weeks)
+  const heatStart = new Date(t);
+  heatStart.setDate(heatStart.getDate() - heatDays + 1);
+  // Align to Monday
+  const dow = heatStart.getDay();
+  heatStart.setDate(heatStart.getDate() - (dow === 0 ? 6 : dow - 1));
+
+  const weeks = [];
+  let cur = new Date(heatStart);
+  for (let w = 0; w < 11; w++) {
+    const week = [];
+    for (let d = 0; d < 7; d++) {
+      const ds = toStr(cur);
+      week.push({ ds, count: heatMap[ds] || 0, future: cur > t });
+      cur.setDate(cur.getDate() + 1);
+    }
+    weeks.push(week);
+  }
+
+  // ── TOP ATRASADOS ──
+  const atrasadosList = estudos
+    .map(e => { const r = nextPending(e); if (!r) return null; const d = diffDays(fromStr(r.dataAlvo), t); return d > 0 ? { e, days: d, rev: r } : null; })
+    .filter(Boolean)
+    .sort((a, b) => b.days - a.days)
+    .slice(0, 5);
+
+  // ── EF RANKING ──
+  const efRanking = [...estudos]
+    .filter(e => e.sm2)
+    .sort((a, b) => a.sm2.ef - b.sm2.ef)
+    .slice(0, 6);
+
+  // ── RENDER HTML ──
+  const daysLabel = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
+  // Month labels for heatmap
+  const monthNames = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  let monthHtml = '';
+  let lastMonth = -1;
+  weeks.forEach(week => {
+    const m = fromStr(week[0].ds).getMonth();
+    if (m !== lastMonth) { monthHtml += `<span class="hm-month-lbl" style="flex:1">${monthNames[m]}</span>`; lastMonth = m; }
+    else monthHtml += `<span class="hm-month-lbl" style="flex:1"></span>`;
+  });
+
+  // Donut chart using SVG
+  const total = nFacil + nMedio + nDificil + (nNone > 0 ? 1 : 0);
+  function donutSlice(pct, offset, color) {
+    if (pct <= 0) return '';
+    const r = 40, cx = 50, cy = 50;
+    const circ = 2 * Math.PI * r;
+    const dash = pct * circ;
+    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="16"
+      stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${-offset * circ}" transform="rotate(-90 ${cx} ${cy})"/>`;
+  }
+  const pFacil  = total ? nFacil / total : 0;
+  const pMedio  = total ? nMedio / total : 0;
+  const pDificil= total ? nDificil / total : 0;
+  const pNone   = total ? Math.max(0, 1 - pFacil - pMedio - pDificil) : 1;
+
+  // Retention SVG line chart (last 30 days)
+  const retPoints = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = toStr(addDays(t, -i));
+    let doneUpTo = 0, totalUpTo = 0;
+    estudos.forEach(e => {
+      buildRevs(e).forEach(r => {
+        if (r.dataAlvo <= d) {
+          totalUpTo++;
+          if (r.done && r.done <= d) doneUpTo++;
+        }
+      });
+    });
+    retPoints.push(totalUpTo ? Math.round((doneUpTo / totalUpTo) * 100) : null);
+  }
+  const validPts = retPoints.filter(p => p !== null);
+  const W = 480, H = 120, PAD = 8;
+  const ptCoords = retPoints.map((p, i) => {
+    if (p === null) return null;
+    const x = PAD + (i / 29) * (W - PAD * 2);
+    const y = H - PAD - ((p / 100) * (H - PAD * 2));
+    return [x, y, p];
+  }).filter(Boolean);
+  const lineD = ptCoords.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt[0].toFixed(1)},${pt[1].toFixed(1)}`).join(' ');
+  const areaD = ptCoords.length
+    ? `${lineD} L${ptCoords[ptCoords.length-1][0].toFixed(1)},${H-PAD} L${ptCoords[0][0].toFixed(1)},${H-PAD} Z`
+    : '';
+
+  el.innerHTML = `
+  <div class="dash-grid">
+    <div class="dash-kpi kpi-green">
+      <div class="dash-kpi-val">${retencao}%</div>
+      <div class="dash-kpi-lbl">Retenção geral</div>
+      <div class="dash-kpi-sub">${totalRevsDone} de ${totalRevsAll} revisões feitas</div>
+    </div>
+    <div class="dash-kpi kpi-red">
+      <div class="dash-kpi-val">${atrasadas}</div>
+      <div class="dash-kpi-lbl">Revisões atrasadas</div>
+      <div class="dash-kpi-sub">precisam de atenção agora</div>
+    </div>
+    <div class="dash-kpi kpi-blue">
+      <div class="dash-kpi-val">${estudos.length}</div>
+      <div class="dash-kpi-lbl">Assuntos</div>
+      <div class="dash-kpi-sub">${completos} completos</div>
+    </div>
+    <div class="dash-kpi kpi-warn">
+      <div class="dash-kpi-val">${avgEF}</div>
+      <div class="dash-kpi-lbl">Fator de facilidade</div>
+      <div class="dash-kpi-sub">média SM-2 (ideal ≥ 2.5)</div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Curva de retenção — últimos 30 dias</div>
+    <div class="chart-card">
+      <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">
+        <!-- grid lines -->
+        ${[25,50,75,100].map(v => {
+          const y = H - PAD - (v/100)*(H-PAD*2);
+          return `<line x1="${PAD}" y1="${y.toFixed(1)}" x2="${W-PAD}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
+          <text x="${PAD-4}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text-3)">${v}%</text>`;
+        }).join('')}
+        ${areaD ? `<path d="${areaD}" fill="var(--accent-l)" opacity=".7"/>` : ''}
+        ${lineD ? `<path d="${lineD}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : ''}
+        ${ptCoords.length ? `<circle cx="${ptCoords[ptCoords.length-1][0].toFixed(1)}" cy="${ptCoords[ptCoords.length-1][1].toFixed(1)}" r="4" fill="var(--accent)"/>` : ''}
+      </svg>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem">
+    <div class="dash-section" style="margin-bottom:0">
+      <div class="dash-section-title">Progresso por área</div>
+      <div class="chart-card">
+        <div class="area-breakdown">
+          ${AKEYS.map(k => {
+            const s = areaStats[k];
+            if (!s || s.total === 0) return '';
+            const pct = Math.round((s.done/s.total)*100);
+            const aInfo = AREAS[k];
+            const colors = {GO:'var(--go)',Pediatria:'var(--ped)',Cirurgia:'var(--cir)','Clínica Médica':'var(--cm)',Preventiva:'var(--prev)'};
+            return `<div class="ab-row">
+              <div class="ab-lbl">${aInfo.lbl}</div>
+              <div class="ab-bar-bg"><div class="ab-bar-fill" style="width:${pct}%;background:${colors[k]}"></div></div>
+              <div class="ab-pct">${pct}%</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-section" style="margin-bottom:0">
+      <div class="dash-section-title">Distribuição de dificuldade</div>
+      <div class="chart-card">
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 100 100" width="90" height="90">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--surface2)" stroke-width="16"/>
+            ${donutSlice(pFacil, 0, 'var(--accent)')}
+            ${donutSlice(pMedio, pFacil, 'var(--info)')}
+            ${donutSlice(pDificil, pFacil+pMedio, 'var(--danger)')}
+            ${pNone > 0.01 ? donutSlice(pNone, pFacil+pMedio+pDificil, 'var(--surface2)') : ''}
+            <text x="50" y="54" text-anchor="middle" font-size="14" font-weight="600" fill="var(--text)">${retencao}%</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="donut-leg-row"><div class="donut-dot" style="background:var(--accent)"></div>Fácil (${nFacil})</div>
+            <div class="donut-leg-row"><div class="donut-dot" style="background:var(--info)"></div>Médio (${nMedio})</div>
+            <div class="donut-leg-row"><div class="donut-dot" style="background:var(--danger)"></div>Difícil (${nDificil})</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Atividade de revisões — últimas 11 semanas</div>
+    <div class="chart-card" style="overflow-x:auto">
+      <div class="heatmap-months" style="display:flex;gap:0;margin-left:36px;margin-bottom:4px">
+        ${weeks.map(week => {
+          const m = fromStr(week[0].ds).getMonth();
+          return `<div style="flex:1;min-width:17px;font-size:9px;color:var(--text-3)">${monthNames[m]}</div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;gap:3px">
+        <div style="display:flex;flex-direction:column;gap:3px;margin-right:0">
+          ${daysLabel.map(d => `<div style="height:14px;font-size:9px;color:var(--text-3);line-height:14px;width:28px;text-align:right">${d}</div>`).join('')}
+        </div>
+        ${weeks.map(week => `
+          <div style="display:flex;flex-direction:column;gap:3px">
+            ${week.map(cell => {
+              if (cell.future) return `<div class="hm-cell" style="opacity:.25"></div>`;
+              const cls = cell.count === 0 ? '' : cell.count === 1 ? 'hm-1' : cell.count <= 3 ? 'hm-2' : cell.count <= 6 ? 'hm-3' : 'hm-4';
+              const title = cell.count ? `${cell.count} revisão${cell.count>1?'ões':''}` : '';
+              return `<div class="hm-cell ${cls}" title="${title}"></div>`;
+            }).join('')}
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;margin-top:8px;justify-content:flex-end">
+        <span style="font-size:10px;color:var(--text-3)">Menos</span>
+        <div class="hm-cell"></div>
+        <div class="hm-cell hm-1"></div>
+        <div class="hm-cell hm-2"></div>
+        <div class="hm-cell hm-3"></div>
+        <div class="hm-cell hm-4"></div>
+        <span style="font-size:10px;color:var(--text-3)">Mais</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem">
+    <div class="dash-section" style="margin-bottom:0">
+      <div class="dash-section-title">Mais atrasados</div>
+      <div class="atrasados-list">
+        ${atrasadosList.length ? atrasadosList.map(({e,days}) => `
+          <div class="atr-row">
+            <div class="atr-days">${days}d</div>
+            <div class="atr-info">
+              <div class="atr-name">${e.assunto}</div>
+              <div class="atr-meta">${areaBadge(e.area)}</div>
+            </div>
+          </div>`).join('') : '<div style="font-size:12px;color:var(--text-3);padding:.5rem">Nenhuma revisão atrasada!</div>'}
+      </div>
+    </div>
+
+    <div class="dash-section" style="margin-bottom:0">
+      <div class="dash-section-title">Menor fator de facilidade</div>
+      <div class="ef-list">
+        ${efRanking.map((e,i) => {
+          const ef = e.sm2.ef;
+          const cls = ef >= 2.5 ? 'ef-hi' : ef >= 2.0 ? 'ef-mid' : 'ef-lo';
+          return `<div class="ef-row">
+            <div class="ef-rank">${i+1}</div>
+            <div class="ef-name">${e.assunto}</div>
+            <div class="ef-val ${cls}">${ef.toFixed(2)}</div>
+          </div>`;
+        }).join('')}
+        ${efRanking.length === 0 ? '<div style="font-size:12px;color:var(--text-3);padding:.5rem">Conclua revisões para gerar dados SM-2.</div>' : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── RENDER HISTÓRICO ─────────────────────────
+const AREA_STYLE = {
+  'GO':             { hdr:'go-h',   txt:'go-t',   fill:'go-f',   col:'var(--go)'  },
+  'Pediatria':      { hdr:'ped-h',  txt:'ped-t',  fill:'ped-f',  col:'var(--ped)' },
+  'Cirurgia':       { hdr:'cir-h',  txt:'cir-t',  fill:'cir-f',  col:'var(--cir)' },
+  'Clínica Médica': { hdr:'cm-h',   txt:'cm-t',   fill:'cm-f',   col:'var(--cm)'  },
+  'Preventiva':     { hdr:'prev-h', txt:'prev-t', fill:'prev-f', col:'var(--prev)'},
+};
+
+// track open/closed state for areas and subjects across renders
+const histAreaOpen   = {};
+const histSubjOpen   = {};
+
+function toggleHistArea(areaKey) {
+  histAreaOpen[areaKey] = !histAreaOpen[areaKey];
+  renderHistorico();
+}
+function toggleHistSubj(id) {
+  histSubjOpen[id] = !histSubjOpen[id];
+  renderHistorico();
+}
+
+function renderHistorico() {
+  const t = today();
+  const todayStr = toStr(t);
+  const el = document.getElementById('hist-content');
+
+  if (!estudos.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-ico">◷</div><div class="empty-txt">Nenhum assunto registrado ainda.</div><div class="empty-sub">Clique em "Novo estudo" para começar.</div></div>`;
+    return;
+  }
+
+  // group by area
+  const groups = {};
+  AKEYS.forEach(k => { groups[k] = []; });
+  grupos_outro = [];
+  estudos.forEach(e => {
+    if (groups[e.area]) groups[e.area].push(e);
+    else grupos_outro.push(e);
+  });
+
+  let html = '';
+
+  AKEYS.forEach(areaKey => {
+    const list = groups[areaKey];
+    const style = AREA_STYLE[areaKey];
+    const aInfo = AREAS[areaKey];
+    const isOpen = histAreaOpen[areaKey] !== false; // open by default
+    const totalRevs = list.reduce((s, e) => s + buildRevs(e).filter(r => r.done).length, 0);
+    const totalPossible = list.reduce((s, e) => s + buildRevs(e).length, 0);
+    const pct = totalPossible ? Math.round((totalRevs / totalPossible) * 100) : 0;
+
+    html += `<div class="hist-area-block">
+      <div class="hist-area-header ${style.hdr}" onclick="toggleHistArea('${areaKey}')">
+        <div class="hist-area-name ${style.txt}">${areaKey === 'Clínica Médica' ? 'Clínica Médica' : aInfo.lbl === 'Clín. Médica' ? 'Clínica Médica' : aInfo.lbl}</div>
+        <span class="hist-area-count">${list.length} assunto${list.length !== 1 ? 's' : ''}</span>
+        <span class="hist-area-chevron ${isOpen ? 'open' : ''}">▶</span>
+      </div>`;
+
+    if (isOpen) {
+      if (!list.length) {
+        html += `<div class="hist-empty">Nenhum assunto nesta área ainda.</div>`;
+      } else {
+        html += `<div class="hist-subject-list">`;
+        list.forEach(e => {
+          const revs = buildRevs(e);
+          const feitas = revs.filter(r => r.done).length;
+          const total = revs.length;
+          const pctE = Math.round((feitas / total) * 100);
+          const subjOpen = !!histSubjOpen[e.id];
+          const nextRev = nextPending(e);
+          let statusPill = '';
+          if (!nextRev) statusPill = `<span class="hist-stat-pill hsp-done">Completo</span>`;
+          else {
+            const d = diffDays(fromStr(nextRev.dataAlvo), t);
+            if (d > 0) statusPill = `<span class="hist-stat-pill" style="background:var(--danger-l);color:var(--danger)">${d}d atr.</span>`;
+            else if (d === 0) statusPill = `<span class="hist-stat-pill" style="background:var(--info-l);color:var(--info)">Hoje</span>`;
+            else statusPill = `<span class="hist-stat-pill hsp-pend">${feitas}/${total}</span>`;
+          }
+
+          html += `<div class="hist-subj-row">
+            <button class="hist-subj-trigger" onclick="toggleHistSubj(${e.id})">
+              <div style="flex:1;text-align:left">
+                <div class="hist-subj-name">${e.assunto}</div>
+                <div class="hist-prog-bar" style="margin-top:5px;max-width:180px">
+                  <div class="hist-prog-fill ${style.fill}" style="width:${pctE}%"></div>
+                </div>
+              </div>
+              <div class="hist-subj-stats">${statusPill}</div>
+              <span class="hist-chevron ${subjOpen ? 'open' : ''}">▾</span>
+            </button>`;
+
+          if (subjOpen) {
+            html += `<div class="hist-timeline open"><div class="tl-wrap"><div class="tl-line"></div>`;
+
+            // First event: primeiro estudo
+            html += `<div class="tl-event">
+              <div class="tl-dot first-dot"></div>
+              <div class="tl-content">
+                <div class="tl-label">Primeiro estudo</div>
+                <div class="tl-date">${formatDate(e.dataPrimeiro)}</div>
+              </div>
+            </div>`;
+
+            // Each revision
+            revs.forEach((r, i) => {
+              const isPast = r.dataAlvo < todayStr;
+              const isToday = r.dataAlvo === todayStr;
+              const isDone = !!r.done;
+              const isLate = !isDone && isPast;
+
+              let dotCls = 'future';
+              if (isDone) dotCls = 'done';
+              else if (isLate) dotCls = 'late-dot';
+              else if (isToday) dotCls = 'today-dot';
+
+              let tagHtml = '';
+              if (isDone) tagHtml = `<span class="tl-tag tl-done-tag">Concluída em ${formatDate(r.done)}</span>`;
+              else if (isLate) tagHtml = `<span class="tl-tag tl-late-tag">Atrasada</span>`;
+              else if (isToday) tagHtml = `<span class="tl-tag tl-today-tag">Hoje</span>`;
+              else tagHtml = `<span class="tl-tag tl-future-tag">Programada</span>`;
+
+              let extras = '';
+              if (isDone && i > 2) { // adaptive revisions show context
+                if (e.dificuldade) extras += `<span class="tl-dif">${e.dificuldade}</span>`;
+                if (e.acertos != null) extras += `<span class="tl-acc">${e.acertos}% acertos</span>`;
+              }
+
+              const revLabel = r.num <= 3
+                ? `${r.num}ª revisão <span style="font-size:10px;color:var(--text-3);font-weight:400">(fixa)</span>`
+                : `${r.num}ª revisão <span style="font-size:10px;color:var(--text-3);font-weight:400">(adaptativa)</span>`;
+
+              html += `<div class="tl-event">
+                <div class="tl-dot ${dotCls}"></div>
+                <div class="tl-content">
+                  <div class="tl-label">${revLabel}</div>
+                  <div class="tl-date">Prevista: ${formatDate(r.dataAlvo)}</div>
+                  <div class="tl-meta">${tagHtml}${extras}</div>
+                </div>
+              </div>`;
+            });
+
+            html += `</div></div>`; // close tl-wrap, hist-timeline
+          }
+
+          html += `</div>`; // close hist-subj-row
+        });
+        html += `</div>`; // close hist-subject-list
+      }
+    }
+
+    html += `</div>`; // close hist-area-block
+  });
+
+  el.innerHTML = html;
+}
+
+function formatDate(str) {
+  if (!str) return '—';
+  const [y, m, d] = str.split('-');
+  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  return `${parseInt(d)} ${months[parseInt(m)-1]}. ${y}`;
+}
+
+// ── INIT ──────────────────────────────────────
+function init(){
+  load();
+  estudos.forEach(e=>{ if(!e.area) e.area=''; });
+
+  // ── DADOS IMPORTADOS DO NOTION ────────────
+  const NOTION_DATA = [{"id":2001,"assunto":"Dist. respiratórios neonatais","dataPrimeiro":"2026-02-09","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-09","1":"2026-03-05"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2002,"assunto":"Alojamento conjunto/triagem neo","dataPrimeiro":"2026-02-27","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-27","1":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2003,"assunto":"Sala de parto","dataPrimeiro":"2026-03-01","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2004,"assunto":"Doenças infecciosas neonatais","dataPrimeiro":"2026-02-09","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-09","1":"2026-03-07"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2005,"assunto":"Doenças hematológicas neonatais","dataPrimeiro":"2026-02-27","nota":"","freq":"Média","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-27","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2006,"assunto":"Sd. coronariana","dataPrimeiro":"2026-03-03","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2007,"assunto":"Arritmias, síncope e PCR","dataPrimeiro":"2026-03-03","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-03","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2008,"assunto":"Sd. metabólica e dislipidemia","dataPrimeiro":"2026-03-02","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-08","2":"2026-03-11"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2009,"assunto":"Valvopatias","dataPrimeiro":"2026-02-18","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-02-18","1":"2026-03-11"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2010,"assunto":"Cardiomiopatias","dataPrimeiro":"2026-02-27","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2011,"assunto":"Trauma abdominal","dataPrimeiro":"2026-02-15","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-02-15","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2012,"assunto":"TCE","dataPrimeiro":"2026-03-02","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2013,"assunto":"Trauma torácico","dataPrimeiro":"2026-02-17","nota":"","freq":"Média","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-02-17","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2014,"assunto":"Pré-natal","dataPrimeiro":"2026-03-05","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-05","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2015,"assunto":"Assistência ao parto","dataPrimeiro":"2026-03-01","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-05","2":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2016,"assunto":"Diabetes","dataPrimeiro":"2026-03-05","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-05","1":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2017,"assunto":"Ciclo menstrual","dataPrimeiro":"2026-03-09","nota":"","freq":"Média","area":"GO","tags":[],"revisoes":{"0":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2018,"assunto":"Estática fetal e mecanismos de parto","dataPrimeiro":"2026-03-02","nota":"","freq":"Média","area":"GO","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2019,"assunto":"Atenção primária à saúde","dataPrimeiro":"2026-02-24","nota":"","freq":"Alta","area":"Preventiva","tags":[],"revisoes":{"0":"2026-02-24","1":"2026-03-05","2":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2020,"assunto":"Níveis de prevenção","dataPrimeiro":"2026-03-01","nota":"","freq":"Média","area":"Preventiva","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-08"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2021,"assunto":"Aspectos históricos e evolução do SUS","dataPrimeiro":"2026-02-02","nota":"","freq":"Baixa","area":"Preventiva","tags":[],"revisoes":{"0":"2026-02-02","1":"2026-03-04","2":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2022,"assunto":"Distúrbios metabólicos neonatais","dataPrimeiro":"2026-03-07","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-07"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2023,"assunto":"Puerpério","dataPrimeiro":"2026-03-08","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-08"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2024,"assunto":"HAS","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2025,"assunto":"IC","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-09"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2026,"assunto":"Crescimento e desenvolvimento","dataPrimeiro":"2026-03-08","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-08","1":"2026-03-09"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2027,"assunto":"Contracepção","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2028,"assunto":"Trauma de face e pescoço","dataPrimeiro":"2026-03-09","nota":"","freq":"Média","area":"Cirurgia","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2029,"assunto":"Paratireóides","dataPrimeiro":"2026-03-14","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2030,"assunto":"Imunizações","dataPrimeiro":"2026-03-11","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-11","1":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2031,"assunto":"Queimaduras","dataPrimeiro":"2026-03-11","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-03-11","1":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2032,"assunto":"Tireoidopatias","dataPrimeiro":"2026-03-13","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-13","1":"2026-03-14"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2033,"assunto":"Suprarrenais e outras Sd. endócrinas","dataPrimeiro":"2026-03-14","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2034,"assunto":"Amenorréias","dataPrimeiro":"2026-03-13","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false}];
+
+  // Offline fallback (Firebase takes over when connected)
+  estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
+  const t=today(); calYr=t.getFullYear(); calMo=t.getMonth();
+  document.getElementById('inp-data').value=toStr(t);
+  renderHoje(); updateBadges(); renderSugs();
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+
+// ── BOOT ──────────────────────────────────────
+(async function() {
+  const cfg = _getCfg();
+  if(!cfg) {
+    document.getElementById('setup-screen').style.display = 'flex';
+    return;
+  }
+  try {
+    await _boot(cfg);
+  } catch(err) {
+    console.error('Boot error, falling back to localStorage:', err);
+    _syncUI('offline');
+    load();
+    estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
+    const t=today(); calYr=t.getFullYear(); calMo=t.getMonth();
+    document.getElementById('inp-data').value=toStr(t);
+    renderHoje(); updateBadges(); renderSugs();
+  }
+})();
+</script>
+</body>
+</html>
