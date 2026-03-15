@@ -889,6 +889,20 @@ service cloud.firestore {
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script>
+// Guard: ensure Firebase CDN loaded correctly
+if(typeof firebase === 'undefined') {
+  document.body.innerHTML = '<div style="font-family:sans-serif;padding:2rem;max-width:400px;margin:2rem auto;background:#fff;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.1)">'
+    + '<h2 style="color:#8B1A1A;margin-bottom:1rem">Erro de carregamento</h2>'
+    + '<p style="color:#333;line-height:1.6">O Firebase não carregou. Possíveis causas:<br><br>'
+    + '<b>1.</b> Você está abrindo o arquivo localmente (file://) — abra pelo link do Netlify.<br><br>'
+    + '<b>2.</b> Sem conexão com a internet.<br><br>'
+    + '<b>3.</b> Bloqueador de anúncios bloqueando os scripts do Google — desative para este site.</p>'
+    + '<button onclick="location.reload()" style="margin-top:1.5rem;padding:10px 20px;background:#1A5C38;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px">Tentar novamente</button>'
+    + '</div>';
+  throw new Error('Firebase CDN not loaded');
+}
+
+
 // Firebase loaded via CDN scripts above
 
 // ── FIREBASE HELPERS ─────────────────────────
@@ -960,16 +974,9 @@ function _subscribe() {
 }
 
 async function _boot(cfg) {
-  // Initialize Firebase only if not already done
   if(!_db) {
-    try {
-      // Try to reuse existing app
-      _db = firebase.firestore(firebase.app());
-    } catch(e) {
-      // No app yet — initialize fresh
-      firebase.initializeApp(cfg);
-      _db = firebase.firestore();
-    }
+    try { firebase.initializeApp(cfg); } catch(e) {}
+    _db = firebase.firestore();
   }
   window._fbSave = _fbSaveNow;
   _syncUI('loading');
@@ -984,14 +991,13 @@ async function _boot(cfg) {
       localStorage.setItem(TKEY, JSON.stringify(allTags));
       _syncUI('ok');
     } else {
-      // First-time: upload Notion data
-      const NOTION_DATA = [{"id":2001,"assunto":"Dist. respiratórios neonatais","dataPrimeiro":"2026-02-09","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-09","1":"2026-03-05"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2002,"assunto":"Alojamento conjunto/triagem neo","dataPrimeiro":"2026-02-27","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-27","1":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2003,"assunto":"Sala de parto","dataPrimeiro":"2026-03-01","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2004,"assunto":"Doenças infecciosas neonatais","dataPrimeiro":"2026-02-09","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-09","1":"2026-03-07"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2005,"assunto":"Doenças hematológicas neonatais","dataPrimeiro":"2026-02-27","nota":"","freq":"Média","area":"Pediatria","tags":[],"revisoes":{"0":"2026-02-27","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2006,"assunto":"Sd. coronariana","dataPrimeiro":"2026-03-03","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2007,"assunto":"Arritmias, síncope e PCR","dataPrimeiro":"2026-03-03","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-03","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2008,"assunto":"Sd. metabólica e dislipidemia","dataPrimeiro":"2026-03-02","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-08","2":"2026-03-11"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2009,"assunto":"Valvopatias","dataPrimeiro":"2026-02-18","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-02-18","1":"2026-03-11"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2010,"assunto":"Cardiomiopatias","dataPrimeiro":"2026-02-27","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2011,"assunto":"Trauma abdominal","dataPrimeiro":"2026-02-15","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-02-15","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2012,"assunto":"TCE","dataPrimeiro":"2026-03-02","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2013,"assunto":"Trauma torácico","dataPrimeiro":"2026-02-17","nota":"","freq":"Média","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-02-17","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2014,"assunto":"Pré-natal","dataPrimeiro":"2026-03-05","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-05","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2015,"assunto":"Assistência ao parto","dataPrimeiro":"2026-03-01","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-05","2":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2016,"assunto":"Diabetes","dataPrimeiro":"2026-03-05","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-05","1":"2026-03-10"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2017,"assunto":"Ciclo menstrual","dataPrimeiro":"2026-03-09","nota":"","freq":"Média","area":"GO","tags":[],"revisoes":{"0":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2018,"assunto":"Estática fetal e mecanismos de parto","dataPrimeiro":"2026-03-02","nota":"","freq":"Média","area":"GO","tags":[],"revisoes":{"0":"2026-03-02","1":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2019,"assunto":"Atenção primária à saúde","dataPrimeiro":"2026-02-24","nota":"","freq":"Alta","area":"Preventiva","tags":[],"revisoes":{"0":"2026-02-24","1":"2026-03-05","2":"2026-03-10"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2020,"assunto":"Níveis de prevenção","dataPrimeiro":"2026-03-01","nota":"","freq":"Média","area":"Preventiva","tags":[],"revisoes":{"0":"2026-03-01","1":"2026-03-08"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2021,"assunto":"Aspectos históricos e evolução do SUS","dataPrimeiro":"2026-02-02","nota":"","freq":"Baixa","area":"Preventiva","tags":[],"revisoes":{"0":"2026-02-02","1":"2026-03-04","2":"2026-03-09"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2022,"assunto":"Distúrbios metabólicos neonatais","dataPrimeiro":"2026-03-07","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-07"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2023,"assunto":"Puerpério","dataPrimeiro":"2026-03-08","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-08"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2024,"assunto":"HAS","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2025,"assunto":"IC","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-09"},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2026,"assunto":"Crescimento e desenvolvimento","dataPrimeiro":"2026-03-08","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-08","1":"2026-03-09"},"dificuldade":"Médio","acertos":null,"fc":true},{"id":2027,"assunto":"Contracepção","dataPrimeiro":"2026-03-09","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2028,"assunto":"Trauma de face e pescoço","dataPrimeiro":"2026-03-09","nota":"","freq":"Média","area":"Cirurgia","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2029,"assunto":"Paratireóides","dataPrimeiro":"2026-03-14","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2030,"assunto":"Imunizações","dataPrimeiro":"2026-03-11","nota":"","freq":"Alta","area":"Pediatria","tags":[],"revisoes":{"0":"2026-03-11","1":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2031,"assunto":"Queimaduras","dataPrimeiro":"2026-03-11","nota":"","freq":"Alta","area":"Cirurgia","tags":[],"revisoes":{"0":"2026-03-11","1":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false},{"id":2032,"assunto":"Tireoidopatias","dataPrimeiro":"2026-03-13","nota":"","freq":"Alta","area":"Clínica Médica","tags":[],"revisoes":{"0":"2026-03-13","1":"2026-03-14"},"dificuldade":"Fácil","acertos":null,"fc":true},{"id":2033,"assunto":"Suprarrenais e outras Sd. endócrinas","dataPrimeiro":"2026-03-14","nota":"","freq":"Média","area":"Clínica Médica","tags":[],"revisoes":{},"dificuldade":"Médio","acertos":null,"fc":false},{"id":2034,"assunto":"Amenorréias","dataPrimeiro":"2026-03-13","nota":"","freq":"Alta","area":"GO","tags":[],"revisoes":{"0":"2026-03-13"},"dificuldade":"Fácil","acertos":null,"fc":false}];
+      const NOTION_DATA = [];
       estudos = NOTION_DATA;
       estudos.forEach(e => { if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
       await _fbSaveNow();
     }
   } catch(err) {
-    console.error('Initial load error:', err);
+    console.error('Load error:', err);
     _syncUI('offline');
     load();
   }
@@ -2066,35 +2072,31 @@ window._setupConnect = async function() {
   const cfg = {};
   for(const f of fields) {
     const v = document.getElementById('cfg-'+f)?.value.trim();
-    if(!v) { document.getElementById('setup-err').textContent = 'Preencha o campo: ' + f; return; }
+    if(!v) { document.getElementById('setup-err').textContent = 'Preencha: ' + f; return; }
     cfg[f] = v;
   }
   const btn = document.getElementById('setup-btn');
   btn.disabled = true; btn.textContent = 'Conectando…';
   document.getElementById('setup-err').textContent = '';
-  const tryConnect = async () => {
+  try {
     firebase.initializeApp(cfg);
+  } catch(e) {
+    // App already initialized — that's fine, continue
+  }
+  try {
     _db = firebase.firestore();
     await _db.collection('revisae').doc('dados').get();
-  };
-  try {
-    try { await tryConnect(); }
-    catch(e1) {
-      // App may already exist — delete and retry once
-      try { await firebase.app().delete(); } catch(e2) {}
-      await tryConnect();
-    }
     _saveCfg(cfg);
-    const ss = document.getElementById('setup-screen');
-    ss.style.display = 'none'; ss.style.pointerEvents = 'none';
+    document.getElementById('setup-screen').style.cssText = 'display:none;pointer-events:none';
+    window._fbSave = _fbSaveNow;
     await _boot(cfg);
   } catch(err) {
-    btn.disabled = false; btn.textContent = 'Conectar ao Firebase →';
-    document.getElementById('setup-err').textContent = 'Erro: verifique as credenciais e as regras do Firestore.';
+    btn.disabled = false;
+    btn.textContent = 'Conectar ao Firebase →';
+    document.getElementById('setup-err').textContent = 'Erro: ' + err.message;
     console.error('Setup error:', err);
   }
 };
-
 // ── BOOT ──────────────────────────────────────
 (async function() {
   const cfg = _getCfg();
@@ -2103,9 +2105,11 @@ window._setupConnect = async function() {
     return;
   }
   try {
+    try { firebase.initializeApp(cfg); } catch(e) {}
+    _db = firebase.firestore();
     await _boot(cfg);
   } catch(err) {
-    console.error('Boot error, falling back to localStorage:', err);
+    console.error('Boot error:', err);
     _syncUI('offline');
     load();
     estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
