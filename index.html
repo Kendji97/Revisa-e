@@ -1227,7 +1227,7 @@ function renderHoje(){
           <span class="rev-title">${e.assunto}</span>
           ${areaBadge(e.area)}${freqBadge(e.freq)}${sBadge}
         </div>
-        <div class="rev-sub">Revisão ${rev.num} de 8 · Primeiro estudo: ${e.dataPrimeiro}</div>
+        <div class="rev-sub">Revisão ${rev.num} de 8 · Primeiro estudo: ${formatDate(e.dataPrimeiro)}</div>
         ${tagsH?`<div class="rev-tags">${tagsH}</div>`:''}${notaH}
         <div class="rev-actions">
           <span class="act-lbl">Dificuldade:</span>
@@ -1314,7 +1314,7 @@ function renderTodos(){
       <div class="sub-top">
         <div>
           <div class="sub-name">${e.assunto}</div>
-          <div class="sub-meta">Primeiro estudo: ${e.dataPrimeiro} · Próxima: ${nextLbl}</div>
+          <div class="sub-meta">Primeiro estudo: ${formatDate(e.dataPrimeiro)} · Próxima: ${nextLbl}</div>
           <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">${areaBadge(e.area)}${freqBadge(e.freq)}</div>
           ${tagsH?`<div class="rev-tags" style="margin-top:5px">${tagsH}</div>`:''}
         </div>
@@ -1481,7 +1481,8 @@ function renderFlashcards() {
   function fmtDate(s) {
     if (!s) return '';
     const [y,m,d] = s.split('-');
-    return `${parseInt(d)} ${months[parseInt(m)-1]}. ${y}`;
+    const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    return `${parseInt(d)} de ${months[parseInt(m)-1]}`;
   }
 
   // Summary bar
@@ -2002,8 +2003,8 @@ function renderHistorico() {
 function formatDate(str) {
   if (!str) return '—';
   const [y, m, d] = str.split('-');
-  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  return `${parseInt(d)} ${months[parseInt(m)-1]}. ${y}`;
+  const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  return `${parseInt(d)} de ${months[parseInt(m)-1]}`;
 }
 
 // ── INIT ──────────────────────────────────────
