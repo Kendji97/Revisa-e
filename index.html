@@ -269,9 +269,9 @@ body.is-mobile .form-row{grid-template-columns:1fr}
 
 /* ── MODAL ──────────────────────────────── */
 .modal-ov{position:fixed;inset:0;background:rgba(12,10,7,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
-body.is-mobile .modal-ov{align-items:flex-end;padding:0}
+body.is-mobile .modal-ov{align-items:flex-end;padding:0;padding-bottom:calc(62px + env(safe-area-inset-bottom))}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;box-shadow:var(--sh-lg);animation:mIn .18s ease}
-body.is-mobile .modal-box{max-width:100%;border-radius:var(--r-lg) var(--r-lg) 0 0;max-height:70dvh;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
+body.is-mobile .modal-box{max-width:100%;border-radius:var(--r-lg) var(--r-lg) 0 0;max-height:calc(100dvh - 130px);overflow-y:auto;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
 @keyframes mIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
 .modal-handle{width:36px;height:4px;background:var(--border-md);border-radius:2px;margin:0 auto 1rem;display:none}
 body.is-mobile .modal-handle{display:block}
@@ -605,6 +605,7 @@ body:not(.is-mobile) .undo-toast{bottom:2rem}
   .dash-bottom-grid{grid-template-columns:1fr !important}
   .dash-grid{grid-template-columns:1fr 1fr !important}
 }
+body.is-mobile .dash-bottom-grid{grid-template-columns:1fr !important}
 
 /* ── HISTÓRICO MOBILE ───────────────────────── */
 body.is-mobile .hist-area-block{margin-bottom:1.5rem}
@@ -617,10 +618,18 @@ body.is-mobile .fc-info{min-width:0;flex:1}
 body.is-mobile .fc-name{font-size:13px}
 body.is-mobile .fc-badge{font-size:10px;padding:2px 7px;flex-shrink:0}
 body.is-mobile .fc-area-header{padding:9px 12px}
-body.is-mobile .fc-summary-bar{flex-wrap:wrap;gap:8px;padding:.75rem 1rem}
-body.is-mobile .fc-sum-stat{padding:0 10px;border-right:1px solid var(--border)}
-body.is-mobile .fc-sum-stat:nth-child(2n){border-right:none}
-body.is-mobile .fc-sum-val{font-size:1.3rem}
+body.is-mobile .fc-summary-bar{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--border);padding:0;overflow:hidden;
+  border-radius:var(--r-lg);
+}
+body.is-mobile .fc-sum-stat{
+  background:var(--surface);
+  padding:.9rem .5rem;border-right:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+body.is-mobile .fc-sum-val{font-size:1.5rem}
+body.is-mobile .fc-sum-lbl{font-size:9.5px;text-align:center}
 </style>
 </head>
 <body>
