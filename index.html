@@ -630,6 +630,89 @@ body.is-mobile .fc-sum-stat{
 }
 body.is-mobile .fc-sum-val{font-size:1.5rem}
 body.is-mobile .fc-sum-lbl{font-size:9.5px;text-align:center}
+
+/* ── SIMULADOS ──────────────────────────────── */
+.sim-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:12px}
+.btn-add-sim{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 18px;background:var(--text);color:var(--surface);
+  border:none;border-radius:var(--r);cursor:pointer;
+  font-size:13.5px;font-weight:600;font-family:'DM Sans',sans-serif;
+  transition:all .14s;touch-action:manipulation;
+}
+.btn-add-sim:hover{background:#000;transform:translateY(-1px)}
+
+/* Form modal */
+.sim-form-ov{
+  position:fixed;inset:0;background:rgba(12,10,7,.45);
+  backdrop-filter:blur(4px);display:flex;align-items:center;
+  justify-content:center;z-index:200;padding:1rem;
+}
+body.is-mobile .sim-form-ov{align-items:flex-end;padding:0;padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+.sim-form-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:1.5rem;
+  width:100%;max-width:480px;max-height:90dvh;overflow-y:auto;
+  box-shadow:var(--sh-lg);animation:mIn .18s ease;
+}
+body.is-mobile .sim-form-box{max-width:100%;border-radius:var(--r-lg) var(--r-lg) 0 0;max-height:85dvh}
+.sim-form-title{font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center}
+.sim-form-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-2);line-height:1;padding:0 4px}
+.sim-area-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+body.is-mobile .sim-area-grid{grid-template-columns:1fr}
+.sim-area-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--r);border:1px solid var(--border)}
+.sim-area-lbl{font-size:12.5px;font-weight:500;flex:1}
+.sim-area-inp{
+  width:70px;padding:5px 8px;border:1px solid var(--border);
+  border-radius:8px;background:var(--bg);font-size:13px;
+  color:var(--text);font-family:'DM Sans',sans-serif;text-align:center;
+}
+.sim-area-inp:focus{outline:none;border-color:var(--accent)}
+.sim-area-pct{font-size:11px;color:var(--text-3);width:24px;text-align:right}
+
+/* Cards list */
+.sim-list{display:flex;flex-direction:column;gap:10px;margin-bottom:2rem}
+.sim-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:1.1rem 1.25rem;
+  box-shadow:var(--sh);transition:box-shadow .14s;
+}
+.sim-card:hover{box-shadow:var(--sh-lg)}
+.sim-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.9rem;gap:10px;flex-wrap:wrap}
+.sim-card-meta{flex:1}
+.sim-card-banca{font-weight:600;font-size:15px;color:var(--text)}
+.sim-card-date{font-size:12px;color:var(--text-2);margin-top:2px}
+.sim-card-total{
+  font-size:1.6rem;font-weight:600;letter-spacing:-.03em;
+  color:var(--accent);line-height:1;
+}
+.sim-card-total-lbl{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;text-align:right}
+
+/* Area bars inside card */
+.sim-areas-wrap{display:flex;flex-direction:column;gap:7px}
+.sim-area-bar-row{display:grid;grid-template-columns:110px 1fr 38px;gap:8px;align-items:center}
+body.is-mobile .sim-area-bar-row{grid-template-columns:80px 1fr 34px}
+.sim-area-bar-lbl{font-size:12px;font-weight:500;color:var(--text-2)}
+.sim-area-bar-bg{height:9px;background:var(--surface2);border-radius:20px;overflow:hidden}
+.sim-area-bar-fill{height:100%;border-radius:20px;transition:width .5s}
+.sim-area-bar-pct{font-size:11.5px;font-weight:600;color:var(--text-2);text-align:right}
+
+/* Comparison chart */
+.sim-compare-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;box-shadow:var(--sh);margin-bottom:2rem;overflow-x:auto}
+.sim-compare-title{font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:1.25rem}
+.sim-compare-grid{display:flex;flex-direction:column;gap:14px}
+.sim-compare-row{display:grid;gap:8px;align-items:center}
+.sim-compare-lbl{font-size:12px;font-weight:500;color:var(--text-2);white-space:nowrap}
+.sim-compare-bars{display:flex;gap:4px;flex:1;align-items:flex-end;height:48px}
+.sim-compare-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.sim-compare-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .4s}
+.sim-compare-bar-val{font-size:9px;color:var(--text-3);font-weight:500}
+.sim-empty{text-align:center;padding:3rem 1rem;color:var(--text-2)}
+.sim-empty-ico{font-size:2rem;margin-bottom:.75rem;opacity:.35}
+.sim-empty-txt{font-size:14px;font-weight:500}
+.sim-empty-sub{font-size:12px;margin-top:4px;color:var(--text-3)}
+.sim-del-btn{padding:3px 8px;border:1px solid var(--border);border-radius:7px;background:none;cursor:pointer;font-size:11px;color:var(--text-3);font-family:'DM Sans',sans-serif;transition:all .12s;flex-shrink:0}
+.sim-del-btn:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-l)}
 </style>
 </head>
 <body>
@@ -726,6 +809,9 @@ service cloud.firestore {
     </button>
     <button class="nav-btn" onclick="goTo('historico',this)">
       <span class="nav-ico">◷</span> Histórico
+    </button>
+    <button class="nav-btn" onclick="goTo('simulados',this)">
+      <span class="nav-ico">⊞</span> Simulados
     </button>
     <button class="nav-btn" onclick="goTo('novo',this)">
       <span class="nav-ico">＋</span> Novo estudo
@@ -863,6 +949,21 @@ service cloud.firestore {
     </div>
   </div>
 
+
+  <!-- SIMULADOS -->
+  <div class="page" id="page-simulados">
+    <div class="page-header">
+      <div class="sim-header-row">
+        <div>
+          <div class="page-title">Simulados</div>
+          <div class="page-sub">Registre e compare seu desempenho</div>
+        </div>
+        <button class="btn-add-sim" onclick="abrirFormSimulado()">＋ Registrar simulado</button>
+      </div>
+    </div>
+    <div id="sim-content"></div>
+  </div>
+
 </main>
 </div>
 
@@ -893,6 +994,10 @@ service cloud.firestore {
     <span class="mob-nav-ico">◷</span>
     Histórico
   </button>
+  <button class="mob-nav-btn" onclick="goTo('simulados',this)">
+    <span class="mob-nav-ico">⊞</span>
+    Simulados
+  </button>
   <button class="mob-nav-btn" onclick="goTo('novo',this)">
     <span class="mob-nav-ico">＋</span>
     Novo
@@ -912,6 +1017,62 @@ service cloud.firestore {
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- SIMULADO FORM MODAL -->
+<div class="sim-form-ov" id="sim-form-modal" style="display:none" onclick="fecharFormSimulado(event)">
+  <div class="sim-form-box">
+    <div class="sim-form-title">
+      <span id="sim-form-modal-title">Registrar simulado</span>
+      <button class="sim-form-close" onclick="document.getElementById('sim-form-modal').style.display='none'">×</button>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Banca / Prova *</label>
+      <input class="form-inp" id="sim-banca" type="text" placeholder="Ex: REVALIDA, USP, ENARE, SUS-SP..." autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <div class="form-grp">
+        <label class="form-lbl">Data de realização *</label>
+        <input class="form-inp" id="sim-data" type="date"/>
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">% acertos geral *</label>
+        <input class="form-inp" id="sim-total" type="number" min="0" max="100" placeholder="Ex: 72"/>
+      </div>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">% acertos por área</label>
+      <div class="sim-area-grid">
+        <div class="sim-area-row">
+          <span class="sim-area-lbl" style="color:var(--cm)">Clínica Médica</span>
+          <input class="sim-area-inp" id="sim-cm" type="number" min="0" max="100" placeholder="%"/>
+        </div>
+        <div class="sim-area-row">
+          <span class="sim-area-lbl" style="color:var(--go)">GO</span>
+          <input class="sim-area-inp" id="sim-go" type="number" min="0" max="100" placeholder="%"/>
+        </div>
+        <div class="sim-area-row">
+          <span class="sim-area-lbl" style="color:var(--ped)">Pediatria</span>
+          <input class="sim-area-inp" id="sim-ped" type="number" min="0" max="100" placeholder="%"/>
+        </div>
+        <div class="sim-area-row">
+          <span class="sim-area-lbl" style="color:var(--cir)">Cirurgia</span>
+          <input class="sim-area-inp" id="sim-cir" type="number" min="0" max="100" placeholder="%"/>
+        </div>
+        <div class="sim-area-row">
+          <span class="sim-area-lbl" style="color:var(--prev)">Preventiva</span>
+          <input class="sim-area-inp" id="sim-prev" type="number" min="0" max="100" placeholder="%"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-grp">
+      <label class="form-lbl">Observações</label>
+      <textarea class="form-ta" id="sim-obs" placeholder="Condições, dificuldades, pontos de atenção..."></textarea>
+    </div>
+    <button class="btn-submit" onclick="salvarSimulado()" id="sim-save-btn">Salvar simulado</button>
+    <div class="form-msg" id="sim-form-msg"></div>
+  </div>
+</div>
+
 <div class="undo-toast" id="undo-toast"><span id="undo-msg">Assunto removido.</span><button class="undo-btn" onclick="undoDeletar()">DESFAZER</button></div>
 
 
@@ -947,6 +1108,7 @@ async function _fbSaveNow() {
     await setDoc(doc(_db,'revisae','dados'),{
       estudos:   JSON.stringify(estudos),
       allTags:   JSON.stringify(allTags),
+      simulados: JSON.stringify(simulados_list),
       updatedAt: _lastSaveTs,
       savedBy:   _SESSION_ID
     });
@@ -967,8 +1129,9 @@ function _subscribe() {
     try {
       const ne = JSON.parse(_sd.estudos || '[]');
       const nt = JSON.parse(_sd.allTags  || '[]');
-      if(JSON.stringify(ne) === JSON.stringify(estudos)) return;
-      estudos = ne; allTags = nt;
+      const ns = JSON.parse(_sd.simulados || '[]');
+      if(JSON.stringify(ne) === JSON.stringify(estudos) && JSON.stringify(ns) === JSON.stringify(simulados_list)) return;
+      estudos = ne; allTags = nt; simulados_list = ns;
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
       localStorage.setItem(KEY, JSON.stringify(estudos));
       localStorage.setItem(TKEY, JSON.stringify(allTags));
@@ -1001,6 +1164,7 @@ async function _boot(cfg) {
       const d = snap.data();
       estudos = JSON.parse(d.estudos || '[]');
       allTags = JSON.parse(d.allTags  || '[]');
+      simulados_list = JSON.parse(d.simulados || '[]');
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
       localStorage.setItem(KEY, JSON.stringify(estudos));
       localStorage.setItem(TKEY, JSON.stringify(allTags));
@@ -1044,16 +1208,18 @@ function areaBadge(area) {
 }
 
 // ── STORAGE (Firebase + localStorage fallback) ──
-const KEY='revisae-v1', TKEY='revisae-tags-v1';
-let estudos=[], allTags=[];
+const KEY='revisae-v1', TKEY='revisae-tags-v1', SKEY='revisae-sims-v1';
+let estudos=[], allTags=[], simulados_list=[];
 function save(){
   localStorage.setItem(KEY,JSON.stringify(estudos));
   localStorage.setItem(TKEY,JSON.stringify(allTags));
+  localStorage.setItem(SKEY,JSON.stringify(simulados_list));
   if(window._fbSave) window._fbSave();
 }
 function load(){
   try{estudos=JSON.parse(localStorage.getItem(KEY))||[];}catch(e){estudos=[];}
   try{allTags=JSON.parse(localStorage.getItem(TKEY))||[];}catch(e){allTags=[];}
+  try{simulados_list=JSON.parse(localStorage.getItem(SKEY))||[];}catch(e){simulados_list=[];}
 }
 
 // ── DATE UTILS ────────────────────────────────
@@ -1112,28 +1278,50 @@ function initSm2(freq) {
 function buildRevs(e) {
   const base = fromStr(e.dataPrimeiro);
   const fixedDays = [1, 3, 7];
+  // Base adaptive intervals (days) before SM-2 adjusts them
+  const adaptiveBase = [14, 30, 60, 120, 180];
   const revs = [];
-  let sm2 = e.sm2 || initSm2(e.freq);
-  const log = e.sm2Log || [];
+  const log  = e.sm2Log || [];
+  const done = e.revisoes || {};
+  const sm2State = e.sm2 || initSm2(e.freq);
 
   for (let i = 0; i < 8; i++) {
     let dataAlvo;
+
     if (i < 3) {
-      // Fixed revisions
-      dataAlvo = toStr(addDays(base, fixedDays[i]));
+      // Fixed revisions anchored to actual completion date of previous step
+      if (i === 0) {
+        dataAlvo = toStr(addDays(base, fixedDays[0]));
+      } else {
+        const prevDone = done[i-1] ? fromStr(done[i-1]) : null;
+        const anchor   = prevDone || base;
+        dataAlvo = toStr(addDays(anchor, fixedDays[i]));
+      }
     } else {
-      // SM-2 driven: compute from last done revision date + interval
-      const prevLog = log[i - 1];
-      const prevDate = prevLog ? fromStr(prevLog.date) : (
-        // fallback: use previous rev's target date
-        revs[i-1] ? fromStr(revs[i-1].dataAlvo) : base
-      );
-      // Use interval from log entry for i-1 if available, else current sm2
-      const interval = prevLog ? prevLog.intervalNext : sm2.interval;
-      dataAlvo = toStr(addDays(prevDate, Math.max(1, interval)));
+      // SM-2 adaptive: anchor to actual completion date of previous revision
+      const prevDone = done[i-1] ? fromStr(done[i-1]) : null;
+      const anchor   = prevDone || (revs[i-1] ? fromStr(revs[i-1].dataAlvo) : base);
+      const prevLog  = log[i-1];
+
+      let interval;
+      if (prevLog && prevLog.intervalNext) {
+        // SM-2 computed a specific next interval after that revision
+        interval = prevLog.intervalNext;
+      } else {
+        // No SM-2 log yet — use adaptive base × EF as a sensible default
+        const adaptIdx = i - 3; // 0..4
+        interval = Math.max(8, Math.round(adaptiveBase[adaptIdx] * sm2State.ef));
+      }
+
+      dataAlvo = toStr(addDays(anchor, Math.max(1, interval)));
     }
-    const done = (e.revisoes && e.revisoes[i]) || null;
-    revs.push({ num: i + 1, dataAlvo, done, logEntry: log[i] || null });
+
+    revs.push({
+      num: i + 1,
+      dataAlvo,
+      done: done[i] || null,
+      logEntry: log[i] || null
+    });
   }
   return revs;
 }
@@ -1177,6 +1365,7 @@ function goTo(page,btn){
   if(page==='dashboard') renderDashboard();
   if(page==='flashcards') renderFlashcards();
   if(page==='historico') renderHistorico();
+  if(page==='simulados') renderSimulados();
   window.scrollTo(0,0);
 }
 
@@ -2056,6 +2245,199 @@ function init(){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 
+
+// ── SIMULADOS ────────────────────────────────
+const AREA_COLORS = {
+  'Clínica Médica': 'var(--cm)',
+  'GO':             'var(--go)',
+  'Pediatria':      'var(--ped)',
+  'Cirurgia':       'var(--cir)',
+  'Preventiva':     'var(--prev)',
+};
+const AREA_FIELDS = ['Clínica Médica','GO','Pediatria','Cirurgia','Preventiva'];
+const AREA_IDS    = {'Clínica Médica':'cm','GO':'go','Pediatria':'ped','Cirurgia':'cir','Preventiva':'prev'};
+
+let _simEditId = null;
+
+function abrirFormSimulado(id) {
+  _simEditId = id || null;
+  const modal = document.getElementById('sim-form-modal');
+  const title = document.getElementById('sim-form-modal-title');
+  const msg   = document.getElementById('sim-form-msg');
+  msg.textContent = ''; msg.className = 'form-msg';
+  if(id) {
+    const s = simulados_list.find(x=>x.id===id);
+    if(!s) return;
+    title.textContent = 'Editar simulado';
+    document.getElementById('sim-banca').value  = s.banca;
+    document.getElementById('sim-data').value   = s.data;
+    document.getElementById('sim-total').value  = s.total;
+    document.getElementById('sim-obs').value    = s.obs || '';
+    AREA_FIELDS.forEach(a => {
+      const fid = AREA_IDS[a];
+      document.getElementById('sim-'+fid).value = s.areas[a] != null ? s.areas[a] : '';
+    });
+  } else {
+    title.textContent = 'Registrar simulado';
+    document.getElementById('sim-banca').value  = '';
+    document.getElementById('sim-data').value   = new Date().toISOString().split('T')[0];
+    document.getElementById('sim-total').value  = '';
+    document.getElementById('sim-obs').value    = '';
+    AREA_FIELDS.forEach(a => { document.getElementById('sim-'+AREA_IDS[a]).value = ''; });
+  }
+  modal.style.display = 'flex';
+}
+
+function fecharFormSimulado(e) {
+  if(e.target === document.getElementById('sim-form-modal'))
+    document.getElementById('sim-form-modal').style.display = 'none';
+}
+
+function salvarSimulado() {
+  const banca = document.getElementById('sim-banca').value.trim();
+  const data  = document.getElementById('sim-data').value;
+  const total = document.getElementById('sim-total').value;
+  const msg   = document.getElementById('sim-form-msg');
+  if(!banca){ msg.textContent='Informe a banca/prova.'; msg.className='form-msg err'; return; }
+  if(!data){  msg.textContent='Informe a data.';         msg.className='form-msg err'; return; }
+  if(!total){ msg.textContent='Informe o % de acertos.'; msg.className='form-msg err'; return; }
+  const areas = {};
+  AREA_FIELDS.forEach(a => {
+    const v = document.getElementById('sim-'+AREA_IDS[a]).value;
+    areas[a] = v !== '' ? parseInt(v) : null;
+  });
+  if(_simEditId) {
+    const s = simulados_list.find(x=>x.id===_simEditId);
+    if(s){ s.banca=banca; s.data=data; s.total=parseInt(total); s.areas=areas; s.obs=document.getElementById('sim-obs').value.trim(); }
+  } else {
+    simulados_list.push({
+      id: Date.now(), banca, data,
+      total: parseInt(total), areas,
+      obs: document.getElementById('sim-obs').value.trim()
+    });
+  }
+  // Sort by date desc
+  simulados_list.sort((a,b) => b.data.localeCompare(a.data));
+  save();
+  document.getElementById('sim-form-modal').style.display = 'none';
+  renderSimulados();
+  toast(_simEditId ? 'Simulado atualizado!' : 'Simulado registrado!');
+}
+
+function deletarSimulado(id) {
+  if(!confirm('Remover este simulado?')) return;
+  simulados_list = simulados_list.filter(x=>x.id!==id);
+  save(); renderSimulados(); toast('Simulado removido.');
+}
+
+function renderSimulados() {
+  const el = document.getElementById('sim-content');
+  if(!el) return;
+  if(!simulados_list.length) {
+    el.innerHTML = `<div class="sim-empty">
+      <div class="sim-empty-ico">⊞</div>
+      <div class="sim-empty-txt">Nenhum simulado registrado ainda.</div>
+      <div class="sim-empty-sub">Clique em "+ Registrar simulado" para começar.</div>
+    </div>`;
+    return;
+  }
+  // ── Comparison chart (area by area across all simulados) ──
+  const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  function simLabel(s) {
+    const [y,m,d] = s.data.split('-');
+    return `${s.banca}\n${parseInt(d)} ${months[parseInt(m)-1]}`;
+  }
+  // Build chart: for each area, show bars for each simulado
+  const maxBars = Math.min(simulados_list.length, 6); // last 6 sims
+  const recent = simulados_list.slice(0, maxBars);
+  let chartHtml = `<div class="sim-compare-wrap">
+    <div class="sim-compare-title">Comparativo por área</div>
+    <div class="sim-compare-grid">`;
+  // Legend row
+  chartHtml += `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">`;
+  recent.forEach((s,i) => {
+    const [y,m,d] = s.data.split('-');
+    chartHtml += `<span style="font-size:10px;color:var(--text-3);display:flex;align-items:center;gap:4px">
+      <span style="width:8px;height:8px;border-radius:50%;background:var(--text);opacity:${0.35 + i*0.13};display:inline-block"></span>
+      ${s.banca} (${parseInt(d)}/${parseInt(m)})
+    </span>`;
+  });
+  chartHtml += `</div>`;
+  // Geral row
+  chartHtml += `<div class="sim-compare-row" style="grid-template-columns:110px 1fr">
+    <div class="sim-compare-lbl" style="font-weight:600">Geral</div>
+    <div class="sim-compare-bars">`;
+  recent.forEach((s,i) => {
+    const h = Math.max(4, (s.total/100)*48);
+    const opacity = 0.35 + i*0.13;
+    chartHtml += `<div class="sim-compare-bar-wrap">
+      <div class="sim-compare-bar-val">${s.total}%</div>
+      <div class="sim-compare-bar" style="height:${h}px;background:var(--accent);opacity:${opacity}"></div>
+    </div>`;
+  });
+  chartHtml += `</div></div>`;
+  // Area rows
+  AREA_FIELDS.forEach(area => {
+    const hasData = recent.some(s => s.areas[area] != null);
+    if(!hasData) return;
+    const color = AREA_COLORS[area];
+    chartHtml += `<div class="sim-compare-row" style="grid-template-columns:110px 1fr">
+      <div class="sim-compare-lbl" style="color:${color}">${area === 'Clínica Médica' ? 'Clínica' : area}</div>
+      <div class="sim-compare-bars">`;
+    recent.forEach((s,i) => {
+      const val = s.areas[area];
+      if(val == null) { chartHtml += `<div class="sim-compare-bar-wrap"><div class="sim-compare-bar-val" style="color:var(--border-md)">—</div><div style="height:4px"></div></div>`; return; }
+      const h = Math.max(4, (val/100)*48);
+      const opacity = 0.35 + i*0.13;
+      chartHtml += `<div class="sim-compare-bar-wrap">
+        <div class="sim-compare-bar-val">${val}%</div>
+        <div class="sim-compare-bar" style="height:${h}px;background:${color};opacity:${opacity}"></div>
+      </div>`;
+    });
+    chartHtml += `</div></div>`;
+  });
+  chartHtml += `</div></div>`;
+  // ── Cards list ──
+  let cardsHtml = `<div class="sim-list">`;
+  simulados_list.forEach(s => {
+    const [y,m,d] = s.data.split('-');
+    const dateStr = `${parseInt(d)} de ${months[parseInt(m)-1]} de ${y}`;
+    const areaRows = AREA_FIELDS
+      .filter(a => s.areas[a] != null)
+      .map(a => {
+        const pct = s.areas[a];
+        const color = AREA_COLORS[a];
+        const aName = a === 'Clínica Médica' ? 'Clínica' : a;
+        return `<div class="sim-area-bar-row">
+          <div class="sim-area-bar-lbl" style="color:${color}">${aName}</div>
+          <div class="sim-area-bar-bg"><div class="sim-area-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+          <div class="sim-area-bar-pct">${pct}%</div>
+        </div>`;
+      }).join('');
+    const totalColor = s.total >= 70 ? 'var(--accent)' : s.total >= 60 ? 'var(--warn)' : 'var(--danger)';
+    cardsHtml += `<div class="sim-card">
+      <div class="sim-card-top">
+        <div class="sim-card-meta">
+          <div class="sim-card-banca">${s.banca}</div>
+          <div class="sim-card-date">${dateStr}</div>
+          ${s.obs ? `<div style="font-size:11.5px;color:var(--text-3);margin-top:4px;font-style:italic">${s.obs}</div>` : ''}
+        </div>
+        <div style="text-align:right">
+          <div class="sim-card-total" style="color:${totalColor}">${s.total}%</div>
+          <div class="sim-card-total-lbl">acertos</div>
+          <div style="display:flex;gap:5px;margin-top:6px;justify-content:flex-end">
+            <button class="sim-del-btn" onclick="abrirFormSimulado(${s.id})">✎ Editar</button>
+            <button class="sim-del-btn" onclick="deletarSimulado(${s.id})">✕</button>
+          </div>
+        </div>
+      </div>
+      ${areaRows ? `<div class="sim-areas-wrap">${areaRows}</div>` : ''}
+    </div>`;
+  });
+  cardsHtml += `</div>`;
+  el.innerHTML = chartHtml + cardsHtml;
+}
+
 // ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (required for onclick handlers) ──
 window.goTo = goTo;
 window.moveMonth = moveMonth;
@@ -2075,6 +2457,10 @@ window.removeChip = removeChip;
 window.renderSugs = renderSugs;
 window.showDayModal = showDayModal;
 window.closeModal = closeModal;
+window.abrirFormSimulado = abrirFormSimulado;
+window.fecharFormSimulado = fecharFormSimulado;
+window.salvarSimulado = salvarSimulado;
+window.deletarSimulado = deletarSimulado;
 window.closeModalOv = closeModalOv;
 window.toggleFC = toggleFC;
 window.toggleFCArea = toggleFCArea;
