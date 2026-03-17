@@ -1302,6 +1302,10 @@ function buildRevs(e) {
   const done = e.revisoes || {};
   const sm2State = e.sm2 || initSm2(e.freq);
 
+  // Normalize done keys to numbers to ensure consistent access
+  const doneNorm = {};
+  Object.keys(done).forEach(k => { doneNorm[parseInt(k)] = done[k]; });
+
   for (let i = 0; i < 8; i++) {
     let dataAlvo;
 
@@ -1310,13 +1314,13 @@ function buildRevs(e) {
       if (i === 0) {
         dataAlvo = toStr(addDays(base, fixedDays[0]));
       } else {
-        const prevDone = done[i-1] ? fromStr(done[i-1]) : null;
+        const prevDone = doneNorm[i-1] ? fromStr(doneNorm[i-1]) : null;
         const anchor   = prevDone || base;
         dataAlvo = toStr(addDays(anchor, fixedDays[i]));
       }
     } else {
       // SM-2 adaptive: anchor to actual completion date of previous revision
-      const prevDone = done[i-1] ? fromStr(done[i-1]) : null;
+      const prevDone = doneNorm[i-1] ? fromStr(doneNorm[i-1]) : null;
       const anchor   = prevDone || (revs[i-1] ? fromStr(revs[i-1].dataAlvo) : base);
       const anchorStr = toStr(anchor);
       const prevLog  = log[i-1];
@@ -1342,7 +1346,7 @@ function buildRevs(e) {
     revs.push({
       num: i + 1,
       dataAlvo,
-      done: done[i] || null,
+      done: doneNorm[i] || null,
       logEntry: log[i] || null
     });
   }
