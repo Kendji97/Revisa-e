@@ -606,6 +606,7 @@ body:not(.is-mobile) .undo-toast{bottom:2rem}
   .dash-grid{grid-template-columns:1fr 1fr !important}
 }
 body.is-mobile .dash-bottom-grid{grid-template-columns:1fr !important}
+.dash-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem}
 
 /* ── HISTÓRICO MOBILE ───────────────────────── */
 body.is-mobile .hist-area-block{margin-bottom:1.5rem}
@@ -1275,6 +1276,22 @@ function initSm2(freq) {
 // estudo.sm2Log = [{date, quality, ef, interval, reps}, ...] per revision done
 // First 3 revisions are ALWAYS fixed: +1, +3, +7 days from dataPrimeiro
 // From rev 4 onwards: SM-2 drives the interval
+// ── DATA-LIMITE DA PROVA (ENARE 2026/2027) ───────────────────
+// Historicamente sempre na 3ª semana de outubro.
+// Atualize este valor quando o edital oficial sair.
+const PROVA_DATE = '2026-10-18';
+
+function maxIntervalUntilProva(fromDateStr) {
+  // Returns the max sensible interval (days) from a given date until the prova.
+  // We cap at (days until prova / 2) so every subject gets at least one
+  // more review before the exam, with a minimum of 7 days.
+  const from  = fromStr(fromDateStr);
+  const prova = fromStr(PROVA_DATE);
+  const daysLeft = diffDays(from, prova);
+  if (daysLeft <= 7) return 7;
+  return Math.max(7, Math.floor(daysLeft / 2));
+}
+
 function buildRevs(e) {
   const base = fromStr(e.dataPrimeiro);
   const fixedDays = [1, 3, 7];
@@ -1301,19 +1318,25 @@ function buildRevs(e) {
       // SM-2 adaptive: anchor to actual completion date of previous revision
       const prevDone = done[i-1] ? fromStr(done[i-1]) : null;
       const anchor   = prevDone || (revs[i-1] ? fromStr(revs[i-1].dataAlvo) : base);
+      const anchorStr = toStr(anchor);
       const prevLog  = log[i-1];
 
       let interval;
       if (prevLog && prevLog.intervalNext) {
-        // SM-2 computed a specific next interval after that revision
         interval = prevLog.intervalNext;
       } else {
-        // No SM-2 log yet — use adaptive base × EF as a sensible default
         const adaptIdx = i - 3; // 0..4
         interval = Math.max(8, Math.round(adaptiveBase[adaptIdx] * sm2State.ef));
       }
 
+      // Cap interval so at least one review happens before the prova
+      const maxInt = maxIntervalUntilProva(anchorStr);
+      interval = Math.min(interval, maxInt);
+
       dataAlvo = toStr(addDays(anchor, Math.max(1, interval)));
+
+      // Never schedule past the prova date
+      if (dataAlvo > PROVA_DATE) dataAlvo = PROVA_DATE;
     }
 
     revs.push({
@@ -1952,7 +1975,7 @@ function renderDashboard() {
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem" class="dash-bottom-grid">
+  <div class="dash-bottom-grid">
     <div class="dash-section" style="margin-bottom:0">
       <div class="dash-section-title">Progresso por área</div>
       <div class="chart-card">
@@ -2030,7 +2053,7 @@ function renderDashboard() {
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem">
+  <div class="dash-bottom-grid">
     <div class="dash-section" style="margin-bottom:0">
       <div class="dash-section-title">Mais atrasados</div>
       <div class="atrasados-list">
