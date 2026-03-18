@@ -714,6 +714,50 @@ body.is-mobile .sim-area-bar-row{grid-template-columns:80px 1fr 34px}
 .sim-empty-sub{font-size:12px;margin-top:4px;color:var(--text-3)}
 .sim-del-btn{padding:3px 8px;border:1px solid var(--border);border-radius:7px;background:none;cursor:pointer;font-size:11px;color:var(--text-3);font-family:'DM Sans',sans-serif;transition:all .12s;flex-shrink:0}
 .sim-del-btn:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-l)}
+
+/* ── SIMULADO FORM NOVO ─────────────────────── */
+.sim-qs-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.sim-qs-compact{margin-top:0;flex-wrap:nowrap}
+.sim-qs-field{display:flex;flex-direction:column;gap:3px;flex:1}
+.sim-qs-lbl{font-size:11px;color:var(--text-2);font-weight:500}
+.sim-qs-inp{
+  padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);
+  background:var(--bg);color:var(--text);font-size:13.5px;
+  font-family:'DM Sans',sans-serif;width:100%;transition:border-color .14s;
+}
+.sim-qs-inp:focus{outline:none;border-color:var(--accent)}
+.sim-qs-pct{
+  font-size:1.1rem;font-weight:700;min-width:52px;text-align:center;
+  color:var(--accent);letter-spacing:-0.02em;flex-shrink:0;
+}
+.sim-areas-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.sim-area-form-block{
+  border:1px solid var(--border);border-radius:var(--r-lg);
+  overflow:hidden;background:var(--surface);
+}
+.sim-area-form-header{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-left:4px solid;
+  background:var(--surface);flex-wrap:wrap;gap:8px;
+}
+.sim-area-form-name{font-weight:600;font-size:13px;flex-shrink:0;min-width:100px}
+.sim-area-form-header .sim-qs-row{flex:1;min-width:0;margin-top:0}
+.sim-erros-ta{
+  width:100%;padding:9px 12px;border:none;border-top:1px solid var(--border);
+  background:var(--surface2);color:var(--text);font-size:12.5px;
+  font-family:'DM Sans',sans-serif;resize:vertical;min-height:54px;
+  line-height:1.5;display:block;
+}
+.sim-erros-ta:focus{outline:none;background:var(--bg)}
+.sim-erros-ta::placeholder{color:var(--text-3);font-style:italic}
+/* Card display of erros */
+.sim-erros-display{
+  font-size:11.5px;color:var(--text-2);font-style:italic;
+  margin-top:6px;padding:6px 8px;background:var(--surface2);
+  border-radius:var(--r);line-height:1.5;
+}
+.sim-erros-lbl{font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--text-3);margin-bottom:3px;font-style:normal}
 </style>
 </head>
 <body>
@@ -1026,54 +1070,109 @@ service cloud.firestore {
       <span id="sim-form-modal-title">Registrar simulado</span>
       <button class="sim-form-close" onclick="document.getElementById('sim-form-modal').style.display='none'">×</button>
     </div>
-    <div class="form-grp">
-      <label class="form-lbl">Banca / Prova *</label>
-      <input class="form-inp" id="sim-banca" type="text" placeholder="Ex: REVALIDA, USP, ENARE, SUS-SP..." autocomplete="off"/>
-    </div>
+
+    <!-- Banca + Data -->
     <div class="form-row">
       <div class="form-grp">
-        <label class="form-lbl">Data de realização *</label>
-        <input class="form-inp" id="sim-data" type="date"/>
+        <label class="form-lbl">Banca / Prova *</label>
+        <input class="form-inp" id="sim-banca" type="text" placeholder="REVALIDA, USP, ENARE..." autocomplete="off"/>
       </div>
       <div class="form-grp">
-        <label class="form-lbl">% acertos geral *</label>
-        <input class="form-inp" id="sim-total" type="number" min="0" max="100" placeholder="Ex: 72"/>
+        <label class="form-lbl">Data *</label>
+        <input class="form-inp" id="sim-data" type="date"/>
       </div>
     </div>
+
+    <!-- Geral -->
     <div class="form-grp">
-      <label class="form-lbl">% acertos por área</label>
-      <div class="sim-area-grid">
-        <div class="sim-area-row">
-          <span class="sim-area-lbl" style="color:var(--cm)">Clínica Médica</span>
-          <input class="sim-area-inp" id="sim-cm" type="number" min="0" max="100" placeholder="%"/>
+      <label class="form-lbl">Geral</label>
+      <div class="sim-qs-row">
+        <div class="sim-qs-field">
+          <label class="sim-qs-lbl">Total de questões</label>
+          <input class="sim-qs-inp" id="sim-total-q" type="number" min="0" placeholder="Ex: 120" oninput="calcSimPct('total')"/>
         </div>
-        <div class="sim-area-row">
-          <span class="sim-area-lbl" style="color:var(--go)">GO</span>
-          <input class="sim-area-inp" id="sim-go" type="number" min="0" max="100" placeholder="%"/>
+        <div class="sim-qs-field">
+          <label class="sim-qs-lbl">Questões acertadas</label>
+          <input class="sim-qs-inp" id="sim-total-a" type="number" min="0" placeholder="Ex: 86" oninput="calcSimPct('total')"/>
         </div>
-        <div class="sim-area-row">
-          <span class="sim-area-lbl" style="color:var(--ped)">Pediatria</span>
-          <input class="sim-area-inp" id="sim-ped" type="number" min="0" max="100" placeholder="%"/>
+        <div class="sim-qs-pct" id="sim-total-pct">—</div>
+      </div>
+    </div>
+
+    <!-- Por área -->
+    <div class="form-grp">
+      <label class="form-lbl">Por grande área</label>
+      <div class="sim-areas-form">
+        <div class="sim-area-form-block" id="sim-block-cm">
+          <div class="sim-area-form-header" style="border-color:var(--cm)">
+            <span class="sim-area-form-name" style="color:var(--cm)">Clínica Médica</span>
+            <div class="sim-qs-row sim-qs-compact">
+              <input class="sim-qs-inp" id="sim-cm-q" type="number" min="0" placeholder="Total" oninput="calcSimPct('cm')"/>
+              <input class="sim-qs-inp" id="sim-cm-a" type="number" min="0" placeholder="Acertos" oninput="calcSimPct('cm')"/>
+              <div class="sim-qs-pct" id="sim-cm-pct">—</div>
+            </div>
+          </div>
+          <textarea class="sim-erros-ta" id="sim-cm-erros" placeholder="Assuntos que errei: HAS, Cardiomiopatias..."></textarea>
         </div>
-        <div class="sim-area-row">
-          <span class="sim-area-lbl" style="color:var(--cir)">Cirurgia</span>
-          <input class="sim-area-inp" id="sim-cir" type="number" min="0" max="100" placeholder="%"/>
+
+        <div class="sim-area-form-block" id="sim-block-go">
+          <div class="sim-area-form-header" style="border-color:var(--go)">
+            <span class="sim-area-form-name" style="color:var(--go)">GO</span>
+            <div class="sim-qs-row sim-qs-compact">
+              <input class="sim-qs-inp" id="sim-go-q" type="number" min="0" placeholder="Total" oninput="calcSimPct('go')"/>
+              <input class="sim-qs-inp" id="sim-go-a" type="number" min="0" placeholder="Acertos" oninput="calcSimPct('go')"/>
+              <div class="sim-qs-pct" id="sim-go-pct">—</div>
+            </div>
+          </div>
+          <textarea class="sim-erros-ta" id="sim-go-erros" placeholder="Assuntos que errei: Pré-natal, Puerpério..."></textarea>
         </div>
-        <div class="sim-area-row">
-          <span class="sim-area-lbl" style="color:var(--prev)">Preventiva</span>
-          <input class="sim-area-inp" id="sim-prev" type="number" min="0" max="100" placeholder="%"/>
+
+        <div class="sim-area-form-block" id="sim-block-ped">
+          <div class="sim-area-form-header" style="border-color:var(--ped)">
+            <span class="sim-area-form-name" style="color:var(--ped)">Pediatria</span>
+            <div class="sim-qs-row sim-qs-compact">
+              <input class="sim-qs-inp" id="sim-ped-q" type="number" min="0" placeholder="Total" oninput="calcSimPct('ped')"/>
+              <input class="sim-qs-inp" id="sim-ped-a" type="number" min="0" placeholder="Acertos" oninput="calcSimPct('ped')"/>
+              <div class="sim-qs-pct" id="sim-ped-pct">—</div>
+            </div>
+          </div>
+          <textarea class="sim-erros-ta" id="sim-ped-erros" placeholder="Assuntos que errei: Sala de parto, Neonatologia..."></textarea>
+        </div>
+
+        <div class="sim-area-form-block" id="sim-block-cir">
+          <div class="sim-area-form-header" style="border-color:var(--cir)">
+            <span class="sim-area-form-name" style="color:var(--cir)">Cirurgia</span>
+            <div class="sim-qs-row sim-qs-compact">
+              <input class="sim-qs-inp" id="sim-cir-q" type="number" min="0" placeholder="Total" oninput="calcSimPct('cir')"/>
+              <input class="sim-qs-inp" id="sim-cir-a" type="number" min="0" placeholder="Acertos" oninput="calcSimPct('cir')"/>
+              <div class="sim-qs-pct" id="sim-cir-pct">—</div>
+            </div>
+          </div>
+          <textarea class="sim-erros-ta" id="sim-cir-erros" placeholder="Assuntos que errei: TCE, Trauma abdominal..."></textarea>
+        </div>
+
+        <div class="sim-area-form-block" id="sim-block-prev">
+          <div class="sim-area-form-header" style="border-color:var(--prev)">
+            <span class="sim-area-form-name" style="color:var(--prev)">Preventiva</span>
+            <div class="sim-qs-row sim-qs-compact">
+              <input class="sim-qs-inp" id="sim-prev-q" type="number" min="0" placeholder="Total" oninput="calcSimPct('prev')"/>
+              <input class="sim-qs-inp" id="sim-prev-a" type="number" min="0" placeholder="Acertos" oninput="calcSimPct('prev')"/>
+              <div class="sim-qs-pct" id="sim-prev-pct">—</div>
+            </div>
+          </div>
+          <textarea class="sim-erros-ta" id="sim-prev-erros" placeholder="Assuntos que errei: SUS, Epidemiologia..."></textarea>
         </div>
       </div>
     </div>
+
     <div class="form-grp">
-      <label class="form-lbl">Observações</label>
+      <label class="form-lbl">Observações gerais</label>
       <textarea class="form-ta" id="sim-obs" placeholder="Condições, dificuldades, pontos de atenção..."></textarea>
     </div>
     <button class="btn-submit" onclick="salvarSimulado()" id="sim-save-btn">Salvar simulado</button>
     <div class="form-msg" id="sim-form-msg"></div>
   </div>
 </div>
-
 <div class="undo-toast" id="undo-toast"><span id="undo-msg">Assunto removido.</span><button class="undo-btn" onclick="undoDeletar()">DESFAZER</button></div>
 
 
@@ -2298,31 +2397,65 @@ const AREA_IDS    = {'Clínica Médica':'cm','GO':'go','Pediatria':'ped','Cirurg
 
 let _simEditId = null;
 
+function calcSimPct(key) {
+  const qEl = document.getElementById('sim-'+key+(key==='total'?'-q':'-q'));
+  const aEl = document.getElementById('sim-'+key+(key==='total'?'-a':'-a'));
+  const pEl = document.getElementById('sim-'+key+'-pct');
+  if(!qEl||!aEl||!pEl) return;
+  const q = parseInt(qEl.value);
+  const a = parseInt(aEl.value);
+  if(!isNaN(q) && q > 0 && !isNaN(a) && a >= 0) {
+    const pct = Math.round((a/q)*100);
+    pEl.textContent = pct+'%';
+    pEl.style.color = pct >= 70 ? 'var(--accent)' : pct >= 60 ? 'var(--warn)' : 'var(--danger)';
+  } else {
+    pEl.textContent = '—';
+    pEl.style.color = 'var(--text-3)';
+  }
+}
+
 function abrirFormSimulado(id) {
   _simEditId = id || null;
   const modal = document.getElementById('sim-form-modal');
   const title = document.getElementById('sim-form-modal-title');
   const msg   = document.getElementById('sim-form-msg');
   msg.textContent = ''; msg.className = 'form-msg';
+
+  const areaIds = ['cm','go','ped','cir','prev'];
+
   if(id) {
     const s = simulados_list.find(x=>x.id===id);
     if(!s) return;
     title.textContent = 'Editar simulado';
-    document.getElementById('sim-banca').value  = s.banca;
-    document.getElementById('sim-data').value   = s.data;
-    document.getElementById('sim-total').value  = s.total;
-    document.getElementById('sim-obs').value    = s.obs || '';
-    AREA_FIELDS.forEach(a => {
-      const fid = AREA_IDS[a];
-      document.getElementById('sim-'+fid).value = s.areas[a] != null ? s.areas[a] : '';
+    document.getElementById('sim-banca').value = s.banca;
+    document.getElementById('sim-data').value  = s.data;
+    document.getElementById('sim-obs').value   = s.obs || '';
+    // Geral
+    document.getElementById('sim-total-q').value = s.totalQ || '';
+    document.getElementById('sim-total-a').value = s.totalA || '';
+    calcSimPct('total');
+    // Por área
+    areaIds.forEach(fid => {
+      const aData = s.areaData && s.areaData[fid] ? s.areaData[fid] : {};
+      document.getElementById('sim-'+fid+'-q').value = aData.q || '';
+      document.getElementById('sim-'+fid+'-a').value = aData.a || '';
+      document.getElementById('sim-'+fid+'-erros').value = aData.erros || '';
+      calcSimPct(fid);
     });
   } else {
     title.textContent = 'Registrar simulado';
-    document.getElementById('sim-banca').value  = '';
-    document.getElementById('sim-data').value   = new Date().toISOString().split('T')[0];
-    document.getElementById('sim-total').value  = '';
-    document.getElementById('sim-obs').value    = '';
-    AREA_FIELDS.forEach(a => { document.getElementById('sim-'+AREA_IDS[a]).value = ''; });
+    document.getElementById('sim-banca').value = '';
+    document.getElementById('sim-data').value  = new Date().toISOString().split('T')[0];
+    document.getElementById('sim-obs').value   = '';
+    document.getElementById('sim-total-q').value = '';
+    document.getElementById('sim-total-a').value = '';
+    document.getElementById('sim-total-pct').textContent = '—';
+    areaIds.forEach(fid => {
+      document.getElementById('sim-'+fid+'-q').value = '';
+      document.getElementById('sim-'+fid+'-a').value = '';
+      document.getElementById('sim-'+fid+'-erros').value = '';
+      document.getElementById('sim-'+fid+'-pct').textContent = '—';
+    });
   }
   modal.style.display = 'flex';
 }
@@ -2335,27 +2468,43 @@ function fecharFormSimulado(e) {
 function salvarSimulado() {
   const banca = document.getElementById('sim-banca').value.trim();
   const data  = document.getElementById('sim-data').value;
-  const total = document.getElementById('sim-total').value;
   const msg   = document.getElementById('sim-form-msg');
   if(!banca){ msg.textContent='Informe a banca/prova.'; msg.className='form-msg err'; return; }
   if(!data){  msg.textContent='Informe a data.';         msg.className='form-msg err'; return; }
-  if(!total){ msg.textContent='Informe o % de acertos.'; msg.className='form-msg err'; return; }
-  const areas = {};
-  AREA_FIELDS.forEach(a => {
-    const v = document.getElementById('sim-'+AREA_IDS[a]).value;
-    areas[a] = v !== '' ? parseInt(v) : null;
+
+  const totalQ = parseInt(document.getElementById('sim-total-q').value) || null;
+  const totalA = parseInt(document.getElementById('sim-total-a').value) || null;
+  const total  = (totalQ && totalA != null) ? Math.round((totalA/totalQ)*100) : null;
+
+  if(!total){ msg.textContent='Informe o total de questões e os acertos.'; msg.className='form-msg err'; return; }
+
+  const areaIds = ['cm','go','ped','cir','prev'];
+  const areaNames = {cm:'Clínica Médica',go:'GO',ped:'Pediatria',cir:'Cirurgia',prev:'Preventiva'};
+  const areaData = {};
+  const areas    = {}; // pct per area (legacy compat for chart)
+
+  areaIds.forEach(fid => {
+    const q = parseInt(document.getElementById('sim-'+fid+'-q').value);
+    const a = parseInt(document.getElementById('sim-'+fid+'-a').value);
+    const erros = document.getElementById('sim-'+fid+'-erros').value.trim();
+    const pct = (!isNaN(q) && q > 0 && !isNaN(a)) ? Math.round((a/q)*100) : null;
+    areaData[fid] = { q: isNaN(q)?null:q, a: isNaN(a)?null:a, pct, erros: erros||null };
+    areas[areaNames[fid]] = pct;
   });
+
+  const record = {
+    id: _simEditId || Date.now(),
+    banca, data, total, totalQ, totalA,
+    areas, areaData,
+    obs: document.getElementById('sim-obs').value.trim()
+  };
+
   if(_simEditId) {
-    const s = simulados_list.find(x=>x.id===_simEditId);
-    if(s){ s.banca=banca; s.data=data; s.total=parseInt(total); s.areas=areas; s.obs=document.getElementById('sim-obs').value.trim(); }
+    const idx = simulados_list.findIndex(x=>x.id===_simEditId);
+    if(idx >= 0) simulados_list[idx] = record;
   } else {
-    simulados_list.push({
-      id: Date.now(), banca, data,
-      total: parseInt(total), areas,
-      obs: document.getElementById('sim-obs').value.trim()
-    });
+    simulados_list.push(record);
   }
-  // Sort by date desc
   simulados_list.sort((a,b) => b.data.localeCompare(a.data));
   save();
   document.getElementById('sim-form-modal').style.display = 'none';
@@ -2441,16 +2590,20 @@ function renderSimulados() {
   simulados_list.forEach(s => {
     const [y,m,d] = s.data.split('-');
     const dateStr = `${parseInt(d)} de ${months[parseInt(m)-1]} de ${y}`;
-    const areaRows = AREA_FIELDS
-      .filter(a => s.areas[a] != null)
-      .map(a => {
-        const pct = s.areas[a];
-        const color = AREA_COLORS[a];
-        const aName = a === 'Clínica Médica' ? 'Clínica' : a;
-        return `<div class="sim-area-bar-row">
-          <div class="sim-area-bar-lbl" style="color:${color}">${aName}</div>
-          <div class="sim-area-bar-bg"><div class="sim-area-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-          <div class="sim-area-bar-pct">${pct}%</div>
+    const areaIdMap = {cm:'Clínica Médica',go:'GO',ped:'Pediatria',cir:'Cirurgia',prev:'Preventiva'};
+    const areaRows = Object.entries(areaIdMap).map(([fid, aName]) => {
+        const ad = s.areaData && s.areaData[fid] ? s.areaData[fid] : null;
+        const pct = ad ? ad.pct : (s.areas ? s.areas[aName] : null);
+        if(pct == null) return '';
+        const color = AREA_COLORS[aName];
+        const shortName = aName === 'Clínica Médica' ? 'Clínica' : aName;
+        const errosHtml = ad && ad.erros ? `<div class="sim-erros-display"><div class="sim-erros-lbl">Erros</div>${ad.erros}</div>` : '';
+        return `<div style="margin-bottom:${errosHtml?'2px':'6px'}">
+          <div class="sim-area-bar-row">
+            <div class="sim-area-bar-lbl" style="color:${color}">${shortName}</div>
+            <div class="sim-area-bar-bg"><div class="sim-area-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+            <div class="sim-area-bar-pct">${pct}%</div>
+          </div>${errosHtml}
         </div>`;
       }).join('');
     const totalColor = s.total >= 70 ? 'var(--accent)' : s.total >= 60 ? 'var(--warn)' : 'var(--danger)';
@@ -2497,6 +2650,7 @@ window.renderSugs = renderSugs;
 window.showDayModal = showDayModal;
 window.closeModal = closeModal;
 window.abrirFormSimulado = abrirFormSimulado;
+window.calcSimPct = calcSimPct;
 window.fecharFormSimulado = fecharFormSimulado;
 window.salvarSimulado = salvarSimulado;
 window.deletarSimulado = deletarSimulado;
