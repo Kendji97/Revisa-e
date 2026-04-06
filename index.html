@@ -788,6 +788,89 @@ body.dark{
 }
 .dark-toggle:hover{background:var(--surface2);color:var(--text)}
 .dark-toggle-ico{font-size:14px;line-height:1}
+
+/* ── CRONOGRAMA ─────────────────────────────── */
+.cron-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.cron-progress-bar{background:var(--surface2);border-radius:20px;height:8px;overflow:hidden;margin-top:6px}
+.cron-progress-fill{height:100%;background:var(--accent);border-radius:20px;transition:width .5s}
+.cron-progress-lbl{font-size:11px;color:var(--text-3);margin-top:4px}
+
+/* Week slider */
+.cron-slider-wrap{position:relative;overflow:hidden;touch-action:pan-y}
+.cron-slider{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.cron-week-card{
+  min-width:100%;padding:0 2px;
+  flex-shrink:0;
+}
+.cron-week-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;
+}
+.cron-week-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);letter-spacing:-.01em}
+.cron-week-range{font-size:12px;color:var(--text-3);margin-top:2px}
+.cron-week-prog{font-size:11px;color:var(--text-2);font-weight:500}
+
+/* Nav arrows */
+.cron-nav{display:flex;gap:6px;align-items:center}
+.cron-nav-btn{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--border);
+  background:var(--surface);cursor:pointer;font-size:14px;color:var(--text-2);
+  display:flex;align-items:center;justify-content:center;transition:all .13s;
+  touch-action:manipulation;
+}
+.cron-nav-btn:hover{background:var(--surface2);color:var(--text)}
+.cron-nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.cron-week-counter{font-size:12px;color:var(--text-3);font-weight:500;min-width:60px;text-align:center}
+
+/* Day rows */
+.cron-days{display:flex;flex-direction:column;gap:6px}
+.cron-day-row{
+  display:grid;grid-template-columns:72px 1fr auto;
+  gap:10px;align-items:center;
+  padding:10px 12px;border-radius:var(--r-lg);
+  border:1px solid var(--border);background:var(--surface);
+  box-shadow:var(--sh);transition:all .14s;
+}
+body.is-mobile .cron-day-row{grid-template-columns:60px 1fr auto;gap:8px;padding:9px 10px}
+.cron-day-row.done{opacity:.55}
+.cron-day-row.done .cron-assunto{text-decoration:line-through;color:var(--text-3)}
+.cron-day-row.weekend{
+  background:var(--surface2);border-style:dashed;
+  opacity:.7;grid-template-columns:72px 1fr;
+}
+body.is-mobile .cron-day-row.weekend{grid-template-columns:60px 1fr}
+.cron-day-row.past-empty{opacity:.35}
+
+.cron-dow{font-size:11.5px;font-weight:600;color:var(--text-2)}
+.cron-dow-date{font-size:10px;color:var(--text-3);font-weight:400;margin-top:1px}
+
+.cron-area-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;margin-bottom:3px;
+}
+.cron-assunto{font-size:13px;font-weight:500;color:var(--text);line-height:1.3}
+.cron-weekend-lbl{font-size:12.5px;color:var(--text-2);font-style:italic}
+.cron-weekend-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+
+/* Check button */
+.cron-check{
+  width:24px;height:24px;border-radius:7px;flex-shrink:0;
+  border:2px solid var(--border-md);background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;touch-action:manipulation;
+  font-size:13px;
+}
+.cron-check:hover{border-color:var(--accent)}
+.cron-check.checked{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Week dots navigation */
+.cron-dots{display:flex;gap:4px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.cron-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--border-md);
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.cron-dot.active{background:var(--accent);transform:scale(1.4)}
+.cron-dot.has-done{background:var(--accent);opacity:.4}
 </style>
 </head>
 <body>
@@ -890,6 +973,9 @@ service cloud.firestore {
     <button class="nav-btn" onclick="goTo('historico',this)">
       <span class="nav-ico">◷</span> Histórico
     </button>
+    <button class="nav-btn" onclick="goTo('cronograma',this)">
+      <span class="nav-ico">📅</span> Cronograma
+    </button>
     <button class="nav-btn" onclick="goTo('simulados',this)">
       <span class="nav-ico">⊞</span> Simulados
     </button>
@@ -945,6 +1031,16 @@ service cloud.firestore {
     </div>
     <div class="area-bar" id="area-todos"></div>
     <div id="lista-todos"></div>
+  </div>
+
+
+  <!-- CRONOGRAMA -->
+  <div class="page" id="page-cronograma">
+    <div class="page-header">
+      <div class="page-title">Cronograma</div>
+      <div class="page-sub">Videoaulas — seg a sex · revisões nos finais de semana</div>
+    </div>
+    <div id="cron-content"></div>
   </div>
 
   <!-- DASHBOARD -->
@@ -1079,6 +1175,10 @@ service cloud.firestore {
   <button class="mob-nav-btn" onclick="goTo('historico',this)">
     <span class="mob-nav-ico">◷</span>
     Histórico
+  </button>
+  <button class="mob-nav-btn" onclick="goTo('cronograma',this)">
+    <span class="mob-nav-ico">📅</span>
+    Cronograma
   </button>
   <button class="mob-nav-btn" onclick="goTo('simulados',this)">
     <span class="mob-nav-ico">⊞</span>
@@ -1250,6 +1350,7 @@ async function _fbSaveNow() {
       estudos:   JSON.stringify(estudos),
       allTags:   JSON.stringify(allTags),
       simulados: JSON.stringify(simulados_list),
+      cronDone:  JSON.stringify(cronDone),
       updatedAt: _lastSaveTs,
       savedBy:   _SESSION_ID
     });
@@ -1271,8 +1372,9 @@ function _subscribe() {
       const ne = JSON.parse(_sd.estudos || '[]');
       const nt = JSON.parse(_sd.allTags  || '[]');
       const ns = JSON.parse(_sd.simulados || '[]');
-      if(JSON.stringify(ne) === JSON.stringify(estudos) && JSON.stringify(ns) === JSON.stringify(simulados_list)) return;
-      estudos = ne; allTags = nt; simulados_list = ns;
+      const nc = JSON.parse(_sd.cronDone  || '{}');
+      if(JSON.stringify(ne) === JSON.stringify(estudos) && JSON.stringify(ns) === JSON.stringify(simulados_list) && JSON.stringify(nc) === JSON.stringify(cronDone)) return;
+      estudos = ne; allTags = nt; simulados_list = ns; cronDone = nc;
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
       localStorage.setItem(KEY, JSON.stringify(estudos));
       localStorage.setItem(TKEY, JSON.stringify(allTags));
@@ -1306,6 +1408,7 @@ async function _boot(cfg) {
       estudos = JSON.parse(d.estudos || '[]');
       allTags = JSON.parse(d.allTags  || '[]');
       simulados_list = JSON.parse(d.simulados || '[]');
+      cronDone = JSON.parse(d.cronDone || '{}');
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
       localStorage.setItem(KEY, JSON.stringify(estudos));
       localStorage.setItem(TKEY, JSON.stringify(allTags));
@@ -1349,18 +1452,20 @@ function areaBadge(area) {
 }
 
 // ── STORAGE (Firebase + localStorage fallback) ──
-const KEY='revisae-v1', TKEY='revisae-tags-v1', SKEY='revisae-sims-v1';
-let estudos=[], allTags=[], simulados_list=[];
+const KEY='revisae-v1', TKEY='revisae-tags-v1', SKEY='revisae-sims-v1', CKEY='revisae-cron-v1';
+let estudos=[], allTags=[], simulados_list=[], cronDone={};
 function save(){
   localStorage.setItem(KEY,JSON.stringify(estudos));
   localStorage.setItem(TKEY,JSON.stringify(allTags));
   localStorage.setItem(SKEY,JSON.stringify(simulados_list));
+  localStorage.setItem(CKEY,JSON.stringify(cronDone));
   if(window._fbSave) window._fbSave();
 }
 function load(){
   try{estudos=JSON.parse(localStorage.getItem(KEY))||[];}catch(e){estudos=[];}
   try{allTags=JSON.parse(localStorage.getItem(TKEY))||[];}catch(e){allTags=[];}
   try{simulados_list=JSON.parse(localStorage.getItem(SKEY))||[];}catch(e){simulados_list=[];}
+  try{cronDone=JSON.parse(localStorage.getItem(CKEY))||{};}catch(e){cronDone={};}
 }
 
 // ── DATE UTILS ────────────────────────────────
@@ -1545,6 +1650,7 @@ function goTo(page,btn){
   if(page==='flashcards') renderFlashcards();
   if(page==='historico') renderHistorico();
   if(page==='simulados') renderSimulados();
+  if(page==='cronograma') renderCronograma();
   window.scrollTo(0,0);
 }
 
@@ -2697,6 +2803,198 @@ function toggleDark() {
   else if(saved === null && window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
 })();
 
+
+// ── CRONOGRAMA ────────────────────────────────
+const CRON_WEEKS = [{"num": 1, "start": "2026-04-06", "days": [{"date": "2026-04-06", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Distúrbios obstrutivos", "done": false}, {"date": "2026-04-07", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Nutrição na pediatria", "done": false}, {"date": "2026-04-08", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Abdome agudo obstrutivo", "done": false}, {"date": "2026-04-09", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Hepatite, HIV e AIDS na gestação", "done": false}, {"date": "2026-04-10", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Imunizações", "done": false}, {"date": "2026-04-11", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-04-12", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 2, "start": "2026-04-13", "days": [{"date": "2026-04-13", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Embolia e hipertensão pulmonar", "done": false}, {"date": "2026-04-14", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Distúrbios estaturais e puberais", "done": false}, {"date": "2026-04-15", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Abdome agudo perfurativo", "done": false}, {"date": "2026-04-16", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Sangramento da primeira metade", "done": false}, {"date": "2026-04-17", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Ética médica, bioética e documentação", "done": false}, {"date": "2026-04-18", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-04-19", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 3, "start": "2026-04-20", "days": [{"date": "2026-04-20", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Dçs pulmonares intersticiais", "done": false}, {"date": "2026-04-21", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Distúrbios carenciais", "done": false}, {"date": "2026-04-22", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Cx da obesidade", "done": false}, {"date": "2026-04-23", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Sangramento da segunda metade", "done": false}, {"date": "2026-04-24", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Perfis e indicadores sociais", "done": false}, {"date": "2026-04-25", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-04-26", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 4, "start": "2026-04-27", "days": [{"date": "2026-04-27", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Pneumonias e sd. gripais", "done": false}, {"date": "2026-04-28", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Anemias e hemoglobinopatias", "done": false}, {"date": "2026-04-29", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Cólon e reto na cx", "done": false}, {"date": "2026-04-30", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "PALM-COEIN", "done": false}, {"date": "2026-05-01", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Indicadores de morbimortalidade", "done": false}, {"date": "2026-05-02", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-05-03", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 5, "start": "2026-05-04", "days": [{"date": "2026-05-04", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Tuberculose", "done": false}, {"date": "2026-05-05", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Constipação intestinal", "done": false}, {"date": "2026-05-06", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Hemorragia digestiva", "done": false}, {"date": "2026-05-07", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "DIP e violência sexual", "done": false}, {"date": "2026-05-08", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Estudos epidemiológicos (classificação)", "done": false}, {"date": "2026-05-09", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-05-10", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 6, "start": "2026-05-11", "days": [{"date": "2026-05-11", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Sds. Febris", "done": false}, {"date": "2026-05-12", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Sd. diarreicas e disabsortivas", "done": false}, {"date": "2026-05-13", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Tumores do aparelho digestivo", "done": false}, {"date": "2026-05-14", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Vulvovaginites", "done": false}, {"date": "2026-05-15", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Estudos epidemiológicos (análise, estatística e aplicação)", "done": false}, {"date": "2026-05-16", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-05-17", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 7, "start": "2026-05-18", "days": [{"date": "2026-05-18", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Endocardite e infecção de corrente sanguínea", "done": false}, {"date": "2026-05-19", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Parasitoses", "done": false}, {"date": "2026-05-20", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Cuidados pré-operatórios", "done": false}, {"date": "2026-05-21", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Rastreamento do CA de colo", "done": false}, {"date": "2026-05-22", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Estatística de testes diagnósticos", "done": false}, {"date": "2026-05-23", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-05-24", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 8, "start": "2026-05-25", "days": [{"date": "2026-05-25", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Infecções de pele, ossos e partes moles", "done": false}, {"date": "2026-05-26", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Desordens genéticas e erros inatos do metabolismo", "done": false}, {"date": "2026-05-27", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Feridas, enxertos e retalhos", "done": false}, {"date": "2026-05-28", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Tumores malignos da mama", "done": false}, {"date": "2026-05-29", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Notificação", "done": false}, {"date": "2026-05-30", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-05-31", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 9, "start": "2026-06-01", "days": [{"date": "2026-06-01", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Infecções do SNC", "done": false}, {"date": "2026-06-02", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Desordens do sistema imune", "done": false}, {"date": "2026-06-03", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Anestesia", "done": false}, {"date": "2026-06-04", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Dçs do corpo uterino e endométrio", "done": false}, {"date": "2026-06-05", "dow": 4, "type": "aula", "area": "Preventiva", "areaKey": "prev", "assunto": "Vigilância em saúde do trabalhador", "done": false}, {"date": "2026-06-06", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-06-07", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 10, "start": "2026-06-08", "days": [{"date": "2026-06-08", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "ISTs", "done": false}, {"date": "2026-06-09", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Nariz, ouvido e laringe", "done": false}, {"date": "2026-06-10", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Afecções pancreáticas", "done": false}, {"date": "2026-06-11", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Infertilidade conjugal", "done": false}, {"date": "2026-06-12", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Hepatites e dçs do metabolismo da bilirrubina", "done": false}, {"date": "2026-06-13", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-06-14", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 11, "start": "2026-06-15", "days": [{"date": "2026-06-15", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Cirrose, insuficiência hepática e complicações", "done": false}, {"date": "2026-06-16", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Distúrbios obstrutivos", "done": false}, {"date": "2026-06-17", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Doença inflamatória intestinal", "done": false}, {"date": "2026-06-18", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Outras dçs na gestação", "done": false}, {"date": "2026-06-19", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Sds. diarreicas e disabsortivas", "done": false}, {"date": "2026-06-20", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-06-21", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 12, "start": "2026-06-22", "days": [{"date": "2026-06-22", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Artrites e diagnósticos diferenciais", "done": false}, {"date": "2026-06-23", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Pneumonias e sd. gripais", "done": false}, {"date": "2026-06-24", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Sd. Disfágica", "done": false}, {"date": "2026-06-25", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Medicina fetal", "done": false}, {"date": "2026-06-26", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Colagenoses e miopatias", "done": false}, {"date": "2026-06-27", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-06-28", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 13, "start": "2026-06-29", "days": [{"date": "2026-06-29", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Anemias e hemoglobinopatias", "done": false}, {"date": "2026-06-30", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Tuberculose", "done": false}, {"date": "2026-07-01", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Sd. Dispéptica", "done": false}, {"date": "2026-07-02", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Sofrimento fetal", "done": false}, {"date": "2026-07-03", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Onco-hematologia", "done": false}, {"date": "2026-07-04", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-07-05", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 14, "start": "2026-07-06", "days": [{"date": "2026-07-06", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Distúrbios da hemostasia, desordens trombóticas e transfusão", "done": false}, {"date": "2026-07-07", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Dçs exantemáticas", "done": false}, {"date": "2026-07-08", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Afecções benignas das vias biliares", "done": false}, {"date": "2026-07-09", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Trabalho de parto prematuro", "done": false}, {"date": "2026-07-10", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Geriatria e demências", "done": false}, {"date": "2026-07-11", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-07-12", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 15, "start": "2026-07-13", "days": [{"date": "2026-07-13", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Cefaleias", "done": false}, {"date": "2026-07-14", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Sd. febris", "done": false}, {"date": "2026-07-15", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Tireoide", "done": false}, {"date": "2026-07-16", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "RPMO e infecção ovular", "done": false}, {"date": "2026-07-17", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "AVC", "done": false}, {"date": "2026-07-18", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-07-19", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 16, "start": "2026-07-20", "days": [{"date": "2026-07-20", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Sd. neurológicas e fraquezas", "done": false}, {"date": "2026-07-21", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "HAS", "done": false}, {"date": "2026-07-22", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Tumores dermatológicos", "done": false}, {"date": "2026-07-23", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Incontinência urinária e prolapsos", "done": false}, {"date": "2026-07-24", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Sepse e choque séptico", "done": false}, {"date": "2026-07-25", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-07-26", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 17, "start": "2026-07-27", "days": [{"date": "2026-07-27", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Pneumointensivismo", "done": false}, {"date": "2026-07-28", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Cardiopatias congênitas", "done": false}, {"date": "2026-07-29", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Aneurismas", "done": false}, {"date": "2026-07-30", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Tumores de colo uterino", "done": false}, {"date": "2026-07-31", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Neurointensivismo", "done": false}, {"date": "2026-08-01", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-02", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 18, "start": "2026-08-03", "days": [{"date": "2026-08-03", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Dçs infectoparasitárias dermatológicas", "done": false}, {"date": "2026-08-04", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Arritmias, síncope e PCR", "done": false}, {"date": "2026-08-05", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Dç arterial periférica", "done": false}, {"date": "2026-08-06", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Tumores de ovários", "done": false}, {"date": "2026-08-07", "dow": 4, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Farmacodermias e dermatoses", "done": false}, {"date": "2026-08-08", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-09", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 19, "start": "2026-08-10", "days": [{"date": "2026-08-10", "dow": 0, "type": "aula", "area": "Clínica Médica", "areaKey": "cm", "assunto": "Transtornos mentais e abuso de substâncias", "done": false}, {"date": "2026-08-11", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Diabetes", "done": false}, {"date": "2026-08-12", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Dçs venosas", "done": false}, {"date": "2026-08-13", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Dçs benignas da mama", "done": false}, {"date": "2026-08-14", "dow": 4, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "ITU", "done": false}, {"date": "2026-08-15", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-16", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 20, "start": "2026-08-17", "days": [{"date": "2026-08-17", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-18", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Glomerulopatias e tubulopatias", "done": false}, {"date": "2026-08-19", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Afecções urológicas benignas", "done": false}, {"date": "2026-08-20", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Dor pélvica crônica", "done": false}, {"date": "2026-08-21", "dow": 4, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Epilepsia e sd. convulsivas", "done": false}, {"date": "2026-08-22", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-23", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 21, "start": "2026-08-24", "days": [{"date": "2026-08-24", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-25", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Infecções do SNC", "done": false}, {"date": "2026-08-26", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Tumores urológicos", "done": false}, {"date": "2026-08-27", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Patologias da vulva e vagina", "done": false}, {"date": "2026-08-28", "dow": 4, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Distúrbios da hemostasia e desordens trombóticas", "done": false}, {"date": "2026-08-29", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-08-30", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 22, "start": "2026-08-31", "days": [{"date": "2026-08-31", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-01", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Onco-hematologia", "done": false}, {"date": "2026-09-02", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Cx torácica", "done": false}, {"date": "2026-09-03", "dow": 3, "type": "aula", "area": "GO", "areaKey": "go", "assunto": "Úlceras genitais", "done": false}, {"date": "2026-09-04", "dow": 4, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Sepse e choque séptico", "done": false}, {"date": "2026-09-05", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-06", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 23, "start": "2026-09-07", "days": [{"date": "2026-09-07", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-08", "dow": 1, "type": "aula", "area": "Pediatria", "areaKey": "ped", "assunto": "Intoxicações exógenas e acidentes peçonhentos", "done": false}, {"date": "2026-09-09", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Cx pediátrica", "done": false}, {"date": "2026-09-10", "dow": 3, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-11", "dow": 4, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-12", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-13", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 24, "start": "2026-09-14", "days": [{"date": "2026-09-14", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-15", "dow": 1, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-16", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Fraturas, luxações e lesões ligamentares", "done": false}, {"date": "2026-09-17", "dow": 3, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-18", "dow": 4, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-19", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-20", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 25, "start": "2026-09-21", "days": [{"date": "2026-09-21", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-22", "dow": 1, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-23", "dow": 2, "type": "aula", "area": "Cirurgia", "areaKey": "cir", "assunto": "Tendinites e bursites", "done": false}, {"date": "2026-09-24", "dow": 3, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-25", "dow": 4, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-26", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-27", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}, {"num": 26, "start": "2026-09-28", "days": [{"date": "2026-09-28", "dow": 0, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-29", "dow": 1, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-09-30", "dow": 2, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-10-01", "dow": 3, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-10-02", "dow": 4, "type": "aula", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-10-03", "dow": 5, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}, {"date": "2026-10-04", "dow": 6, "type": "weekend", "area": null, "areaKey": "", "assunto": null, "done": false}]}];
+const CRON_DOW   = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+const CRON_MONTHS= ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const AREA_CLS   = {'Clínica Médica':'cm','Pediatria':'ped','Cirurgia':'cir','GO':'go','Preventiva':'prev'};
+const AREA_COLOR = {'cm':'var(--cm)','ped':'var(--ped)','cir':'var(--cir)','go':'var(--go)','prev':'var(--prev)'};
+const AREA_BG    = {'cm':'var(--cm-l)','ped':'var(--ped-l)','cir':'var(--cir-l)','go':'var(--go-l)','prev':'var(--prev-l)'};
+
+let _cronWeek = 0; // current week index
+
+function _cronFmtDate(iso) {
+  const [y,m,d] = iso.split('-');
+  return `${parseInt(d)} ${CRON_MONTHS[parseInt(m)-1]}`;
+}
+
+function _cronKey(weekIdx, dayIdx) {
+  return `${weekIdx}_${dayIdx}`;
+}
+
+function toggleCronDay(weekIdx, dayIdx) {
+  const key = _cronKey(weekIdx, dayIdx);
+  cronDone[key] = !cronDone[key];
+  save();
+  renderCronograma();
+}
+
+function _cronGoToWeek(idx) {
+  const total = CRON_WEEKS.length;
+  _cronWeek = Math.max(0, Math.min(total-1, idx));
+  _renderCronSlider();
+  _renderCronDots();
+}
+
+function _renderCronDots() {
+  const el = document.getElementById('cron-dots');
+  if(!el) return;
+  el.innerHTML = CRON_WEEKS.map((w, i) => {
+    const hasDone = w.days.some((d,j) => cronDone[_cronKey(i,j)]);
+    const cls = i === _cronWeek ? 'cron-dot active' : (hasDone ? 'cron-dot has-done' : 'cron-dot');
+    return `<div class="${cls}" onclick="window._cronGoToWeek(${i})" title="Semana ${i+1}"></div>`;
+  }).join('');
+}
+
+function _renderCronSlider() {
+  const slider = document.getElementById('cron-slider');
+  if(!slider) return;
+  slider.style.transform = `translateX(-${_cronWeek * 100}%)`;
+
+  // Update nav buttons
+  const btnPrev = document.getElementById('cron-prev');
+  const btnNext = document.getElementById('cron-next');
+  const counter = document.getElementById('cron-counter');
+  if(btnPrev) btnPrev.disabled = _cronWeek === 0;
+  if(btnNext) btnNext.disabled = _cronWeek === CRON_WEEKS.length - 1;
+  if(counter) counter.textContent = `Semana ${_cronWeek+1} de ${CRON_WEEKS.length}`;
+}
+
+function renderCronograma() {
+  const el = document.getElementById('cron-content');
+  if(!el) return;
+
+  // Find current week (today)
+  const todayStr = toStr(today());
+  let todayWeekIdx = CRON_WEEKS.findIndex(w => {
+    const wEnd = new Date(w.start);
+    wEnd.setDate(wEnd.getDate() + 6);
+    return w.start <= todayStr && todayStr <= wEnd.toISOString().split('T')[0];
+  });
+  if(todayWeekIdx < 0) todayWeekIdx = 0;
+  if(_cronWeek === 0 && todayWeekIdx > 0) _cronWeek = todayWeekIdx;
+
+  // Count total aulas and done
+  let totalAulas = 0, doneAulas = 0;
+  CRON_WEEKS.forEach((w, wi) => {
+    w.days.forEach((d, di) => {
+      if(d.type === 'aula' && d.assunto) {
+        totalAulas++;
+        if(cronDone[_cronKey(wi,di)]) doneAulas++;
+      }
+    });
+  });
+  const pct = totalAulas ? Math.round((doneAulas/totalAulas)*100) : 0;
+
+  // Build week cards
+  let cardsHtml = CRON_WEEKS.map((w, wi) => {
+    const wDate = new Date(w.start + 'T00:00:00');
+    const wEnd  = new Date(wDate); wEnd.setDate(wEnd.getDate() + 4);
+    const wRange = `${_cronFmtDate(w.start)} – ${_cronFmtDate(wEnd.toISOString().split('T')[0])}`;
+    
+    let wDone = 0, wTotal = 0;
+    w.days.forEach((d,di) => { if(d.type==='aula'&&d.assunto){ wTotal++; if(cronDone[_cronKey(wi,di)]) wDone++; } });
+    const isCurrentWeek = wi === todayWeekIdx;
+
+    const daysHtml = w.days.map((day, di) => {
+      if(day.type === 'weekend') {
+        const dowName = CRON_DOW[day.dow];
+        const isSun = day.dow === 6;
+        return `<div class="cron-day-row weekend">
+          <div><div class="cron-dow">${dowName}</div><div class="cron-dow-date">${_cronFmtDate(day.date)}</div></div>
+          <div>
+            <div class="cron-weekend-lbl">${isSun ? '🏖️ Descanso / reposição' : '📝 Revisões · Simulados · Reposição'}</div>
+          </div>
+        </div>`;
+      }
+      
+      const isDone = !!cronDone[_cronKey(wi,di)];
+      const isPast = day.date < todayStr;
+      const isToday = day.date === todayStr;
+      const hasAula = !!day.assunto;
+      
+      if(!hasAula) {
+        return `<div class="cron-day-row past-empty">
+          <div><div class="cron-dow">${CRON_DOW[day.dow]}</div><div class="cron-dow-date">${_cronFmtDate(day.date)}</div></div>
+          <div><div class="cron-assunto" style="color:var(--text-3);font-style:italic">Conteúdo concluído ✓</div></div>
+        </div>`;
+      }
+      
+      const aKey = day.areaKey;
+      const todayBorder = isToday ? 'border-left:3px solid var(--accent);' : '';
+      const areaBadge = `<div class="cron-area-badge" style="background:${AREA_BG[aKey]};color:${AREA_COLOR[aKey]}">${day.area}</div>`;
+      
+      return `<div class="cron-day-row ${isDone?'done':''}" style="${todayBorder}">
+        <div>
+          <div class="cron-dow">${CRON_DOW[day.dow]}</div>
+          <div class="cron-dow-date">${_cronFmtDate(day.date)}${isToday?' · Hoje':''}</div>
+        </div>
+        <div>
+          ${areaBadge}
+          <div class="cron-assunto">${day.assunto}</div>
+        </div>
+        <button class="cron-check ${isDone?'checked':''}" onclick="toggleCronDay(${wi},${di})">
+          ${isDone?'✓':''}
+        </button>
+      </div>`;
+    }).join('');
+
+    return `<div class="cron-week-card">
+      <div class="cron-week-header">
+        <div>
+          <div class="cron-week-title">Semana ${w.num}${isCurrentWeek?' <span style=\"font-size:11px;color:var(--accent);font-family:DM Sans,sans-serif;font-weight:600\">· Esta semana</span>':''}</div>
+          <div class="cron-week-range">${wRange}</div>
+        </div>
+        <div class="cron-week-prog">${wDone}/${wTotal} aulas</div>
+      </div>
+      <div class="cron-days">${daysHtml}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <!-- Progress global -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--sh)">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">Progresso geral</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--accent);letter-spacing:-.03em">${pct}%</div>
+      </div>
+      <div class="cron-progress-bar"><div class="cron-progress-fill" style="width:${pct}%"></div></div>
+      <div class="cron-progress-lbl">${doneAulas} de ${totalAulas} aulas concluídas · meta: 30 de setembro</div>
+    </div>
+
+    <!-- Nav -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <button class="cron-nav-btn" id="cron-prev" onclick="window._cronGoToWeek(_cronWeek-1)">←</button>
+      <span class="cron-week-counter" id="cron-counter">Semana ${_cronWeek+1} de ${CRON_WEEKS.length}</span>
+      <button class="cron-nav-btn" id="cron-next" onclick="window._cronGoToWeek(_cronWeek+1)">→</button>
+    </div>
+
+    <!-- Slider -->
+    <div class="cron-slider-wrap" id="cron-slider-wrap">
+      <div class="cron-slider" id="cron-slider">${cardsHtml}</div>
+    </div>
+
+    <!-- Dots -->
+    <div class="cron-dots" id="cron-dots"></div>
+  `;
+
+  _renderCronSlider();
+  _renderCronDots();
+
+  // Touch swipe
+  const wrap = document.getElementById('cron-slider-wrap');
+  if(wrap && !wrap._swipeInit) {
+    wrap._swipeInit = true;
+    let startX = 0;
+    wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+    wrap.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if(Math.abs(dx) > 50) dx < 0 ? window._cronGoToWeek(_cronWeek+1) : window._cronGoToWeek(_cronWeek-1);
+    }, {passive:true});
+  }
+}
+
 // ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (required for onclick handlers) ──
 window.goTo = goTo;
 window.moveMonth = moveMonth;
@@ -2717,6 +3015,8 @@ window.renderSugs = renderSugs;
 window.showDayModal = showDayModal;
 window.closeModal = closeModal;
 window.toggleDark = toggleDark;
+window.toggleCronDay = toggleCronDay;
+window._cronGoToWeek = _cronGoToWeek;
 window.abrirFormSimulado = abrirFormSimulado;
 window.calcSimPct = calcSimPct;
 window.fecharFormSimulado = fecharFormSimulado;
