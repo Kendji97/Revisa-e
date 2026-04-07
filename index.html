@@ -2866,17 +2866,9 @@ function renderCronograma() {
   const el = document.getElementById('cron-content');
   if(!el) return;
 
-  // Find current week (today)
   const todayStr = toStr(today());
-  let todayWeekIdx = CRON_WEEKS.findIndex(w => {
-    const wEnd = new Date(w.start);
-    wEnd.setDate(wEnd.getDate() + 6);
-    return w.start <= todayStr && todayStr <= wEnd.toISOString().split('T')[0];
-  });
-  if(todayWeekIdx < 0) todayWeekIdx = 0;
-  if(_cronWeek === 0 && todayWeekIdx > 0) _cronWeek = todayWeekIdx;
 
-  // Count total aulas and done
+  // Count totals
   let totalAulas = 0, doneAulas = 0;
   CRON_WEEKS.forEach((w, wi) => {
     w.days.forEach((d, di) => {
@@ -2888,170 +2880,158 @@ function renderCronograma() {
   });
   const pct = totalAulas ? Math.round((doneAulas/totalAulas)*100) : 0;
 
-  // Build week cards
-  let cardsHtml = CRON_WEEKS.map((w, wi) => {
+  // Helper: render a pending aula item with checkbox
+  function pendingAulaItem(d2, wi2, di2) {
+    const aKey = d2.areaKey;
+    const bg = AREA_BG[aKey] || 'var(--surface2)';
+    const color = AREA_COLOR[aKey] || 'var(--text-2)';
+    const isDone = !!cronDone[_cronKey(wi2, di2)];
+    return `<div style="display:flex;align-items:center;gap:7px;margin-top:6px;${isDone?'opacity:.45':''}">
+      <button class="cron-check ${isDone?'checked':''}" onclick="toggleCronDay(${wi2},${di2})" style="width:20px;height:20px;font-size:11px;flex-shrink:0">${isDone?'✓':''}</button>
+      <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${bg};color:${color};font-weight:600;white-space:nowrap">${d2.area}</span>
+      <span style="font-size:12.5px;color:var(--text);${isDone?'text-decoration:line-through;color:var(--text-3)':''};flex:1">${d2.assunto}</span>
+    </div>`;
+  }
+
+  let todayScrollId = null;
+
+  const weeksHtml = CRON_WEEKS.map((w, wi) => {
     const wDate = new Date(w.start + 'T00:00:00');
     const wEnd  = new Date(wDate); wEnd.setDate(wEnd.getDate() + 4);
-    const wRange = `${_cronFmtDate(w.start)} – ${_cronFmtDate(wEnd.toISOString().split('T')[0])}`;
-    
+    const wRange = _cronFmtDate(w.start) + ' – ' + _cronFmtDate(wEnd.toISOString().split('T')[0]);
+
     let wDone = 0, wTotal = 0;
     w.days.forEach((d,di) => { if(d.type==='aula'&&d.assunto){ wTotal++; if(cronDone[_cronKey(wi,di)]) wDone++; } });
-    const isCurrentWeek = wi === todayWeekIdx;
 
-    const daysHtml = w.days.map((day, di) => {
-      if(day.type === 'weekend') {
-        const dowName = CRON_DOW[day.dow];
-        const isSun = day.dow === 6;
+    const wEnd7 = new Date(w.start + 'T00:00:00'); wEnd7.setDate(wEnd7.getDate() + 6);
+    const wEndStr = wEnd7.toISOString().split('T')[0];
+    const isCurrentWeek = w.start <= todayStr && todayStr <= wEndStr;
+    const cardId = isCurrentWeek ? 'cron-current-week' : '';
+    if(isCurrentWeek) todayScrollId = 'cron-current-week';
 
-        // For Saturday: collect all pending (not done) aulas from the PREVIOUS week
-        // (i.e., the week whose weekend this belongs to = week wi-1 if wi>0, else week wi)
-        // Actually weekends belong to their own week (wi), so pending = aulas from week wi not done
-        let pendingHtml = '';
-        if (!isSun) {
-          // Collect pending aulas from this week (same wi) that are not done
-          const pending = w.days.filter((d2, di2) => {
-            return d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(wi, di2)];
-          });
-          if (pending.length > 0) {
-            const items = pending.map(d2 => {
-              const aKey = d2.areaKey;
-              const bg = AREA_BG[aKey] || 'var(--surface2)';
-              const color = AREA_COLOR[aKey] || 'var(--text-2)';
-              return `<div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
-                <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${bg};color:${color};font-weight:600;white-space:nowrap">${d2.area}</span>
-                <span style="font-size:12.5px;color:var(--text)">${d2.assunto}</span>
-              </div>`;
-            }).join('');
-            pendingHtml = `<div style="margin-top:8px;padding:8px 10px;background:var(--warn-l);border-radius:8px;border-left:3px solid #D97706;">
-              <div style="font-size:10.5px;font-weight:600;color:var(--warn);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">⚠️ Reposição desta semana (${pending.length} aula${pending.length>1?'s':''})</div>
-              ${items}
-            </div>`;
-          }
-        }
-
-        // For Saturday: also collect pending aulas from the PREVIOUS week(s) carried forward
-        // We look back through all previous weeks for any still-pending aulas
-        let carryHtml = '';
-        if (!isSun && wi > 0) {
-          const carriedPending = [];
-          for (let prevWi = 0; prevWi < wi; prevWi++) {
-            CRON_WEEKS[prevWi].days.forEach((d2, di2) => {
-              if (d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(prevWi, di2)]) {
-                carriedPending.push({ week: CRON_WEEKS[prevWi].num, d: d2, wi: prevWi, di: di2 });
-              }
-            });
-          }
-          if (carriedPending.length > 0) {
-            const items = carriedPending.map(({week, d: d2}) => {
-              const aKey = d2.areaKey;
-              const bg = AREA_BG[aKey] || 'var(--surface2)';
-              const color = AREA_COLOR[aKey] || 'var(--text-2)';
-              return `<div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
-                <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${bg};color:${color};font-weight:600;white-space:nowrap">${d2.area}</span>
-                <span style="font-size:12.5px;color:var(--text)">${d2.assunto}</span>
-                <span style="font-size:10px;color:var(--text-3);white-space:nowrap">· Sem.${week}</span>
-              </div>`;
-            }).join('');
-            carryHtml = `<div style="margin-top:6px;padding:8px 10px;background:var(--danger-l);border-radius:8px;border-left:3px solid var(--danger);">
-              <div style="font-size:10.5px;font-weight:600;color:var(--danger);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">🔴 Arrastadas de semanas anteriores (${carriedPending.length})</div>
-              ${items}
-            </div>`;
-          }
-        }
-
-        const baseContent = isSun
-          ? `<div class="cron-weekend-lbl">🏖️ Descanso / reposição</div>`
-          : `<div class="cron-weekend-lbl">📝 Revisões · Simulados · Reposição</div>${pendingHtml}${carryHtml}`;
-
-        return `<div class="cron-day-row weekend">
-          <div><div class="cron-dow">${dowName}</div><div class="cron-dow-date">${_cronFmtDate(day.date)}</div></div>
-          <div style="flex:1">${baseContent}</div>
-        </div>`;
-      }
-      
-      const isDone = !!cronDone[_cronKey(wi,di)];
-      const isPast = day.date < todayStr;
+    // Aulas seg-sex
+    const aulasHtml = w.days.filter(d => d.type === 'aula').map(day => {
+      const di = w.days.indexOf(day);
+      const isDone = !!cronDone[_cronKey(wi, di)];
       const isToday = day.date === todayStr;
-      const hasAula = !!day.assunto;
-      
-      if(!hasAula) {
-        return `<div class="cron-day-row past-empty">
-          <div><div class="cron-dow">${CRON_DOW[day.dow]}</div><div class="cron-dow-date">${_cronFmtDate(day.date)}</div></div>
-          <div><div class="cron-assunto" style="color:var(--text-3);font-style:italic">Conteúdo concluído ✓</div></div>
-        </div>`;
+
+      if(!day.assunto) {
+        return '<div class="cron-day-row past-empty"><div><div class="cron-dow">' + CRON_DOW[day.dow] + '</div><div class="cron-dow-date">' + _cronFmtDate(day.date) + '</div></div><div><div class="cron-assunto" style="color:var(--text-3);font-style:italic">—</div></div><div></div></div>';
       }
-      
+
       const aKey = day.areaKey;
-      const todayBorder = isToday ? 'border-left:3px solid var(--accent);' : '';
-      const areaBadge = `<div class="cron-area-badge" style="background:${AREA_BG[aKey]};color:${AREA_COLOR[aKey]}">${day.area}</div>`;
-      
-      return `<div class="cron-day-row ${isDone?'done':''}" style="${todayBorder}">
-        <div>
-          <div class="cron-dow">${CRON_DOW[day.dow]}</div>
-          <div class="cron-dow-date">${_cronFmtDate(day.date)}${isToday?' · Hoje':''}</div>
-        </div>
-        <div>
-          ${areaBadge}
-          <div class="cron-assunto">${day.assunto}</div>
-        </div>
-        <button class="cron-check ${isDone?'checked':''}" onclick="toggleCronDay(${wi},${di})">
-          ${isDone?'✓':''}
-        </button>
-      </div>`;
+      const todayStyle = isToday ? 'border-left:3px solid var(--accent);' : '';
+      const areaBadge = '<div class="cron-area-badge" style="background:' + AREA_BG[aKey] + ';color:' + AREA_COLOR[aKey] + '">' + day.area + '</div>';
+
+      return '<div class="cron-day-row ' + (isDone?'done':'') + '" style="' + todayStyle + '">' +
+        '<div><div class="cron-dow">' + CRON_DOW[day.dow] + '</div>' +
+        '<div class="cron-dow-date">' + _cronFmtDate(day.date) + (isToday?' · <b>Hoje</b>':'') + '</div></div>' +
+        '<div>' + areaBadge + '<div class="cron-assunto">' + day.assunto + '</div></div>' +
+        '<button class="cron-check ' + (isDone?'checked':'') + '" onclick="toggleCronDay(' + wi + ',' + di + ')">' + (isDone?'✓':'') + '</button>' +
+        '</div>';
     }).join('');
 
-    return `<div class="cron-week-card">
-      <div class="cron-week-header">
-        <div>
-          <div class="cron-week-title">Semana ${w.num}${isCurrentWeek?' <span style=\"font-size:11px;color:var(--accent);font-family:DM Sans,sans-serif;font-weight:600\">· Esta semana</span>':''}</div>
-          <div class="cron-week-range">${wRange}</div>
-        </div>
-        <div class="cron-week-prog">${wDone}/${wTotal} aulas</div>
-      </div>
-      <div class="cron-days">${daysHtml}</div>
-    </div>`;
+    // Weekend redistribution
+    const pendingThisWeek = [];
+    w.days.forEach((d2, di2) => {
+      if(d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(wi, di2)])
+        pendingThisWeek.push({ d: d2, wi: wi, di: di2, semNum: null });
+    });
+
+    const pendingPrev = [];
+    for(let p = 0; p < wi; p++) {
+      CRON_WEEKS[p].days.forEach((d2, di2) => {
+        if(d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(p, di2)])
+          pendingPrev.push({ d: d2, wi: p, di: di2, semNum: CRON_WEEKS[p].num });
+      });
+    }
+
+    const allPending = pendingThisWeek.concat(pendingPrev);
+    const half = Math.ceil(allPending.length / 2);
+    const satPending = allPending.slice(0, half);
+    const sunPending = allPending.slice(half);
+
+    function weekendDayHtml(day, items, isSun) {
+      if(!day) return '';
+      const isToday2 = day.date === todayStr;
+      const todayStyle2 = isToday2 ? 'border-left:3px solid var(--accent);' : '';
+
+      let innerHtml = '';
+      if(items.length === 0) {
+        innerHtml = isSun
+          ? '<div class="cron-weekend-lbl">🏖️ Descanso</div>'
+          : '<div class="cron-weekend-lbl">📝 Revisões · Simulados</div>';
+      } else {
+        const tagColor = isSun ? 'var(--info)' : 'var(--warn)';
+        const tagBg = isSun ? 'var(--info-l)' : 'var(--warn-l)';
+        const tagBorder = isSun ? 'var(--info)' : '#D97706';
+        const tag = (isSun ? '🌙 Reposição — domingo' : '📝 Reposição — sábado') + ' · ' + items.length + ' aula' + (items.length>1?'s':'');
+
+        const thisW = items.filter(x => x.semNum === null);
+        const prevW = items.filter(x => x.semNum !== null);
+
+        let body = '';
+        if(thisW.length > 0) {
+          body += '<div style="font-size:10px;font-weight:600;color:' + tagColor + ';text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Desta semana</div>';
+          body += thisW.map(x => pendingAulaItem(x.d, x.wi, x.di)).join('');
+        }
+        if(prevW.length > 0) {
+          body += '<div style="font-size:10px;font-weight:600;color:var(--danger);text-transform:uppercase;letter-spacing:.06em;margin-top:8px;margin-bottom:2px">Semanas anteriores</div>';
+          body += prevW.map(x => {
+            const base = pendingAulaItem(x.d, x.wi, x.di);
+            return base + '<div style="font-size:10px;color:var(--text-3);padding-left:27px;margin-top:-4px">Semana ' + x.semNum + '</div>';
+          }).join('');
+        }
+
+        innerHtml = '<div style="padding:8px 10px;background:' + tagBg + ';border-radius:8px;border-left:3px solid ' + tagBorder + ';">' +
+          '<div style="font-size:10.5px;font-weight:700;color:' + tagColor + '">' + tag + '</div>' +
+          body + '</div>';
+      }
+
+      return '<div class="cron-day-row weekend" style="' + todayStyle2 + '">' +
+        '<div><div class="cron-dow">' + CRON_DOW[day.dow] + '</div>' +
+        '<div class="cron-dow-date">' + _cronFmtDate(day.date) + (isToday2?' · <b>Hoje</b>':'') + '</div></div>' +
+        '<div style="flex:1;min-width:0">' + innerHtml + '</div></div>';
+    }
+
+    const satDay = w.days.find(d => d.dow === 5);
+    const sunDay = w.days.find(d => d.dow === 6);
+    const satHtml = weekendDayHtml(satDay, satPending, false);
+    const sunHtml = weekendDayHtml(sunDay, sunPending, true);
+
+    const allDone = wTotal > 0 && wDone === wTotal;
+    const headerBg = isCurrentWeek ? 'background:var(--accent-l)' : 'background:var(--surface)';
+    const cardBorder = isCurrentWeek ? 'var(--accent)' : 'var(--border)';
+
+    return '<div class="cron-week-card" id="' + cardId + '" style="margin-bottom:16px;border:1.5px solid ' + cardBorder + ';border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--sh);overflow:hidden">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);' + headerBg + '">' +
+        '<div>' +
+          '<div class="cron-week-title">Semana ' + w.num + (isCurrentWeek?' <span style="font-size:11px;color:var(--accent);font-family:DM Sans,sans-serif;font-weight:600">· Esta semana</span>':'') + '</div>' +
+          '<div class="cron-week-range">' + wRange + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div class="cron-week-prog">' + wDone + '/' + wTotal + ' aulas</div>' +
+          (allDone ? '<div style="font-size:10px;color:var(--accent);font-weight:600">✓ Concluída</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="cron-days" style="padding:10px 12px">' + aulasHtml + satHtml + sunHtml + '</div>' +
+    '</div>';
   }).join('');
 
-  el.innerHTML = `
-    <!-- Progress global -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--sh)">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-        <div style="font-size:13px;font-weight:600;color:var(--text)">Progresso geral</div>
-        <div style="font-size:1.4rem;font-weight:700;color:var(--accent);letter-spacing:-.03em">${pct}%</div>
-      </div>
-      <div class="cron-progress-bar"><div class="cron-progress-fill" style="width:${pct}%"></div></div>
-      <div class="cron-progress-lbl">${doneAulas} de ${totalAulas} aulas concluídas · meta: 30 de setembro</div>
-    </div>
+  el.innerHTML =
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.25rem;margin-bottom:1.25rem;box-shadow:var(--sh)">' +
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">' +
+        '<div style="font-size:13px;font-weight:600;color:var(--text)">Progresso geral</div>' +
+        '<div style="font-size:1.4rem;font-weight:700;color:var(--accent);letter-spacing:-.03em">' + pct + '%</div>' +
+      '</div>' +
+      '<div class="cron-progress-bar"><div class="cron-progress-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="cron-progress-lbl">' + doneAulas + ' de ' + totalAulas + ' aulas concluídas · meta: 30 de setembro</div>' +
+    '</div>' +
+    '<div id="cron-weeks-list">' + weeksHtml + '</div>';
 
-    <!-- Nav -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-      <button class="cron-nav-btn" id="cron-prev" onclick="window._cronGoToWeek(_cronWeek-1)">←</button>
-      <span class="cron-week-counter" id="cron-counter">Semana ${_cronWeek+1} de ${CRON_WEEKS.length}</span>
-      <button class="cron-nav-btn" id="cron-next" onclick="window._cronGoToWeek(_cronWeek+1)">→</button>
-    </div>
-
-    <!-- Slider -->
-    <div class="cron-slider-wrap" id="cron-slider-wrap">
-      <div class="cron-slider" id="cron-slider">${cardsHtml}</div>
-    </div>
-
-    <!-- Dots -->
-    <div class="cron-dots" id="cron-dots"></div>
-  `;
-
-  _renderCronSlider();
-  _renderCronDots();
-
-  // Touch swipe
-  const wrap = document.getElementById('cron-slider-wrap');
-  if(wrap && !wrap._swipeInit) {
-    wrap._swipeInit = true;
-    let startX = 0;
-    wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
-    wrap.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - startX;
-      if(Math.abs(dx) > 50) dx < 0 ? window._cronGoToWeek(_cronWeek+1) : window._cronGoToWeek(_cronWeek-1);
-    }, {passive:true});
+  if(todayScrollId) {
+    const target = document.getElementById(todayScrollId);
+    if(target) setTimeout(function(){ target.scrollIntoView({behavior:'smooth', block:'start'}); }, 150);
   }
 }
 
