@@ -836,7 +836,8 @@ body.is-mobile .cron-day-row{grid-template-columns:60px 1fr auto;gap:8px;padding
 .cron-day-row.done .cron-assunto{text-decoration:line-through;color:var(--text-3)}
 .cron-day-row.weekend{
   background:var(--surface2);border-style:dashed;
-  opacity:.7;grid-template-columns:72px 1fr;
+  opacity:.85;grid-template-columns:72px 1fr;
+  align-items:flex-start;
 }
 body.is-mobile .cron-day-row.weekend{grid-template-columns:60px 1fr}
 .cron-day-row.past-empty{opacity:.35}
@@ -2901,11 +2902,70 @@ function renderCronograma() {
       if(day.type === 'weekend') {
         const dowName = CRON_DOW[day.dow];
         const isSun = day.dow === 6;
+
+        // For Saturday: collect all pending (not done) aulas from the PREVIOUS week
+        // (i.e., the week whose weekend this belongs to = week wi-1 if wi>0, else week wi)
+        // Actually weekends belong to their own week (wi), so pending = aulas from week wi not done
+        let pendingHtml = '';
+        if (!isSun) {
+          // Collect pending aulas from this week (same wi) that are not done
+          const pending = w.days.filter((d2, di2) => {
+            return d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(wi, di2)];
+          });
+          if (pending.length > 0) {
+            const items = pending.map(d2 => {
+              const aKey = d2.areaKey;
+              const bg = AREA_BG[aKey] || 'var(--surface2)';
+              const color = AREA_COLOR[aKey] || 'var(--text-2)';
+              return `<div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
+                <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${bg};color:${color};font-weight:600;white-space:nowrap">${d2.area}</span>
+                <span style="font-size:12.5px;color:var(--text)">${d2.assunto}</span>
+              </div>`;
+            }).join('');
+            pendingHtml = `<div style="margin-top:8px;padding:8px 10px;background:var(--warn-l);border-radius:8px;border-left:3px solid #D97706;">
+              <div style="font-size:10.5px;font-weight:600;color:var(--warn);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">⚠️ Reposição desta semana (${pending.length} aula${pending.length>1?'s':''})</div>
+              ${items}
+            </div>`;
+          }
+        }
+
+        // For Saturday: also collect pending aulas from the PREVIOUS week(s) carried forward
+        // We look back through all previous weeks for any still-pending aulas
+        let carryHtml = '';
+        if (!isSun && wi > 0) {
+          const carriedPending = [];
+          for (let prevWi = 0; prevWi < wi; prevWi++) {
+            CRON_WEEKS[prevWi].days.forEach((d2, di2) => {
+              if (d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(prevWi, di2)]) {
+                carriedPending.push({ week: CRON_WEEKS[prevWi].num, d: d2, wi: prevWi, di: di2 });
+              }
+            });
+          }
+          if (carriedPending.length > 0) {
+            const items = carriedPending.map(({week, d: d2}) => {
+              const aKey = d2.areaKey;
+              const bg = AREA_BG[aKey] || 'var(--surface2)';
+              const color = AREA_COLOR[aKey] || 'var(--text-2)';
+              return `<div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
+                <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${bg};color:${color};font-weight:600;white-space:nowrap">${d2.area}</span>
+                <span style="font-size:12.5px;color:var(--text)">${d2.assunto}</span>
+                <span style="font-size:10px;color:var(--text-3);white-space:nowrap">· Sem.${week}</span>
+              </div>`;
+            }).join('');
+            carryHtml = `<div style="margin-top:6px;padding:8px 10px;background:var(--danger-l);border-radius:8px;border-left:3px solid var(--danger);">
+              <div style="font-size:10.5px;font-weight:600;color:var(--danger);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">🔴 Arrastadas de semanas anteriores (${carriedPending.length})</div>
+              ${items}
+            </div>`;
+          }
+        }
+
+        const baseContent = isSun
+          ? `<div class="cron-weekend-lbl">🏖️ Descanso / reposição</div>`
+          : `<div class="cron-weekend-lbl">📝 Revisões · Simulados · Reposição</div>${pendingHtml}${carryHtml}`;
+
         return `<div class="cron-day-row weekend">
           <div><div class="cron-dow">${dowName}</div><div class="cron-dow-date">${_cronFmtDate(day.date)}</div></div>
-          <div>
-            <div class="cron-weekend-lbl">${isSun ? '🏖️ Descanso / reposição' : '📝 Revisões · Simulados · Reposição'}</div>
-          </div>
+          <div style="flex:1">${baseContent}</div>
         </div>`;
       }
       
