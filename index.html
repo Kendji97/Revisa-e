@@ -1204,6 +1204,43 @@ service cloud.firestore {
 
 <div class="toast" id="toast"></div>
 
+<!-- EDIT ESTUDO MODAL -->
+<div class="modal-ov" id="edit-modal" style="display:none" onclick="closeEditModalOv(event)">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <span>Editar assunto</span>
+      <button class="modal-close" onclick="closeEditModal()">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px">
+      <div class="form-grp" style="margin-bottom:0">
+        <label class="form-lbl">Assunto</label>
+        <input class="form-inp" id="edit-assunto" type="text" placeholder="Nome do assunto"/>
+      </div>
+      <div class="form-grp" style="margin-bottom:0">
+        <label class="form-lbl">Prevalência nas provas</label>
+        <div class="freq-grp">
+          <button class="freq-btn" id="edit-freq-a" onclick="editSelFreq('Alta')">↑ Alta</button>
+          <button class="freq-btn" id="edit-freq-m" onclick="editSelFreq('Média')">→ Méd</button>
+          <button class="freq-btn" id="edit-freq-b" onclick="editSelFreq('Baixa')">↓ Baixa</button>
+        </div>
+      </div>
+      <div class="form-grp" style="margin-bottom:0">
+        <label class="form-lbl">Área</label>
+        <div class="area-sel-grp">
+          <button class="asb asb-go"   id="edit-area-go"   onclick="editSelArea('GO')">GO</button>
+          <button class="asb asb-ped"  id="edit-area-ped"  onclick="editSelArea('Pediatria')">Pediatria</button>
+          <button class="asb asb-cir"  id="edit-area-cir"  onclick="editSelArea('Cirurgia')">Cirurgia</button>
+          <button class="asb asb-cm"   id="edit-area-cm"   onclick="editSelArea('Clínica Médica')">Clínica Médica</button>
+          <button class="asb asb-prev" id="edit-area-prev" onclick="editSelArea('Preventiva')">Preventiva</button>
+        </div>
+      </div>
+      <div id="edit-msg" class="form-msg"></div>
+      <button class="btn-submit" onclick="salvarEdicao()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
 <!-- SIMULADO FORM MODAL -->
 <div class="sim-form-ov" id="sim-form-modal" style="display:none" onclick="fecharFormSimulado(event)">
   <div class="sim-form-box">
@@ -1826,6 +1863,7 @@ function renderTodos(){
         <div class="sub-card-actions">
           <button class="dots-btn" onclick="toggleDotsMenu(${e.id},event)" title="Opções">···</button>
           <div class="dots-menu" id="dots-menu-${e.id}" style="display:none">
+            <button class="dots-menu-item" onclick="closeDotsMenus();abrirEdicao(${e.id})">✎ Editar assunto</button>
             <button class="dots-menu-item danger" onclick="closeDotsMenus();deletar(${e.id})">✕ Remover assunto</button>
           </div>
         </div>
@@ -1915,6 +1953,83 @@ function salvar(){
   currentTags=[]; redrawChips(); renderSugs(); updateBadges();
   setTimeout(()=>{msg.textContent='';msg.className='form-msg';},4000);
 }
+
+// ── EDIT ESTUDO ──────────────────────────────
+let _editId = null, _editFreq = '', _editArea = '';
+
+function abrirEdicao(id) {
+  const e = estudos.find(x => x.id === id);
+  if(!e) return;
+  _editId = id;
+  _editFreq = e.freq;
+  _editArea = e.area;
+  document.getElementById('edit-assunto').value = e.assunto;
+  // freq buttons
+  ['Alta','Média','Baixa'].forEach(f => {
+    const m = {Alta:'a', Média:'m', Baixa:'b'};
+    const btn = document.getElementById('edit-freq-' + m[f]);
+    btn.className = 'freq-btn' + (f === e.freq ? (' f-' + m[f]) : '');
+  });
+  // area buttons
+  const areaMap = {'GO':'go','Pediatria':'ped','Cirurgia':'cir','Clínica Médica':'cm','Preventiva':'prev'};
+  Object.entries(areaMap).forEach(([name, key]) => {
+    const btn = document.getElementById('edit-area-' + key);
+    if(btn) { btn.classList.toggle('on', name === e.area); }
+  });
+  document.getElementById('edit-msg').textContent = '';
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+
+function editSelFreq(v) {
+  _editFreq = v;
+  const m = {Alta:'a', Média:'m', Baixa:'b'};
+  ['Alta','Média','Baixa'].forEach(f => {
+    document.getElementById('edit-freq-' + m[f]).className = 'freq-btn' + (f === v ? (' f-' + m[f]) : '');
+  });
+}
+
+function editSelArea(v) {
+  _editArea = v;
+  const areaMap = {'GO':'go','Pediatria':'ped','Cirurgia':'cir','Clínica Médica':'cm','Preventiva':'prev'};
+  Object.entries(areaMap).forEach(([name, key]) => {
+    const btn = document.getElementById('edit-area-' + key);
+    if(btn) btn.classList.toggle('on', name === v);
+  });
+}
+
+function salvarEdicao() {
+  const assunto = document.getElementById('edit-assunto').value.trim();
+  const msg = document.getElementById('edit-msg');
+  if(!assunto) { msg.textContent = 'Preencha o assunto.'; msg.className = 'form-msg err'; return; }
+  if(!_editFreq) { msg.textContent = 'Selecione a prevalência.'; msg.className = 'form-msg err'; return; }
+  if(!_editArea) { msg.textContent = 'Selecione a área.'; msg.className = 'form-msg err'; return; }
+  const e = estudos.find(x => x.id === _editId);
+  if(!e) return;
+  e.assunto = assunto;
+  e.freq = _editFreq;
+  e.area = _editArea;
+  save();
+  closeEditModal();
+  renderTodos();
+  updateBadges();
+  toast('Assunto atualizado!');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+  _editId = null;
+}
+
+function closeEditModalOv(event) {
+  if(event.target === document.getElementById('edit-modal')) closeEditModal();
+}
+
+window.abrirEdicao = abrirEdicao;
+window.editSelFreq = editSelFreq;
+window.editSelArea = editSelArea;
+window.salvarEdicao = salvarEdicao;
+window.closeEditModal = closeEditModal;
+window.closeEditModalOv = closeEditModalOv;
 
 // ── MODAL ─────────────────────────────────────
 function showDayModal(date,revs){
