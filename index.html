@@ -3049,46 +3049,46 @@ function renderCronograma() {
     }).join('');
 
     // ── Weekend redistribution ──
-    // After Friday passes, show ALL accumulated pending aulas (this week + all previous weeks)
-    // on this week's Sat/Sun. Also show aulas completed on this Sat/Sun (so they appear as done).
-    const friDay = w.days.find(d => d.dow === 4); // dow 4 = Sexta
-    const friPassed = friDay && friDay.date < todayStr;
+    // After Friday passes, all pending aulas accumulate to the next upcoming weekend.
+    // "Active weekend" = the weekend of the earliest week whose Saturday is >= today.
+    // This means: if today is Mon-Sun of week N, the active weekend is week N's Sat/Sun.
+    // If today is past week N's Sunday, the active weekend moves to week N+1's Sat/Sun, etc.
 
-    // Only show weekend items on the CURRENT or PAST week whose weekend hasn't been "superseded"
-    // i.e. only the most recent past weekend (the last one before today) accumulates all pendências.
-    // Future weeks show nothing on their weekends yet.
     const satDay = w.days.find(d => d.dow === 5);
     const sunDay = w.days.find(d => d.dow === 6);
     const satDateStr = satDay ? satDay.date : null;
     const sunDateStr = sunDay ? sunDay.date : null;
 
-    // This weekend is "active" if today falls within it (Sat or Sun of this week)
-    // OR if today is past this weekend but there is no later week whose Friday has passed yet.
-    // Simpler rule: show accumulated pendências only on the weekend of the most recent week
-    // whose Friday has already passed. For all other past weeks, show nothing on the weekend
-    // (the pendências will appear on the next active weekend).
-    // Find the most recent week index whose Friday has passed:
-    let latestPastFriIdx = -1;
+    // Find the index of the "active weekend week":
+    // the first week where Saturday >= today (i.e. the weekend hasn't fully passed yet)
+    let activeWeekendIdx = -1;
+    for(let k = 0; k < CRON_WEEKS.length; k++) {
+      const sat = CRON_WEEKS[k].days.find(d => d.dow === 5);
+      if(sat && sat.date >= todayStr) { activeWeekendIdx = k; break; }
+    }
+
+    // How many weeks' Fridays have passed (pending aulas to accumulate up to)
+    // = all weeks whose Friday date < today
+    let lastPendingWeekIdx = -1;
     for(let k = 0; k < CRON_WEEKS.length; k++) {
       const f = CRON_WEEKS[k].days.find(d => d.dow === 4);
-      if(f && f.date < todayStr) latestPastFriIdx = k;
-      else break;
+      if(f && f.date < todayStr) lastPendingWeekIdx = k;
     }
-    const isActiveWeekend = (wi === latestPastFriIdx);
+
+    const isActiveWeekend = (wi === activeWeekendIdx) && lastPendingWeekIdx >= 0;
 
     let satPending = [], sunPending = [];
-    if(friPassed && isActiveWeekend) {
-      // Collect ALL pending aulas from week 0 up to and including this week,
-      // PLUS aulas completed on this Sat/Sun (show them as done here).
+    if(isActiveWeekend) {
+      // Collect ALL pending aulas from week 0 up to lastPendingWeekIdx (all weeks whose Friday passed)
+      // PLUS aulas completed on this Sat/Sun (show them as done here)
       const accumulated = [];
-      for(let p = 0; p <= wi; p++) {
+      for(let p = 0; p <= lastPendingWeekIdx; p++) {
         CRON_WEEKS[p].days.forEach((d2, di2) => {
           if(d2.type === 'aula' && d2.assunto) {
             const key = _cronKey(p, di2);
             const done = _cronIsDone(key);
             const doneDate = _cronDoneDate(key);
             const doneOnThisWeekend = doneDate && (doneDate === satDateStr || doneDate === sunDateStr);
-            // Include if still pending OR completed on this very weekend
             if(!done || doneOnThisWeekend) {
               accumulated.push({ d: d2, wi: p, di: di2, semNum: CRON_WEEKS[p].num });
             }
