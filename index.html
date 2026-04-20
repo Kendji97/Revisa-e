@@ -2940,9 +2940,25 @@ function _cronKey(weekIdx, dayIdx) {
 
 function toggleCronDay(weekIdx, dayIdx) {
   const key = _cronKey(weekIdx, dayIdx);
-  cronDone[key] = !cronDone[key];
+  if(cronDone[key]) {
+    delete cronDone[key];
+  } else {
+    // Store the date it was completed so weekend display can detect Sat/Sun completions
+    cronDone[key] = toStr(today());
+  }
   save();
   renderCronograma();
+}
+// Helper: check if a cron entry is done (accepts both old boolean=true and new date strings)
+function _cronIsDone(key) {
+  const v = cronDone[key];
+  return !!v; // truthy for both true (legacy) and a date string
+}
+function _cronDoneDate(key) {
+  const v = cronDone[key];
+  if(!v) return null;
+  if(v === true) return null; // legacy boolean, no date info
+  return v; // date string like '2026-04-19'
 }
 
 function _cronGoToWeek(idx) {
@@ -2956,7 +2972,7 @@ function _renderCronDots() {
   const el = document.getElementById('cron-dots');
   if(!el) return;
   el.innerHTML = CRON_WEEKS.map((w, i) => {
-    const hasDone = w.days.some((d,j) => cronDone[_cronKey(i,j)]);
+    const hasDone = w.days.some((d,j) => _cronIsDone(_cronKey(i,j)));
     const cls = i === _cronWeek ? 'cron-dot active' : (hasDone ? 'cron-dot has-done' : 'cron-dot');
     return `<div class="${cls}" onclick="window._cronGoToWeek(${i})" title="Semana ${i+1}"></div>`;
   }).join('');
@@ -2988,7 +3004,7 @@ function renderCronograma() {
     w.days.forEach((d, di) => {
       if(d.type === 'aula' && d.assunto) {
         totalAulas++;
-        if(cronDone[_cronKey(wi,di)]) doneAulas++;
+        if(_cronIsDone(_cronKey(wi,di))) doneAulas++;
       }
     });
   });
@@ -3002,7 +3018,7 @@ function renderCronograma() {
     const wRange = _cronFmtDate(w.start) + ' – ' + _cronFmtDate(wEnd.toISOString().split('T')[0]);
 
     let wDone = 0, wTotal = 0;
-    w.days.forEach((d,di) => { if(d.type==='aula'&&d.assunto){ wTotal++; if(cronDone[_cronKey(wi,di)]) wDone++; } });
+    w.days.forEach((d,di) => { if(d.type==='aula'&&d.assunto){ wTotal++; if(_cronIsDone(_cronKey(wi,di))) wDone++; } });
 
     const wEnd7 = new Date(w.start + 'T00:00:00'); wEnd7.setDate(wEnd7.getDate() + 6);
     const wEndStr = wEnd7.toISOString().split('T')[0];
@@ -3013,7 +3029,7 @@ function renderCronograma() {
     // Aulas seg-sex
     const aulasHtml = w.days.filter(d => d.type === 'aula').map(day => {
       const di = w.days.indexOf(day);
-      const isDone = !!cronDone[_cronKey(wi, di)];
+      const isDone = _cronIsDone(_cronKey(wi, di));
       const isToday = day.date === todayStr;
 
       if(!day.assunto) {
@@ -3033,24 +3049,55 @@ function renderCronograma() {
     }).join('');
 
     // ── Weekend redistribution ──
-    // Only show pending aulas on the weekend of the week AFTER Friday has passed.
-    // A week's Friday date:
+    // After Friday passes, show ALL accumulated pending aulas (this week + all previous weeks)
+    // on this week's Sat/Sun. Also show aulas completed on this Sat/Sun (so they appear as done).
     const friDay = w.days.find(d => d.dow === 4); // dow 4 = Sexta
     const friPassed = friDay && friDay.date < todayStr;
 
+    // Only show weekend items on the CURRENT or PAST week whose weekend hasn't been "superseded"
+    // i.e. only the most recent past weekend (the last one before today) accumulates all pendências.
+    // Future weeks show nothing on their weekends yet.
+    const satDay = w.days.find(d => d.dow === 5);
+    const sunDay = w.days.find(d => d.dow === 6);
+    const satDateStr = satDay ? satDay.date : null;
+    const sunDateStr = sunDay ? sunDay.date : null;
+
+    // This weekend is "active" if today falls within it (Sat or Sun of this week)
+    // OR if today is past this weekend but there is no later week whose Friday has passed yet.
+    // Simpler rule: show accumulated pendências only on the weekend of the most recent week
+    // whose Friday has already passed. For all other past weeks, show nothing on the weekend
+    // (the pendências will appear on the next active weekend).
+    // Find the most recent week index whose Friday has passed:
+    let latestPastFriIdx = -1;
+    for(let k = 0; k < CRON_WEEKS.length; k++) {
+      const f = CRON_WEEKS[k].days.find(d => d.dow === 4);
+      if(f && f.date < todayStr) latestPastFriIdx = k;
+      else break;
+    }
+    const isActiveWeekend = (wi === latestPastFriIdx);
+
     let satPending = [], sunPending = [];
-    if(friPassed) {
-      // Collect all pending aulas up to and including this week
-      const allPending = [];
+    if(friPassed && isActiveWeekend) {
+      // Collect ALL pending aulas from week 0 up to and including this week,
+      // PLUS aulas completed on this Sat/Sun (show them as done here).
+      const accumulated = [];
       for(let p = 0; p <= wi; p++) {
         CRON_WEEKS[p].days.forEach((d2, di2) => {
-          if(d2.type === 'aula' && d2.assunto && !cronDone[_cronKey(p, di2)])
-            allPending.push({ d: d2, wi: p, di: di2, semNum: CRON_WEEKS[p].num });
+          if(d2.type === 'aula' && d2.assunto) {
+            const key = _cronKey(p, di2);
+            const done = _cronIsDone(key);
+            const doneDate = _cronDoneDate(key);
+            const doneOnThisWeekend = doneDate && (doneDate === satDateStr || doneDate === sunDateStr);
+            // Include if still pending OR completed on this very weekend
+            if(!done || doneOnThisWeekend) {
+              accumulated.push({ d: d2, wi: p, di: di2, semNum: CRON_WEEKS[p].num });
+            }
+          }
         });
       }
-      const half = Math.ceil(allPending.length / 2);
-      satPending = allPending.slice(0, half);
-      sunPending = allPending.slice(half);
+      const half = Math.ceil(accumulated.length / 2);
+      satPending = accumulated.slice(0, half);
+      sunPending = accumulated.slice(half);
     }
 
     // Render weekend day: if no pending → show resting label; if pending → show aula rows
@@ -3070,7 +3117,7 @@ function renderCronograma() {
 
       // Each pending aula gets its own row — same layout as regular aulas
       const rowsHtml = items.map(x => {
-        const isDone = !!cronDone[_cronKey(x.wi, x.di)];
+        const isDone = _cronIsDone(_cronKey(x.wi, x.di));
         const aKey = x.d.areaKey;
         const areaBadge = '<div class="cron-area-badge" style="background:' + (AREA_BG[aKey]||'var(--surface2)') + ';color:' + (AREA_COLOR[aKey]||'var(--text-2)') + '">' + x.d.area + '</div>';
         const semLabel = x.semNum !== wi + 1
@@ -3087,8 +3134,6 @@ function renderCronograma() {
       return rowsHtml;
     }
 
-    const satDay = w.days.find(d => d.dow === 5);
-    const sunDay = w.days.find(d => d.dow === 6);
     const satHtml = weekendDayHtml(satDay, satPending, false);
     const sunHtml = weekendDayHtml(sunDay, sunPending, true);
 
