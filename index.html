@@ -70,35 +70,76 @@ body.is-mobile{height:100dvh;overflow:hidden}
 body.is-mobile .shell{flex-direction:column;height:100%;overflow:hidden}
 body.is-mobile .sidebar{display:none;pointer-events:none;visibility:hidden}
 body.is-mobile .main{margin-left:0;padding:0;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
-body.is-mobile .page{padding:16px 16px calc(62px + env(safe-area-inset-bottom) + 24px)}
+body.is-mobile .page{padding:16px 16px calc(var(--mob-nav-h) + env(safe-area-inset-bottom) + 20px)}
+:root{--mob-nav-h:58px}
+
 .mob-topbar{
   display:none;position:sticky;top:0;z-index:200;flex-shrink:0;
   background:var(--surface);border-bottom:1px solid var(--border);
-  padding:13px 18px 11px;align-items:center;justify-content:space-between;
+  padding:11px 16px 10px;align-items:center;justify-content:space-between;
 }
 body.is-mobile .mob-topbar{display:flex}
-.mob-logo{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--text);letter-spacing:-0.02em}
+.mob-logo{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--text);letter-spacing:-0.02em}
 .mob-logo em{font-style:italic;color:var(--accent)}
 .mob-atrasadas-badge{background:var(--danger);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:none}
 
+/* ── MOBILE BOTTOM NAV — scrollable ────── */
 .mob-bottom-nav{
-  display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;
-  background:var(--surface);border-top:1.5px solid var(--border);
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:var(--surface);
+  border-top:1.5px solid var(--border);
+  box-shadow:0 -2px 16px rgba(0,0,0,0.10);
+  /* scroll container */
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
   padding-bottom:env(safe-area-inset-bottom);
-  box-shadow:0 -2px 12px rgba(0,0,0,0.08);
 }
-body.is-mobile .mob-bottom-nav{display:flex}
+.mob-bottom-nav::-webkit-scrollbar{display:none}
+body.is-mobile .mob-bottom-nav{display:flex;align-items:stretch}
+
+/* Inner track — wider than screen so items have breathing room */
+.mob-bottom-nav{
+  /* items will lay out in a row naturally; we just need them not to shrink */
+}
 .mob-nav-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:12px 2px 10px;border:none;background:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;color:var(--text-3);font-size:10px;font-weight:500;
-  position:relative;transition:color 0.13s;min-height:62px;
+  flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;
+  /* fixed width so all 9 fit without squishing — user scrolls */
+  width:72px;
+  min-height:var(--mob-nav-h);
+  padding:8px 4px 7px;
+  border:none;background:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;color:var(--text-3);
+  font-size:9.5px;font-weight:500;
+  position:relative;transition:color 0.13s;
   touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
 }
+/* Active tab highlight pill behind icon */
 .mob-nav-btn.active{color:var(--accent)}
-.mob-nav-ico{font-size:19px;line-height:1;transition:transform 0.13s}
-.mob-nav-btn.active .mob-nav-ico{transform:scale(1.12)}
-.mob-dot{position:absolute;top:8px;right:calc(50% - 15px);width:7px;height:7px;border-radius:50%;background:var(--danger);border:1.5px solid var(--surface);display:none}
+.mob-nav-btn.active::before{
+  content:'';
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:40px;height:28px;border-radius:14px;
+  background:var(--accent-l);
+  z-index:0;
+}
+.mob-nav-ico{
+  font-size:18px;line-height:1;
+  position:relative;z-index:1;
+  transition:transform 0.13s;
+}
+.mob-nav-btn.active .mob-nav-ico{transform:scale(1.15)}
+.mob-nav-lbl{position:relative;z-index:1}
+.mob-dot{
+  position:absolute;top:5px;left:50%;margin-left:4px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--danger);border:1.5px solid var(--surface);display:none;
+  z-index:2;
+}
 
 /* ── PAGES ─────────────────────────────── */
 .page{display:none}
@@ -269,7 +310,7 @@ body.is-mobile .form-row{grid-template-columns:1fr}
 
 /* ── MODAL ──────────────────────────────── */
 .modal-ov{position:fixed;inset:0;background:rgba(12,10,7,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
-body.is-mobile .modal-ov{align-items:flex-end;padding:0;padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+body.is-mobile .modal-ov{align-items:flex-end;padding:0;padding-bottom:calc(var(--mob-nav-h) + env(safe-area-inset-bottom))}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;box-shadow:var(--sh-lg);animation:mIn .18s ease}
 body.is-mobile .modal-box{max-width:100%;border-radius:var(--r-lg) var(--r-lg) 0 0;max-height:calc(100dvh - 130px);overflow-y:auto;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
 @keyframes mIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
@@ -290,7 +331,7 @@ body.is-mobile .modal-handle{display:block}
 .empty-ico{font-size:2rem;margin-bottom:.75rem;opacity:.35}
 .empty-txt{font-size:14px;font-weight:500} .empty-sub{font-size:12px;margin-top:4px;color:var(--text-3)}
 .toast{position:fixed;bottom:2rem;right:2rem;background:var(--text);color:var(--surface);padding:10px 18px;border-radius:var(--r);font-size:13px;font-weight:500;box-shadow:var(--sh-lg);opacity:0;transform:translateY(8px);transition:all .22s;pointer-events:none;z-index:500}
-body.is-mobile .toast{bottom:calc(74px + env(safe-area-inset-bottom) + 12px);left:1rem;right:1rem;text-align:center}
+body.is-mobile .toast{bottom:calc(var(--mob-nav-h) + env(safe-area-inset-bottom) + 12px);left:1rem;right:1rem;text-align:center}
 .toast.show{opacity:1;transform:none}
 
 /* ── ALGO BOX ───────────────────────────── */
@@ -581,7 +622,7 @@ body.is-mobile #sync-indicator{top:10px;right:10px}
 .dots-menu-item.danger:hover{background:var(--danger-l)}
 /* ── UNDO TOAST ─────────────────────────────── */
 .undo-toast{
-  position:fixed;bottom:calc(80px + env(safe-area-inset-bottom) + 10px);
+  position:fixed;bottom:calc(var(--mob-nav-h) + env(safe-area-inset-bottom) + 10px);
   left:50%;transform:translateX(-50%) translateY(20px);
   background:var(--text);color:var(--surface);
   padding:10px 16px;border-radius:var(--r);
@@ -649,7 +690,7 @@ body.is-mobile .fc-sum-lbl{font-size:9.5px;text-align:center}
   backdrop-filter:blur(4px);display:flex;align-items:center;
   justify-content:center;z-index:200;padding:1rem;
 }
-body.is-mobile .sim-form-ov{align-items:flex-end;padding:0;padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+body.is-mobile .sim-form-ov{align-items:flex-end;padding:0;padding-bottom:calc(var(--mob-nav-h) + env(safe-area-inset-bottom))}
 .sim-form-box{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--r-lg);padding:1.5rem;
@@ -1154,39 +1195,39 @@ service cloud.firestore {
   <button class="mob-nav-btn active" onclick="goTo('hoje',this)">
     <span class="mob-nav-ico">◉</span>
     <span class="mob-dot" id="mob-dot"></span>
-    Hoje
+    <span class="mob-nav-lbl">Hoje</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('calendario',this)">
     <span class="mob-nav-ico">▦</span>
-    Agenda
+    <span class="mob-nav-lbl">Agenda</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('todos',this)">
     <span class="mob-nav-ico">≡</span>
-    Assuntos
+    <span class="mob-nav-lbl">Assuntos</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('dashboard',this)">
     <span class="mob-nav-ico">◈</span>
-    Dashboard
+    <span class="mob-nav-lbl">Dashboard</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('flashcards',this)">
     <span class="mob-nav-ico">▣</span>
-    Flashcards
+    <span class="mob-nav-lbl">Flashcards</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('historico',this)">
     <span class="mob-nav-ico">◷</span>
-    Histórico
+    <span class="mob-nav-lbl">Histórico</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('cronograma',this)">
     <span class="mob-nav-ico">📅</span>
-    Cronograma
+    <span class="mob-nav-lbl">Cronograma</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('simulados',this)">
     <span class="mob-nav-ico">⊞</span>
-    Simulados
+    <span class="mob-nav-lbl">Simulados</span>
   </button>
   <button class="mob-nav-btn" onclick="goTo('novo',this)">
     <span class="mob-nav-ico">＋</span>
-    Novo
+    <span class="mob-nav-lbl">Novo</span>
   </button>
 </nav>
 
