@@ -1428,7 +1428,8 @@ async function _fbSaveNow() {
       estudos:   JSON.stringify(estudos),
       allTags:   JSON.stringify(allTags),
       simulados: JSON.stringify(simulados_list),
-      cronDone:  JSON.stringify(cronDone),
+      cronDone:    JSON.stringify(cronDone),
+      cronVersion: CRON_VERSION,
       updatedAt: _lastSaveTs,
       savedBy:   _SESSION_ID
     });
@@ -1450,7 +1451,8 @@ function _subscribe() {
       const ne = JSON.parse(_sd.estudos || '[]');
       const nt = JSON.parse(_sd.allTags  || '[]');
       const ns = JSON.parse(_sd.simulados || '[]');
-      const nc = JSON.parse(_sd.cronDone  || '{}');
+      const fbVersion = _sd.cronVersion || '';
+      const nc = fbVersion === CRON_VERSION ? JSON.parse(_sd.cronDone || '{}') : cronDone;
       if(JSON.stringify(ne) === JSON.stringify(estudos) && JSON.stringify(ns) === JSON.stringify(simulados_list) && JSON.stringify(nc) === JSON.stringify(cronDone)) return;
       estudos = ne; allTags = nt; simulados_list = ns; cronDone = nc;
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
@@ -1486,7 +1488,13 @@ async function _boot(cfg) {
       estudos = JSON.parse(d.estudos || '[]');
       allTags = JSON.parse(d.allTags  || '[]');
       simulados_list = JSON.parse(d.simulados || '[]');
-      cronDone = JSON.parse(d.cronDone || '{}');
+      // Só aceita cronDone do Firebase se for da mesma versão do cronograma
+      const fbVersion = d.cronVersion || '';
+      if(fbVersion === CRON_VERSION) {
+        cronDone = JSON.parse(d.cronDone || '{}');
+      } else {
+        cronDone = {};
+      }
       estudos.forEach(e => { if(!e.area) e.area=''; if(!e.sm2) e.sm2=initSm2(e.freq); if(!e.sm2Log) e.sm2Log=[]; });
       localStorage.setItem(KEY, JSON.stringify(estudos));
       localStorage.setItem(TKEY, JSON.stringify(allTags));
@@ -1530,7 +1538,9 @@ function areaBadge(area) {
 }
 
 // ── STORAGE (Firebase + localStorage fallback) ──
-const KEY='revisae-v1', TKEY='revisae-tags-v1', SKEY='revisae-sims-v1', CKEY='revisae-cron-v1', PKEY='revisae-pend-v1';
+const KEY='revisae-v1', TKEY='revisae-tags-v1', SKEY='revisae-sims-v1', CKEY='revisae-cron-v2', PKEY='revisae-pend-v1';
+// CRON_VERSION: mude este valor sempre que o cronograma for trocado para invalidar cronDone anterior
+const CRON_VERSION = '2026-04-27';
 let estudos=[], allTags=[], simulados_list=[], cronDone={};
 // cronPendentes: array de {area, areaKey, assunto} vindos de cronogramas anteriores
 // que ainda não foram concluídos — persistem até o usuário marcá-los como feitos
@@ -1547,8 +1557,15 @@ function load(){
   try{estudos=JSON.parse(localStorage.getItem(KEY))||[];}catch(e){estudos=[];}
   try{allTags=JSON.parse(localStorage.getItem(TKEY))||[];}catch(e){allTags=[];}
   try{simulados_list=JSON.parse(localStorage.getItem(SKEY))||[];}catch(e){simulados_list=[];}
-  try{cronDone=JSON.parse(localStorage.getItem(CKEY))||{};}catch(e){cronDone={};}
   try{cronPendentes=JSON.parse(localStorage.getItem(PKEY))||[];}catch(e){cronPendentes=[];}
+  // Versionamento do cronDone: se a versão mudou, descarta dados antigos
+  const savedVersion = localStorage.getItem('revisae-cron-version');
+  if(savedVersion !== CRON_VERSION) {
+    cronDone = {};
+    localStorage.setItem('revisae-cron-version', CRON_VERSION);
+  } else {
+    try{cronDone=JSON.parse(localStorage.getItem(CKEY))||{};}catch(e){cronDone={};}
+  }
 }
 
 // ── DATE UTILS ────────────────────────────────
