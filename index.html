@@ -3119,7 +3119,7 @@ function renderCronograma() {
         '<div><div class="cron-dow">' + CRON_DOW[day.dow] + '</div>' +
         '<div class="cron-dow-date">' + _cronFmtDate(day.date) + (isToday?' · <b>Hoje</b>':'') + '</div></div>' +
         '<div>' + areaBadge + '<div class="cron-assunto">' + day.assunto + '</div></div>' +
-        '<button class="cron-check ' + (isDone?'checked':'') + '" onclick="toggleCronDay(' + wi + ',' + di + ')">' + (isDone?'✓':'') + '</button>' +
+        '<button class="cron-check ' + (isDone?'checked':'') + '" data-wi="' + wi + '" data-di="' + di + '">' + (isDone?'✓':'') + '</button>' +
         '</div>';
     }).join('');
 
@@ -3237,7 +3237,7 @@ function renderCronograma() {
           '<div><div class="cron-dow">' + CRON_DOW[day.dow] + '</div>' +
           '<div class="cron-dow-date">' + _cronFmtDate(day.date) + (isToday2?' · <b>Hoje</b>':'') + '</div></div>' +
           '<div>' + areaBadge + '<div class="cron-assunto">' + x.d.assunto + '</div>' + semLabel + '</div>' +
-          '<button class="cron-check ' + (isDone?'checked':'') + '" onclick="toggleCronDay(' + x.wi + ',' + x.di + ')">' + (isDone?'✓':'') + '</button>' +
+          '<button class="cron-check ' + (isDone?'checked':'') + '" data-wi="' + x.wi + '" data-di="' + x.di + '">' + (isDone?'✓':'') + '</button>' +
           '</div>';
       }).join('');
 
@@ -3258,7 +3258,7 @@ function renderCronograma() {
           '<div class="cron-week-range">' + wRange + '</div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:10px">' +
-          '<button onclick="openAddAulaModal(' + wi + ')" style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">＋ Aula</button>' +
+          '<button class="cron-add-aula-btn" data-wi="' + wi + '" style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent-l);color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap">＋ Aula</button>' +
           '<div style="text-align:right">' +
             '<div class="cron-week-prog">' + wDone + '/' + wTotal + ' aulas</div>' +
             (allDone ? '<div style="font-size:10px;color:var(--accent);font-weight:600">✓ Concluída</div>' : '') +
@@ -3308,6 +3308,24 @@ window.closeModal = closeModal;
 window.toggleDark = toggleDark;
 window.toggleCronDay = toggleCronDay;
 window._cronGoToWeek = _cronGoToWeek;
+
+// ── Event delegation for cron-check buttons ──────────────────
+document.addEventListener('click', function(e) {
+  // Check button (marcar aula como feita)
+  const btn = e.target.closest('.cron-check');
+  if(btn) {
+    const wi = parseInt(btn.dataset.wi);
+    const di = parseInt(btn.dataset.di);
+    toggleCronDay(wi, di);
+    return;
+  }
+  // Botão + Aula
+  const addBtn = e.target.closest('.cron-add-aula-btn');
+  if(addBtn) {
+    openAddAulaModal(parseInt(addBtn.dataset.wi));
+    return;
+  }
+});
 
 // ── Adicionar aula ao cronograma ──────────────────────────────
 let _addAulaWeekIdx = 0;
