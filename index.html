@@ -3226,7 +3226,8 @@ function renderCronograma() {
 
       // Each pending aula gets its own row — same layout as regular aulas
       const rowsHtml = items.map(x => {
-        const isDone = _cronIsDone(_cronKey(x.wi, x.di));
+        const cronKey = x.wi === -1 ? ('pend-' + x.di) : _cronKey(x.wi, x.di);
+        const isDone = _cronIsDone(cronKey);
         const aKey = x.d.areaKey;
         const areaBadge = '<div class="cron-area-badge" style="background:' + (AREA_BG[aKey]||'var(--surface2)') + ';color:' + (AREA_COLOR[aKey]||'var(--text-2)') + '">' + x.d.area + '</div>';
         const semLabel = x.semNum !== wi + 1
