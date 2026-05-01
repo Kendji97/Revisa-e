@@ -3308,6 +3308,71 @@ window.closeModal = closeModal;
 window.toggleDark = toggleDark;
 window.toggleCronDay = toggleCronDay;
 window._cronGoToWeek = _cronGoToWeek;
+
+// ── Adicionar aula ao cronograma ──────────────────────────────
+let _addAulaWeekIdx = 0;
+let _addAulaSelectedKey = 'cm';
+let _addAulaSelectedArea = 'Clínica Médica';
+
+function openAddAulaModal(weekIdx) {
+  _addAulaWeekIdx = weekIdx;
+  document.getElementById('add-aula-assunto').value = '';
+  const sel = document.getElementById('add-aula-week');
+  sel.innerHTML = CRON_WEEKS.map((w, i) => {
+    const wDate = new Date(w.start + 'T00:00:00');
+    const sat = new Date(wDate); sat.setDate(sat.getDate() + 5);
+    const sun = new Date(wDate); sun.setDate(sun.getDate() + 6);
+    const fmt = d => d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+    return `<option value="${i}" ${i === weekIdx ? 'selected' : ''}>Sem. ${w.num} · FDS ${fmt(sat)}–${fmt(sun)}</option>`;
+  }).join('');
+  selectAddArea(document.querySelector('.add-area-btn[data-key="cm"]'));
+  document.getElementById('add-aula-ov').style.display = 'flex';
+  setTimeout(() => document.getElementById('add-aula-assunto').focus(), 100);
+}
+
+function closeAddAulaModal() {
+  document.getElementById('add-aula-ov').style.display = 'none';
+}
+
+function selectAddArea(btn) {
+  document.querySelectorAll('.add-area-btn').forEach(b => {
+    b.style.background = 'var(--surface)';
+    b.style.color = 'var(--text-2)';
+    const k = b.dataset.key;
+    const colors = {cm:'var(--cm)',ped:'var(--ped)',cir:'var(--cir)',go:'var(--go)',prev:'var(--prev)',extra:'var(--border)'};
+    b.style.borderColor = colors[k] || 'var(--border)';
+  });
+  const k = btn.dataset.key;
+  const bgMap = {cm:'var(--cm-l)',ped:'var(--ped-l)',cir:'var(--cir-l)',go:'var(--go-l)',prev:'var(--prev-l)',extra:'var(--surface2)'};
+  const clrMap = {cm:'var(--cm)',ped:'var(--ped)',cir:'var(--cir)',go:'var(--go)',prev:'var(--prev)',extra:'var(--text)'};
+  btn.style.background = bgMap[k] || 'var(--surface2)';
+  btn.style.color = clrMap[k] || 'var(--text)';
+  _addAulaSelectedKey = k;
+  _addAulaSelectedArea = btn.dataset.area;
+}
+
+function saveAddAula() {
+  const assunto = document.getElementById('add-aula-assunto').value.trim();
+  if(!assunto) {
+    document.getElementById('add-aula-assunto').focus();
+    document.getElementById('add-aula-assunto').style.borderColor = 'var(--danger)';
+    return;
+  }
+  const weekIdx = parseInt(document.getElementById('add-aula-week').value);
+  cronPendentes.push({ area: _addAulaSelectedArea, areaKey: _addAulaSelectedKey, assunto, weekTarget: weekIdx });
+  save();
+  closeAddAulaModal();
+  renderCronograma();
+}
+
+document.getElementById('add-aula-ov').addEventListener('click', function(e) {
+  if(e.target === this) closeAddAulaModal();
+});
+
+window.openAddAulaModal = openAddAulaModal;
+window.closeAddAulaModal = closeAddAulaModal;
+window.selectAddArea = selectAddArea;
+window.saveAddAula = saveAddAula;
 window.abrirFormSimulado = abrirFormSimulado;
 window.calcSimPct = calcSimPct;
 window.fecharFormSimulado = fecharFormSimulado;
@@ -3415,92 +3480,5 @@ window._setupConnect = async function() {
   </div>
 </div>
 
-<script>
-// ── Adicionar aula ao cronograma ──────────────────────────────
-let _addAulaWeekIdx = 0;
-let _addAulaSelectedKey = 'cm';
-let _addAulaSelectedArea = 'Clínica Médica';
-
-function openAddAulaModal(weekIdx) {
-  _addAulaWeekIdx = weekIdx;
-
-  // Resetar campos
-  document.getElementById('add-aula-assunto').value = '';
-
-  // Preencher select de semanas
-  const sel = document.getElementById('add-aula-week');
-  sel.innerHTML = CRON_WEEKS.map((w, i) => {
-    const wDate = new Date(w.start + 'T00:00:00');
-    const sat = new Date(wDate); sat.setDate(sat.getDate() + 5);
-    const sun = new Date(wDate); sun.setDate(sun.getDate() + 6);
-    const fmt = d => d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-    return `<option value="${i}" ${i === weekIdx ? 'selected' : ''}>Sem. ${w.num} · FDS ${fmt(sat)}–${fmt(sun)}</option>`;
-  }).join('');
-
-  // Resetar seleção de área para CM
-  selectAddArea(document.querySelector('.add-area-btn[data-key="cm"]'));
-
-  const ov = document.getElementById('add-aula-ov');
-  ov.style.display = 'flex';
-  setTimeout(() => document.getElementById('add-aula-assunto').focus(), 100);
-}
-
-function closeAddAulaModal() {
-  document.getElementById('add-aula-ov').style.display = 'none';
-}
-
-function selectAddArea(btn) {
-  // Desselecionar todos
-  document.querySelectorAll('.add-area-btn').forEach(b => {
-    const k = b.dataset.key;
-    const colors = {
-      cm:'var(--cm)', ped:'var(--ped)', cir:'var(--cir)',
-      go:'var(--go)', prev:'var(--prev)', extra:'var(--border)'
-    };
-    b.style.background = 'var(--surface)';
-    b.style.color = 'var(--text-2)';
-    b.style.borderColor = colors[k] || 'var(--border)';
-  });
-  // Selecionar clicado
-  const k = btn.dataset.key;
-  const bgMap = {cm:'var(--cm-l)',ped:'var(--ped-l)',cir:'var(--cir-l)',go:'var(--go-l)',prev:'var(--prev-l)',extra:'var(--surface2)'};
-  const clrMap = {cm:'var(--cm)',ped:'var(--ped)',cir:'var(--cir)',go:'var(--go)',prev:'var(--prev)',extra:'var(--text)'};
-  btn.style.background = bgMap[k] || 'var(--surface2)';
-  btn.style.color = clrMap[k] || 'var(--text)';
-  _addAulaSelectedKey = k;
-  _addAulaSelectedArea = btn.dataset.area;
-}
-
-function saveAddAula() {
-  const assunto = document.getElementById('add-aula-assunto').value.trim();
-  if(!assunto) {
-    document.getElementById('add-aula-assunto').focus();
-    document.getElementById('add-aula-assunto').style.borderColor = 'var(--danger)';
-    return;
-  }
-  const weekIdx = parseInt(document.getElementById('add-aula-week').value);
-
-  // Adicionar a cronPendentes com weekTarget = weekIdx
-  cronPendentes.push({
-    area: _addAulaSelectedArea,
-    areaKey: _addAulaSelectedKey,
-    assunto: assunto,
-    weekTarget: weekIdx   // aparece no fim de semana desta semana
-  });
-  save();
-  closeAddAulaModal();
-  renderCronograma();
-}
-
-// Fechar ao clicar fora
-document.getElementById('add-aula-ov').addEventListener('click', function(e) {
-  if(e.target === this) closeAddAulaModal();
-});
-
-window.openAddAulaModal = openAddAulaModal;
-window.closeAddAulaModal = closeAddAulaModal;
-window.selectAddArea = selectAddArea;
-window.saveAddAula = saveAddAula;
-</script>
 </body>
 </html>
